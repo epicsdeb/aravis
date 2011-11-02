@@ -1,0 +1,5 @@
+usr/lib/libaravis-*.so
+usr/lib/libaravis-*.a
+usr/lib/libaravis-*.la
+usr/lib/pkgconfig/aravis-*.pc
+usr/include/aravis-*
