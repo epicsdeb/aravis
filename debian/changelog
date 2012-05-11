@@ -1,3 +1,9 @@
+aravis0.2 (0.1.11-1~squeeze1) squeeze; urgency=low
+
+  * New upstream
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Fri, 11 May 2012 16:46:01 -0400
+
 aravis0.2 (0.1.10-1~squeeze1) squeeze; urgency=low
 
   * Initial release.
