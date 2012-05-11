@@ -196,8 +196,9 @@ ArvFakeGvCamera *
 arv_fake_gv_camera_new (const char *interface_name)
 {
 	ArvFakeGvCamera *gv_camera;
-	struct ifaddrs *ifap;
-	int n_interfaces;
+	struct ifaddrs *ifap = NULL;
+	struct ifaddrs *ifap_iter;
+	int return_value;
 	gboolean interface_found = FALSE;
 	gboolean binding_error = FALSE;
 
@@ -206,19 +207,25 @@ arv_fake_gv_camera_new (const char *interface_name)
 	gv_camera = g_new0 (ArvFakeGvCamera, 1);
 	gv_camera->camera = arv_fake_camera_new ("GV01");
 
-	n_interfaces = getifaddrs (&ifap);
-	for (;ifap != NULL && !interface_found; ifap = ifap->ifa_next) {
-		if ((ifap->ifa_flags & IFF_UP) != 0 &&
-		    (ifap->ifa_flags & IFF_POINTOPOINT) == 0 &&
-		    (ifap->ifa_addr->sa_family == AF_INET) &&
-		    g_strcmp0 (ifap->ifa_name, interface_name) == 0) {
+	return_value = getifaddrs (&ifap);
+	if (return_value < 0) {
+		g_warning ("[FakeGvCamera::new] No network interface found");
+		return NULL;
+	}
+
+	for (ifap_iter = ifap ;ifap_iter != NULL && !interface_found; ifap_iter = ifap_iter->ifa_next) {
+		if ((ifap_iter->ifa_flags & IFF_UP) != 0 &&
+		    (ifap_iter->ifa_flags & IFF_POINTOPOINT) == 0 &&
+		    (ifap_iter->ifa_addr->sa_family == AF_INET) &&
+		    g_strcmp0 (ifap_iter->ifa_name, interface_name) == 0) {
 			GSocketAddress *socket_address;
 			GSocketAddress *inet_socket_address;
 			GInetAddress *inet_address;
 			char *gvcp_address_string;
 			char *discovery_address_string;
 
-			socket_address = g_socket_address_new_from_native (ifap->ifa_addr, sizeof (struct sockaddr));
+			socket_address = g_socket_address_new_from_native (ifap_iter->ifa_addr,
+									   sizeof (struct sockaddr));
 			inet_address = g_inet_socket_address_get_address (G_INET_SOCKET_ADDRESS (socket_address));
 			gvcp_address_string = g_inet_address_to_string (inet_address);
 			arv_debug_device ("[FakeGvCamera::new] Interface address = %s", gvcp_address_string);
@@ -243,7 +250,7 @@ arv_fake_gv_camera_new (const char *interface_name)
 
 			g_object_unref (socket_address);
 
-			socket_address = g_socket_address_new_from_native (ifap->ifa_broadaddr,
+			socket_address = g_socket_address_new_from_native (ifap_iter->ifa_broadaddr,
 									   sizeof (struct sockaddr));
 			inet_address = g_inet_socket_address_get_address (G_INET_SOCKET_ADDRESS (socket_address));
 			discovery_address_string = g_inet_address_to_string (inet_address);
@@ -279,6 +286,8 @@ arv_fake_gv_camera_new (const char *interface_name)
 			interface_found = TRUE;
 		}
 	}
+
+	freeifaddrs (ifap);
 
 	if (binding_error)
 		goto BINDING_ERROR;
@@ -335,7 +344,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 	size_t ack_packet_size;
 	guint32 block_address;
 	guint32 block_size;
-	guint32 packet_count;
+	guint16 packet_id;
 	guint32 register_address;
 	guint32 register_value;
 	gboolean write_access;
@@ -365,7 +374,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 
 	arv_gvcp_packet_debug (packet, ARV_DEBUG_LEVEL_LOG);
 
-	packet_count = arv_gvcp_packet_get_packet_count (packet);
+	packet_id = arv_gvcp_packet_get_packet_id (packet);
 
 	switch (g_ntohs (packet->header.command)) {
 		case ARV_GVCP_COMMAND_DISCOVERY_CMD:
@@ -379,7 +388,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 			arv_debug_device ("[FakeGvCamera::handle_control_packet] Read memory command %d (%d)",
 					  block_address, block_size);
 			ack_packet = arv_gvcp_packet_new_read_memory_ack (block_address, block_size,
-									  packet_count, &ack_packet_size);
+									  packet_id, &ack_packet_size);
 			arv_fake_camera_read_memory (gv_camera->camera, block_address, block_size,
 						     arv_gvcp_packet_get_read_memory_ack_data (ack_packet));
 			break;
@@ -392,7 +401,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 					  block_address, block_size);
 			arv_fake_camera_write_memory (gv_camera->camera, block_address, block_size,
 						      arv_gvcp_packet_get_write_memory_cmd_data (packet));
-			ack_packet = arv_gvcp_packet_new_write_memory_ack (block_address, packet_count,
+			ack_packet = arv_gvcp_packet_new_write_memory_ack (block_address, packet_id,
 									   &ack_packet_size);
 			break;
 		case ARV_GVCP_COMMAND_READ_REGISTER_CMD:
@@ -400,7 +409,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 			arv_fake_camera_read_register (gv_camera->camera, register_address, &register_value);
 			arv_debug_device ("[FakeGvCamera::handle_control_packet] Read register command %d -> %d",
 					  register_address, register_value);
-			ack_packet = arv_gvcp_packet_new_read_register_ack (register_value, packet_count,
+			ack_packet = arv_gvcp_packet_new_read_register_ack (register_value, packet_id,
 									    &ack_packet_size);
 
 			if (register_address == ARV_GVBS_CONTROL_CHANNEL_PRIVILEGE_OFFSET)
@@ -415,7 +424,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 			arv_fake_camera_write_register (gv_camera->camera, register_address, register_value);
 			arv_debug_device ("[FakeGvCamera::handle_control_packet] Write register command %d -> %d",
 				   register_address, register_value);
-			ack_packet = arv_gvcp_packet_new_write_register_ack (register_value, packet_count,
+			ack_packet = arv_gvcp_packet_new_write_register_ack (register_value, packet_id,
 									     &ack_packet_size);
 			break;
 		default:

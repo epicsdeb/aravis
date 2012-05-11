@@ -3,22 +3,22 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>ArvBuffer</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Aravis Reference Manual">
-<link rel="up" href="ch02.html" title="Base">
+<link rel="up" href="ch03.html" title="Base">
 <link rel="prev" href="ArvStream.html" title="ArvStream">
-<link rel="next" href="ch03.html" title="Genicam">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<link rel="next" href="ch04.html" title="Genicam">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
 <td><a accesskey="p" href="ArvStream.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="u" href="ch03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Aravis Reference Manual</th>
-<td><a accesskey="n" href="ch03.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<td><a accesskey="n" href="ch04.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
 </tr>
 <tr><td colspan="5" class="shortcuts">
 <a href="#ArvBuffer.synopsis" class="shortcut">Top</a>
@@ -42,9 +42,9 @@
 <pre class="synopsis"><span class="returnvalue">void</span>                (<a class="link" href="ArvBuffer.html#ArvFrameCallback" title="ArvFrameCallback ()">*ArvFrameCallback</a>)                 (<em class="parameter"><code><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="type">ArvBuffer</span></a> *buffer</code></em>);
 enum                <a class="link" href="ArvBuffer.html#ArvBufferStatus" title="enum ArvBufferStatus">ArvBufferStatus</a>;
                     <a class="link" href="ArvBuffer.html#ArvBuffer-struct" title="ArvBuffer">ArvBuffer</a>;
-<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *	        <a class="link" href="ArvBuffer.html#arv-buffer-new" title="arv_buffer_new ()">arv_buffer_new</a>                      (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
+<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         <a class="link" href="ArvBuffer.html#arv-buffer-new" title="arv_buffer_new ()">arv_buffer_new</a>                      (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
                                                          <em class="parameter"><code><span class="type">void</span> *preallocated</code></em>);
-<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> * 	       <a class="link" href="ArvBuffer.html#arv-buffer-new-full" title="arv_buffer_new_full ()">arv_buffer_new_full</a>                 (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
+<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         <a class="link" href="ArvBuffer.html#arv-buffer-new-full" title="arv_buffer_new_full ()">arv_buffer_new_full</a>                 (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
                                                          <em class="parameter"><code><span class="type">void</span> *preallocated</code></em>,
                                                          <em class="parameter"><code><span class="type">void</span> *user_data</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> user_data_destroy_func</code></em>);
@@ -142,7 +142,7 @@ format and time stamp.
 <hr>
 <div class="refsect2">
 <a name="arv-buffer-new"></a><h3>arv_buffer_new ()</h3>
-<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *	        arv_buffer_new                      (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
+<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         arv_buffer_new                      (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
                                                          <em class="parameter"><code><span class="type">void</span> *preallocated</code></em>);</pre>
 <p>
 Creates a new buffer for the storage of the video stream images. 
@@ -168,7 +168,7 @@ data memory will be freed when the buffer is destroyed.
 <hr>
 <div class="refsect2">
 <a name="arv-buffer-new-full"></a><h3>arv_buffer_new_full ()</h3>
-<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> * 	       arv_buffer_new_full                 (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
+<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         arv_buffer_new_full                 (<em class="parameter"><code><span class="type">size_t</span> size</code></em>,
                                                          <em class="parameter"><code><span class="type">void</span> *preallocated</code></em>,
                                                          <em class="parameter"><code><span class="type">void</span> *user_data</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Datasets.html#GDestroyNotify"><span class="type">GDestroyNotify</span></a> user_data_destroy_func</code></em>);</pre>
@@ -210,6 +210,6 @@ user_data when the buffer is destroyed.
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

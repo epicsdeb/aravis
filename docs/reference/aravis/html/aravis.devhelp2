@@ -3,17 +3,18 @@
 <book xmlns="http://www.devhelp.net/book" title="Aravis Reference Manual" link="index.html" author="" name="aravis" version="2" language="c">
   <chapters>
     <sub name="Overview" link="aravis-overview.html">
+      <sub name="Introduction" link="aravis-introduction.html"/>
       <sub name="Building and debugging Aravis" link="aravis-building.html"/>
     </sub>
-    <sub name="Aravis reference" link="aravis-reference.html">
-      <sub name="Base" link="ch02.html">
+    <sub name="Aravis API reference" link="aravis-reference.html">
+      <sub name="Base" link="ch03.html">
         <sub name="ArvCamera" link="ArvCamera.html"/>
         <sub name="ArvInterface" link="ArvInterface.html"/>
         <sub name="ArvDevice" link="ArvDevice.html"/>
         <sub name="ArvStream" link="ArvStream.html"/>
         <sub name="ArvBuffer" link="ArvBuffer.html"/>
       </sub>
-      <sub name="Genicam" link="ch03.html">
+      <sub name="Genicam" link="ch04.html">
         <sub name="ArvGc" link="ArvGc.html"/>
         <sub name="ArvGcNode" link="ArvGcNode.html"/>
         <sub name="ArvGcInteger" link="ArvGcInteger.html"/>
@@ -31,20 +32,20 @@
         <sub name="ArvGcSwissKnife" link="ArvGcSwissKnife.html"/>
         <sub name="ArvGcPort" link="ArvGcPort.html"/>
       </sub>
-      <sub name="Ethernet cameras" link="ch04.html">
+      <sub name="Ethernet cameras" link="ch05.html">
         <sub name="ArvGvInterface" link="ArvGvInterface.html"/>
         <sub name="ArvGvDevice" link="ArvGvDevice.html"/>
         <sub name="ArvGvStream" link="ArvGvStream.html"/>
         <sub name="ArvGvcp" link="aravis-ArvGvcp.html"/>
         <sub name="ArvGvsp" link="aravis-ArvGvsp.html"/>
       </sub>
-      <sub name="Fake camera" link="ch05.html">
+      <sub name="Fake camera" link="ch06.html">
         <sub name="ArvFakeInterface" link="ArvFakeInterface.html"/>
         <sub name="ArvFakeDevice" link="ArvFakeDevice.html"/>
         <sub name="ArvFakeStream" link="ArvFakeStream.html"/>
         <sub name="ArvFakeCamera" link="ArvFakeCamera.html"/>
       </sub>
-      <sub name="Utils" link="ch06.html">
+      <sub name="Utils" link="ch07.html">
         <sub name="ArvDebug" link="aravis-ArvDebug.html"/>
         <sub name="ArvEvaluator" link="ArvEvaluator.html"/>
         <sub name="ArvGst" link="aravis-ArvGst.html"/>
@@ -52,10 +53,15 @@
         <sub name="ArvValue" link="aravis-ArvValue.html"/>
         <sub name="ArvZip" link="aravis-ArvZip.html"/>
       </sub>
+      <sub name="Object Hierarchy" link="object-tree.html"/>
+      <sub name="API Index" link="api-index-full.html"/>
+      <sub name="Annotation Glossary" link="annotation-glossary.html"/>
     </sub>
-    <sub name="Object Hierarchy" link="object-tree.html"/>
-    <sub name="API Index" link="api-index-full.html"/>
-    <sub name="Annotation Glossary" link="annotation-glossary.html"/>
+    <sub name="Ethernet protocol (GV)" link="aravis-gv.html">
+      <sub name="Introduction" link="aravis-gv-introduction.html"/>
+      <sub name="GVCP packets" link="aravis-gvcp.html"/>
+      <sub name="GVSP packets" link="aravis-gvsp.html"/>
+    </sub>
   </chapters>
   <functions>
     <keyword type="enum" name="enum ArvAuto" link="ArvCamera.html#ArvAuto"/>
@@ -260,10 +266,15 @@
     <keyword type="property" name="The &quot;packet-timeout&quot; property" link="ArvGvStream.html#ArvGvStream--packet-timeout"/>
     <keyword type="property" name="The &quot;socket-buffer&quot; property" link="ArvGvStream.html#ArvGvStream--socket-buffer"/>
     <keyword type="property" name="The &quot;socket-buffer-size&quot; property" link="ArvGvStream.html#ArvGvStream--socket-buffer-size"/>
+    <keyword type="macro" name="ARV_GVCP_PORT" link="aravis-ArvGvcp.html#ARV-GVCP-PORT:CAPS"/>
+    <keyword type="enum" name="enum ArvGvcpPacketType" link="aravis-ArvGvcp.html#ArvGvcpPacketType"/>
+    <keyword type="enum" name="enum ArvGvcpCommand" link="aravis-ArvGvcp.html#ArvGvcpCommand"/>
+    <keyword type="struct" name="ArvGvcpHeader" link="aravis-ArvGvcp.html#ArvGvcpHeader"/>
+    <keyword type="struct" name="ArvGvcpPacket" link="aravis-ArvGvcp.html#ArvGvcpPacket"/>
     <keyword type="function" name="arv_gvcp_packet_free ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-free"/>
     <keyword type="function" name="arv_gvcp_packet_get_packet_type ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-packet-type"/>
     <keyword type="function" name="arv_gvcp_packet_get_command ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-command"/>
-    <keyword type="function" name="arv_gvcp_packet_get_packet_count ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-packet-count"/>
+    <keyword type="function" name="arv_gvcp_packet_get_packet_id ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-packet-id"/>
     <keyword type="function" name="arv_gvcp_packet_get_read_memory_ack_data ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-read-memory-ack-data"/>
     <keyword type="function" name="arv_gvcp_packet_get_read_memory_ack_size ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-read-memory-ack-size"/>
     <keyword type="function" name="arv_gvcp_packet_get_read_memory_cmd_infos ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-read-memory-cmd-infos"/>
@@ -273,7 +284,7 @@
     <keyword type="function" name="arv_gvcp_packet_get_write_memory_cmd_data ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-write-memory-cmd-data"/>
     <keyword type="function" name="arv_gvcp_packet_get_write_memory_cmd_infos ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-write-memory-cmd-infos"/>
     <keyword type="function" name="arv_gvcp_packet_get_write_register_cmd_infos ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-get-write-register-cmd-infos"/>
-    <keyword type="function" name="arv_gvcp_packet_set_packet_count ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-set-packet-count"/>
+    <keyword type="function" name="arv_gvcp_packet_set_packet_id ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-set-packet-id"/>
     <keyword type="function" name="arv_gvcp_packet_new_read_memory_cmd ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-new-read-memory-cmd"/>
     <keyword type="function" name="arv_gvcp_packet_new_read_memory_ack ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-new-read-memory-ack"/>
     <keyword type="function" name="arv_gvcp_packet_new_write_memory_cmd ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-new-write-memory-cmd"/>
@@ -287,7 +298,13 @@
     <keyword type="function" name="arv_gvcp_packet_new_packet_resend_cmd ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-new-packet-resend-cmd"/>
     <keyword type="function" name="arv_gvcp_packet_to_string ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-to-string"/>
     <keyword type="function" name="arv_gvcp_packet_debug ()" link="aravis-ArvGvcp.html#arv-gvcp-packet-debug"/>
-    <keyword type="function" name="arv_gvcp_next_packet_count ()" link="aravis-ArvGvcp.html#arv-gvcp-next-packet-count"/>
+    <keyword type="function" name="arv_gvcp_next_packet_id ()" link="aravis-ArvGvcp.html#arv-gvcp-next-packet-id"/>
+    <keyword type="enum" name="enum ArvGvspPacketType" link="aravis-ArvGvsp.html#ArvGvspPacketType"/>
+    <keyword type="enum" name="enum ArvGvspContentType" link="aravis-ArvGvsp.html#ArvGvspContentType"/>
+    <keyword type="struct" name="ArvGvspDataLeader" link="aravis-ArvGvsp.html#ArvGvspDataLeader"/>
+    <keyword type="struct" name="ArvGvspDataTrailer" link="aravis-ArvGvsp.html#ArvGvspDataTrailer"/>
+    <keyword type="struct" name="ArvGvspHeader" link="aravis-ArvGvsp.html#ArvGvspHeader"/>
+    <keyword type="struct" name="ArvGvspPacket" link="aravis-ArvGvsp.html#ArvGvspPacket"/>
     <keyword type="function" name="arv_gvsp_packet_to_string ()" link="aravis-ArvGvsp.html#arv-gvsp-packet-to-string"/>
     <keyword type="function" name="arv_gvsp_packet_get_data_size ()" link="aravis-ArvGvsp.html#arv-gvsp-packet-get-data-size"/>
     <keyword type="function" name="arv_gvsp_packet_get_frame_id ()" link="aravis-ArvGvsp.html#arv-gvsp-packet-get-frame-id"/>
@@ -409,5 +426,28 @@
     <keyword type="constant" name="ARV_GV_STREAM_SOCKET_BUFFER_AUTO" link="ArvGvStream.html#ARV-GV-STREAM-SOCKET-BUFFER-AUTO:CAPS"/>
     <keyword type="constant" name="ARV_GV_STREAM_PACKET_RESEND_NEVER" link="ArvGvStream.html#ARV-GV-STREAM-PACKET-RESEND-NEVER:CAPS"/>
     <keyword type="constant" name="ARV_GV_STREAM_PACKET_RESEND_ALWAYS" link="ArvGvStream.html#ARV-GV-STREAM-PACKET-RESEND-ALWAYS:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_PACKET_TYPE_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-PACKET-TYPE-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_PACKET_TYPE_RESEND" link="aravis-ArvGvcp.html#ARV-GVCP-PACKET-TYPE-RESEND:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_PACKET_TYPE_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-PACKET-TYPE-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_PACKET_TYPE_ERROR" link="aravis-ArvGvcp.html#ARV-GVCP-PACKET-TYPE-ERROR:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_DISCOVERY_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-DISCOVERY-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_DISCOVERY_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-DISCOVERY-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_BYE_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-BYE-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_BYE_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-BYE-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_PACKET_RESEND_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-PACKET-RESEND-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_PACKET_RESEND_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-PACKET-RESEND-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_READ_REGISTER_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-READ-REGISTER-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_READ_REGISTER_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-READ-REGISTER-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_WRITE_REGISTER_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-WRITE-REGISTER-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_WRITE_REGISTER_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-WRITE-REGISTER-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_READ_MEMORY_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-READ-MEMORY-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_READ_MEMORY_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-READ-MEMORY-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_WRITE_MEMORY_CMD" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-WRITE-MEMORY-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_GVCP_COMMAND_WRITE_MEMORY_ACK" link="aravis-ArvGvcp.html#ARV-GVCP-COMMAND-WRITE-MEMORY-ACK:CAPS"/>
+    <keyword type="constant" name="ARV_GVSP_PACKET_TYPE_OK" link="aravis-ArvGvsp.html#ARV-GVSP-PACKET-TYPE-OK:CAPS"/>
+    <keyword type="constant" name="ARV_GVSP_PACKET_TYPE_ERROR" link="aravis-ArvGvsp.html#ARV-GVSP-PACKET-TYPE-ERROR:CAPS"/>
+    <keyword type="constant" name="ARV_GVSP_CONTENT_TYPE_DATA_LEADER" link="aravis-ArvGvsp.html#ARV-GVSP-CONTENT-TYPE-DATA-LEADER:CAPS"/>
+    <keyword type="constant" name="ARV_GVSP_CONTENT_TYPE_DATA_TRAILER" link="aravis-ArvGvsp.html#ARV-GVSP-CONTENT-TYPE-DATA-TRAILER:CAPS"/>
+    <keyword type="constant" name="ARV_GVSP_CONTENT_TYPE_DATA_BLOCK" link="aravis-ArvGvsp.html#ARV-GVSP-CONTENT-TYPE-DATA-BLOCK:CAPS"/>
   </functions>
 </book>

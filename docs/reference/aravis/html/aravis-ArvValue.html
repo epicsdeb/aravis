@@ -3,19 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>ArvValue</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Aravis Reference Manual">
-<link rel="up" href="ch06.html" title="Utils">
+<link rel="up" href="ch07.html" title="Utils">
 <link rel="prev" href="aravis-ArvStatistic.html" title="ArvStatistic">
 <link rel="next" href="aravis-ArvZip.html" title="ArvZip">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
 <td><a accesskey="p" href="aravis-ArvStatistic.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch06.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="u" href="ch07.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Aravis Reference Manual</th>
 <td><a accesskey="n" href="aravis-ArvZip.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
@@ -37,8 +37,8 @@
 </tr></table></div>
 <div class="refsynopsisdiv">
 <a name="aravis-ArvValue.synopsis"></a><h2>Synopsis</h2>
-<pre class="synopsis"><span class="returnvalue">ArvValue</span> * 	        <a class="link" href="aravis-ArvValue.html#arv-value-new-double" title="arv_value_new_double ()">arv_value_new_double</a>                (<em class="parameter"><code><span class="type">double</span> v_double</code></em>);
-<span class="returnvalue">ArvValue</span> * 	        <a class="link" href="aravis-ArvValue.html#arv-value-new-int64" title="arv_value_new_int64 ()">arv_value_new_int64</a>                 (<em class="parameter"><code><span class="type">double</span> v_int64</code></em>);
+<pre class="synopsis"><span class="returnvalue">ArvValue</span> *          <a class="link" href="aravis-ArvValue.html#arv-value-new-double" title="arv_value_new_double ()">arv_value_new_double</a>                (<em class="parameter"><code><span class="type">double</span> v_double</code></em>);
+<span class="returnvalue">ArvValue</span> *          <a class="link" href="aravis-ArvValue.html#arv-value-new-int64" title="arv_value_new_int64 ()">arv_value_new_int64</a>                 (<em class="parameter"><code><span class="type">double</span> v_int64</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="aravis-ArvValue.html#arv-value-free" title="arv_value_free ()">arv_value_free</a>                      (<em class="parameter"><code><span class="type">ArvValue</span> *value</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="aravis-ArvValue.html#arv-value-copy" title="arv_value_copy ()">arv_value_copy</a>                      (<em class="parameter"><code><span class="type">ArvValue</span> *to</code></em>,
                                                          <em class="parameter"><code>const <span class="type">ArvValue</span> *from</code></em>);
@@ -50,8 +50,8 @@
 <span class="returnvalue">double</span>              <a class="link" href="aravis-ArvValue.html#arv-value-get-double" title="arv_value_get_double ()">arv_value_get_double</a>                (<em class="parameter"><code><span class="type">ArvValue</span> *value</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="aravis-ArvValue.html#arv-value-holds-int64" title="arv_value_holds_int64 ()">arv_value_holds_int64</a>               (<em class="parameter"><code><span class="type">ArvValue</span> *value</code></em>);
 <span class="returnvalue">double</span>              <a class="link" href="aravis-ArvValue.html#arv-value-holds-double" title="arv_value_holds_double ()">arv_value_holds_double</a>              (<em class="parameter"><code><span class="type">ArvValue</span> *value</code></em>);
-<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> * 	          <a class="link" href="aravis-ArvValue.html#arv-create-int64-g-value" title="arv_create_int64_g_value ()">arv_create_int64_g_value</a>            (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> v_int64</code></em>);
-<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> * 	          <a class="link" href="aravis-ArvValue.html#arv-create-string-g-value" title="arv_create_string_g_value ()">arv_create_string_g_value</a>           (<em class="parameter"><code>const <span class="type">char</span> *v_string</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="aravis-ArvValue.html#arv-create-int64-g-value" title="arv_create_int64_g_value ()">arv_create_int64_g_value</a>            (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> v_int64</code></em>);
+<a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            <a class="link" href="aravis-ArvValue.html#arv-create-string-g-value" title="arv_create_string_g_value ()">arv_create_string_g_value</a>           (<em class="parameter"><code>const <span class="type">char</span> *v_string</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="aravis-ArvValue.html#arv-free-g-value" title="arv_free_g_value ()">arv_free_g_value</a>                    (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *value</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="aravis-ArvValue.html#arv-force-g-value-to-int64" title="arv_force_g_value_to_int64 ()">arv_force_g_value_to_int64</a>          (<em class="parameter"><code><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="type">GValue</span></a> *value</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> v_int64</code></em>);
@@ -68,12 +68,12 @@
 <a name="aravis-ArvValue.details"></a><h2>Details</h2>
 <div class="refsect2">
 <a name="arv-value-new-double"></a><h3>arv_value_new_double ()</h3>
-<pre class="programlisting"><span class="returnvalue">ArvValue</span> * 	        arv_value_new_double                (<em class="parameter"><code><span class="type">double</span> v_double</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">ArvValue</span> *          arv_value_new_double                (<em class="parameter"><code><span class="type">double</span> v_double</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
 <a name="arv-value-new-int64"></a><h3>arv_value_new_int64 ()</h3>
-<pre class="programlisting"><span class="returnvalue">ArvValue</span> * 	        arv_value_new_int64                 (<em class="parameter"><code><span class="type">double</span> v_int64</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">ArvValue</span> *          arv_value_new_int64                 (<em class="parameter"><code><span class="type">double</span> v_int64</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -121,7 +121,7 @@
 <hr>
 <div class="refsect2">
 <a name="arv-create-int64-g-value"></a><h3>arv_create_int64_g_value ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> * 	          arv_create_int64_g_value            (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> v_int64</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            arv_create_int64_g_value            (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="type">gint64</span></a> v_int64</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
@@ -134,7 +134,7 @@ Return value: (transfer full) a new GValue holding a gint64.</td>
 <hr>
 <div class="refsect2">
 <a name="arv-create-string-g-value"></a><h3>arv_create_string_g_value ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> * 	          arv_create_string_g_value           (<em class="parameter"><code>const <span class="type">char</span> *v_string</code></em>);</pre>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gobject/unstable/gobject-Generic-values.html#GValue"><span class="returnvalue">GValue</span></a> *            arv_create_string_g_value           (<em class="parameter"><code>const <span class="type">char</span> *v_string</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody><tr>
@@ -171,6 +171,6 @@ Return value: (transfer full) a new GValue holding a string.</td>
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

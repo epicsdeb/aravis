@@ -437,6 +437,7 @@ ARV_GV_DEVICE_HEARTBEAT_RETRY_TIMEOUT_S
 ARV_GV_DEVICE_BUFFER_SIZE
 ArvGvDeviceClass
 ArvGvDevicePrivate
+arv_gv_device_get_url_regex
 </SECTION>
 
 <SECTION>
@@ -779,10 +780,15 @@ arv_pixel_format_from_gst_caps
 <SECTION>
 <FILE>arvgvcp</FILE>
 <TITLE>ArvGvcp</TITLE>
+ARV_GVCP_PORT
+ArvGvcpPacketType
+ArvGvcpCommand
+ArvGvcpHeader
+ArvGvcpPacket
 arv_gvcp_packet_free
 arv_gvcp_packet_get_packet_type
 arv_gvcp_packet_get_command
-arv_gvcp_packet_get_packet_count
+arv_gvcp_packet_get_packet_id
 arv_gvcp_packet_get_read_memory_ack_data
 arv_gvcp_packet_get_read_memory_ack_size
 arv_gvcp_packet_get_read_memory_cmd_infos
@@ -792,7 +798,7 @@ arv_gvcp_packet_get_write_memory_ack_size
 arv_gvcp_packet_get_write_memory_cmd_data
 arv_gvcp_packet_get_write_memory_cmd_infos
 arv_gvcp_packet_get_write_register_cmd_infos
-arv_gvcp_packet_set_packet_count
+arv_gvcp_packet_set_packet_id
 arv_gvcp_packet_new_read_memory_cmd
 arv_gvcp_packet_new_read_memory_ack
 arv_gvcp_packet_new_write_memory_cmd
@@ -806,7 +812,7 @@ arv_gvcp_packet_new_discovery_ack
 arv_gvcp_packet_new_packet_resend_cmd
 arv_gvcp_packet_to_string
 arv_gvcp_packet_debug
-arv_gvcp_next_packet_count
+arv_gvcp_next_packet_id
 <SUBSECTION Private>
 ARV_GVBS_CONTROL_CHANNEL_PRIVILEGE_CONTROL
 ARV_GVBS_CONTROL_CHANNEL_PRIVILEGE_EXCLUSIVE
@@ -893,14 +899,11 @@ ARV_GVBS_MODEL_NAME_SIZE
 ARV_GVBS_SERIAL_NUMBER_SIZE
 ARV_GVBS_USER_DEFINED_NAME_SIZE
 ARV_GVBS_XML_URL_SIZE
-ARV_GVCP_PORT
 ARV_GVCP_DATA_SIZE_MAX
-ArvGvcpPacket
-ArvGvcpPacketType
-ArvGvcpCommand
 g_ntohl
 g_ntohs
 sizeof
+ARAVIS_PACKED_STRUCTURE
 </SECTION>
 
 <SECTION>
@@ -956,6 +959,12 @@ arv_warning_stream_thread
 <SECTION>
 <FILE>arvgvsp</FILE>
 <TITLE>ArvGvsp</TITLE>
+ArvGvspPacketType
+ArvGvspContentType
+ArvGvspDataLeader
+ArvGvspDataTrailer
+ArvGvspHeader
+ArvGvspPacket
 arv_gvsp_packet_to_string
 arv_gvsp_packet_get_data_size
 arv_gvsp_packet_get_frame_id
@@ -973,9 +982,6 @@ arv_gvsp_packet_new_data_block
 arv_gvsp_packet_new_data_leader
 arv_gvsp_packet_new_data_trailer
 <SUBSECTION Private>
-ArvGvspPacket
-ArvGvspPacketType
-ArvGvspContentType
 ARV_GVSP_PACKET_INFOS_ID_MASK
 ARV_GVSP_PACKET_INFOS_CONTENT_TYPE_MASK
 ARV_GVSP_PACKET_INFOS_CONTENT_TYPE_POS
