@@ -3,19 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>ArvStream</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Aravis Reference Manual">
-<link rel="up" href="ch02.html" title="Base">
+<link rel="up" href="ch03.html" title="Base">
 <link rel="prev" href="ArvDevice.html" title="ArvDevice">
 <link rel="next" href="ArvBuffer.html" title="ArvBuffer">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
 <td><a accesskey="p" href="ArvDevice.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch02.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="u" href="ch03.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Aravis Reference Manual</th>
 <td><a accesskey="n" href="ArvBuffer.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
@@ -50,8 +50,8 @@
                     <a class="link" href="ArvStream.html#ArvStream-struct" title="ArvStream">ArvStream</a>;
 <span class="returnvalue">void</span>                <a class="link" href="ArvStream.html#arv-stream-push-buffer" title="arv_stream_push_buffer ()">arv_stream_push_buffer</a>              (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>,
                                                          <em class="parameter"><code><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="type">ArvBuffer</span></a> *buffer</code></em>);
-<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *	        <a class="link" href="ArvStream.html#arv-stream-pop-buffer" title="arv_stream_pop_buffer ()">arv_stream_pop_buffer</a>               (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>);
-<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> * 	       <a class="link" href="ArvStream.html#arv-stream-timed-pop-buffer" title="arv_stream_timed_pop_buffer ()">arv_stream_timed_pop_buffer</a>         (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>,
+<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         <a class="link" href="ArvStream.html#arv-stream-pop-buffer" title="arv_stream_pop_buffer ()">arv_stream_pop_buffer</a>               (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>);
+<a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         <a class="link" href="ArvStream.html#arv-stream-timed-pop-buffer" title="arv_stream_timed_pop_buffer ()">arv_stream_timed_pop_buffer</a>         (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> timeout</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvStream.html#arv-stream-get-n-buffers" title="arv_stream_get_n_buffers ()">arv_stream_get_n_buffers</a>            (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *n_input_buffers</code></em>,
@@ -175,7 +175,7 @@ and will free all the buffers still in its queues when destroyed.
 <hr>
 <div class="refsect2">
 <a name="arv-stream-pop-buffer"></a><h3>arv_stream_pop_buffer ()</h3>
-<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *	        arv_stream_pop_buffer               (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         arv_stream_pop_buffer               (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>);</pre>
 <p>
 Pops a buffer from the output queue of <em class="parameter"><code>stream</code></em>. The retrieved buffer
 may contain an invalid image. Caller should check the buffer status before using it.
@@ -193,7 +193,7 @@ Returns: (transfer full): a <a class="link" href="ArvBuffer.html" title="ArvBuff
 <hr>
 <div class="refsect2">
 <a name="arv-stream-timed-pop-buffer"></a><h3>arv_stream_timed_pop_buffer ()</h3>
-<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> * 	       arv_stream_timed_pop_buffer         (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>,
+<pre class="programlisting"><a class="link" href="ArvBuffer.html" title="ArvBuffer"><span class="returnvalue">ArvBuffer</span></a> *         arv_stream_timed_pop_buffer         (<em class="parameter"><code><a class="link" href="ArvStream.html" title="ArvStream"><span class="type">ArvStream</span></a> *stream</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="type">guint64</span></a> timeout</code></em>);</pre>
 <p>
 Pops a buffer from the output queue of <em class="parameter"><code>stream</code></em>, waiting no more than <em class="parameter"><code>timeout</code></em>. The retrieved buffer
@@ -380,6 +380,6 @@ set to <a href="http://library.gnome.org/devel/glib/unstable/glib-Standard-Macro
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

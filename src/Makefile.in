@@ -49,7 +49,11 @@ bin_PROGRAMS = arv-fake-gv-camera-@ARAVIS_API_VERSION@$(EXEEXT) \
 @HAVE_INTROSPECTION_TRUE@am__append_2 = $(dist_gir_DATA) $(typelib_DATA)
 subdir = src
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
-am__aclocal_m4_deps = $(top_srcdir)/configure.ac
+am__aclocal_m4_deps = $(top_srcdir)/m4/gtk-doc.m4 \
+	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/m4/introspection.m4 \
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
@@ -159,6 +163,7 @@ AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
 ARAVIS_API_VERSION = @ARAVIS_API_VERSION@
+ARAVIS_API_VERSION_U = @ARAVIS_API_VERSION_U@
 ARAVIS_CFLAGS = @ARAVIS_CFLAGS@
 ARAVIS_GST_PLUGIN_CFLAGS = @ARAVIS_GST_PLUGIN_CFLAGS@
 ARAVIS_GST_PLUGIN_LIBS = @ARAVIS_GST_PLUGIN_LIBS@
@@ -184,6 +189,7 @@ CYGPATH_W = @CYGPATH_W@
 DATADIRNAME = @DATADIRNAME@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
+DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
 DUMPBIN = @DUMPBIN@
 ECHO_C = @ECHO_C@
@@ -199,6 +205,8 @@ GMSGFMT = @GMSGFMT@
 GREP = @GREP@
 GST_PLUGIN_LDFLAGS = @GST_PLUGIN_LDFLAGS@
 GTKDOC_CHECK = @GTKDOC_CHECK@
+GTKDOC_DEPS_CFLAGS = @GTKDOC_DEPS_CFLAGS@
+GTKDOC_DEPS_LIBS = @GTKDOC_DEPS_LIBS@
 GTKDOC_MKPDF = @GTKDOC_MKPDF@
 GTKDOC_REBASE = @GTKDOC_REBASE@
 HTML_DIR = @HTML_DIR@
@@ -231,6 +239,7 @@ LN_S = @LN_S@
 LTLIBOBJS = @LTLIBOBJS@
 MAINT = @MAINT@
 MAKEINFO = @MAKEINFO@
+MANIFEST_TOOL = @MANIFEST_TOOL@
 MKDIR_P = @MKDIR_P@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MSGFMT = @MSGFMT@
@@ -269,6 +278,7 @@ abs_builddir = @abs_builddir@
 abs_srcdir = @abs_srcdir@
 abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
+ac_ct_AR = @ac_ct_AR@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
@@ -304,7 +314,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -443,11 +452,11 @@ CLEANFILES = $(BUILT_SOURCES) $(am__append_2)
 @HAVE_INTROSPECTION_TRUE@		      arvenumtypes.c \
 @HAVE_INTROSPECTION_TRUE@		      arvenumtypes.h
 
-@HAVE_INTROSPECTION_TRUE@Aravis_0_2_gir_INCLUDES = GObject-2.0 Gio-2.0
-@HAVE_INTROSPECTION_TRUE@Aravis_0_2_gir_SCANNERFLAGS = --identifier-prefix=Arv --warn-all
-@HAVE_INTROSPECTION_TRUE@Aravis_0_2_gir_CFLAGS = $(INCLUDES) -I$(top_srcdir)/src
-@HAVE_INTROSPECTION_TRUE@Aravis_0_2_gir_LIBS = libaravis-@ARAVIS_API_VERSION@.la
-@HAVE_INTROSPECTION_TRUE@Aravis_0_2_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
+@HAVE_INTROSPECTION_TRUE@Aravis_@ARAVIS_API_VERSION_U@_gir_INCLUDES = GObject-2.0 Gio-2.0
+@HAVE_INTROSPECTION_TRUE@Aravis_@ARAVIS_API_VERSION_U@_gir_SCANNERFLAGS = --identifier-prefix=Arv --warn-all
+@HAVE_INTROSPECTION_TRUE@Aravis_@ARAVIS_API_VERSION_U@_gir_CFLAGS = $(INCLUDES) -I$(top_srcdir)/src
+@HAVE_INTROSPECTION_TRUE@Aravis_@ARAVIS_API_VERSION_U@_gir_LIBS = libaravis-@ARAVIS_API_VERSION@.la
+@HAVE_INTROSPECTION_TRUE@Aravis_@ARAVIS_API_VERSION_U@_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
 @HAVE_INTROSPECTION_TRUE@girdir = $(datadir)/gir-1.0
 @HAVE_INTROSPECTION_TRUE@dist_gir_DATA = $(INTROSPECTION_GIRS)
 @HAVE_INTROSPECTION_TRUE@typelibdir = $(libdir)/girepository-1.0

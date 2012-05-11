@@ -3,19 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>ArvZip</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Aravis Reference Manual">
-<link rel="up" href="ch06.html" title="Utils">
+<link rel="up" href="ch07.html" title="Utils">
 <link rel="prev" href="aravis-ArvValue.html" title="ArvValue">
 <link rel="next" href="object-tree.html" title="Object Hierarchy">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
 <td><a accesskey="p" href="aravis-ArvValue.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch06.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="u" href="ch07.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Aravis Reference Manual</th>
 <td><a accesskey="n" href="object-tree.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
@@ -38,14 +38,14 @@
 <div class="refsynopsisdiv">
 <a name="aravis-ArvZip.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">                    <a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip">ArvZip</a>;
-<a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="returnvalue">ArvZip</span></a> * 	          <a class="link" href="aravis-ArvZip.html#arv-zip-new" title="arv_zip_new ()">arv_zip_new</a>                         (<em class="parameter"><code>const <span class="type">void</span> *buffer</code></em>,
+<a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="returnvalue">ArvZip</span></a> *            <a class="link" href="aravis-ArvZip.html#arv-zip-new" title="arv_zip_new ()">arv_zip_new</a>                         (<em class="parameter"><code>const <span class="type">void</span> *buffer</code></em>,
                                                          <em class="parameter"><code><span class="type">size_t</span> size</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="aravis-ArvZip.html#arv-zip-free" title="arv_zip_free ()">arv_zip_free</a>                        (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>);
-<span class="returnvalue">void</span> *		            <a class="link" href="aravis-ArvZip.html#arv-zip-get-file" title="arv_zip_get_file ()">arv_zip_get_file</a>                    (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>,
+<span class="returnvalue">void</span> *              <a class="link" href="aravis-ArvZip.html#arv-zip-get-file" title="arv_zip_get_file ()">arv_zip_get_file</a>                    (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
                                                          <em class="parameter"><code><span class="type">size_t</span> *size</code></em>);
-const <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *	     <a class="link" href="aravis-ArvZip.html#arv-zip-get-file-list" title="arv_zip_get_file_list ()">arv_zip_get_file_list</a>               (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>);
-const <span class="returnvalue">char</span> *	       <a class="link" href="aravis-ArvZip.html#arv-zip-file-get-name" title="arv_zip_file_get_name ()">arv_zip_file_get_name</a>               (<em class="parameter"><code><span class="type">ArvZipFile</span> *zip_file</code></em>);
+const <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *      <a class="link" href="aravis-ArvZip.html#arv-zip-get-file-list" title="arv_zip_get_file_list ()">arv_zip_get_file_list</a>               (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>);
+const <span class="returnvalue">char</span> *        <a class="link" href="aravis-ArvZip.html#arv-zip-file-get-name" title="arv_zip_file_get_name ()">arv_zip_file_get_name</a>               (<em class="parameter"><code><span class="type">ArvZipFile</span> *zip_file</code></em>);
 <span class="returnvalue">size_t</span>              <a class="link" href="aravis-ArvZip.html#arv-zip-file-get-uncompressed-size" title="arv_zip_file_get_uncompressed_size ()">arv_zip_file_get_uncompressed_size</a>  (<em class="parameter"><code><span class="type">ArvZipFile</span> *zip_file</code></em>);
 </pre>
 </div>
@@ -61,7 +61,7 @@ const <span class="returnvalue">char</span> *	       <a class="link" href="aravi
 <hr>
 <div class="refsect2">
 <a name="arv-zip-new"></a><h3>arv_zip_new ()</h3>
-<pre class="programlisting"><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="returnvalue">ArvZip</span></a> * 	          arv_zip_new                         (<em class="parameter"><code>const <span class="type">void</span> *buffer</code></em>,
+<pre class="programlisting"><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="returnvalue">ArvZip</span></a> *            arv_zip_new                         (<em class="parameter"><code>const <span class="type">void</span> *buffer</code></em>,
                                                          <em class="parameter"><code><span class="type">size_t</span> size</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
@@ -86,19 +86,19 @@ Return value: a new <a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZ
 <hr>
 <div class="refsect2">
 <a name="arv-zip-get-file"></a><h3>arv_zip_get_file ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span> *		            arv_zip_get_file                    (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>,
+<pre class="programlisting"><span class="returnvalue">void</span> *              arv_zip_get_file                    (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *name</code></em>,
                                                          <em class="parameter"><code><span class="type">size_t</span> *size</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
 <a name="arv-zip-get-file-list"></a><h3>arv_zip_get_file_list ()</h3>
-<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *	     arv_zip_get_file_list               (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>);</pre>
+<pre class="programlisting">const <a href="http://library.gnome.org/devel/glib/unstable/glib-Singly-Linked-Lists.html#GSList"><span class="returnvalue">GSList</span></a> *      arv_zip_get_file_list               (<em class="parameter"><code><a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZip"><span class="type">ArvZip</span></a> *zip</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
 <a name="arv-zip-file-get-name"></a><h3>arv_zip_file_get_name ()</h3>
-<pre class="programlisting">const <span class="returnvalue">char</span> *	       arv_zip_file_get_name               (<em class="parameter"><code><span class="type">ArvZipFile</span> *zip_file</code></em>);</pre>
+<pre class="programlisting">const <span class="returnvalue">char</span> *        arv_zip_file_get_name               (<em class="parameter"><code><span class="type">ArvZipFile</span> *zip_file</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -109,6 +109,6 @@ Return value: a new <a class="link" href="aravis-ArvZip.html#ArvZip" title="ArvZ
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

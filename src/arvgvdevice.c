@@ -35,14 +35,13 @@
 #include <stdlib.h>
 
 static GObjectClass *parent_class = NULL;
-static GRegex *arv_gv_device_url_regex = NULL;
 
 /* Shared data (main thread - heartbeat) */
 
 typedef struct {
 	GMutex *mutex;
 
-	guint16 packet_count;
+	guint16 packet_id;
 
 	GSocket *socket;
 	GSocketAddress	*interface_address;
@@ -70,6 +69,18 @@ struct _ArvGvDevicePrivate {
 	size_t genicam_xml_size;
 };
 
+GRegex *
+arv_gv_device_get_url_regex (void)
+{
+static GRegex *arv_gv_device_url_regex = NULL;
+
+	if (arv_gv_device_url_regex == NULL)
+		arv_gv_device_url_regex = g_regex_new ("^(local:|file:|http:)(.+\\.[^;]+);?([0-9:a-f]*)?;?([0-9:a-f]*)?$",
+						       G_REGEX_CASELESS, 0, NULL);
+
+	return arv_gv_device_url_regex;
+}
+
 static gboolean
 _read_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *buffer)
 {
@@ -92,8 +103,8 @@ _read_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *b
 						      0, &packet_size);
 
 	do {
-		io_data->packet_count = arv_gvcp_next_packet_count (io_data->packet_count);
-		arv_gvcp_packet_set_packet_count (packet, io_data->packet_count);
+		io_data->packet_id = arv_gvcp_next_packet_id (io_data->packet_id);
+		arv_gvcp_packet_set_packet_id (packet, io_data->packet_id);
 
 		arv_gvcp_packet_debug (packet, ARV_DEBUG_LEVEL_LOG);
 
@@ -108,17 +119,17 @@ _read_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *b
 				ArvGvcpPacket *ack_packet = io_data->buffer;
 				ArvGvcpPacketType packet_type;
 				ArvGvcpCommand command;
-				guint16 packet_count;
+				guint16 packet_id;
 
 				arv_gvcp_packet_debug (ack_packet, ARV_DEBUG_LEVEL_LOG);
 
 				packet_type = arv_gvcp_packet_get_packet_type (ack_packet);
 				command = arv_gvcp_packet_get_command (ack_packet);
-				packet_count = arv_gvcp_packet_get_packet_count (ack_packet);
+				packet_id = arv_gvcp_packet_get_packet_id (ack_packet);
 
 				if (packet_type == ARV_GVCP_PACKET_TYPE_ACK &&
 				    command == ARV_GVCP_COMMAND_READ_MEMORY_ACK &&
-				    packet_count == io_data->packet_count) {
+				    packet_id == io_data->packet_id) {
 					memcpy (buffer, arv_gvcp_packet_get_read_memory_ack_data (ack_packet), size);
 					success = TRUE;
 				} else
@@ -156,8 +167,8 @@ _write_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *
 	memcpy (arv_gvcp_packet_get_write_memory_cmd_data (packet), buffer, size);
 
 	do {
-		io_data->packet_count = arv_gvcp_next_packet_count (io_data->packet_count);
-		arv_gvcp_packet_set_packet_count (packet, io_data->packet_count);
+		io_data->packet_id = arv_gvcp_next_packet_id (io_data->packet_id);
+		arv_gvcp_packet_set_packet_id (packet, io_data->packet_id);
 
 		arv_gvcp_packet_debug (packet, ARV_DEBUG_LEVEL_LOG);
 
@@ -172,17 +183,17 @@ _write_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *
 				ArvGvcpPacket *ack_packet = io_data->buffer;
 				ArvGvcpPacketType packet_type;
 				ArvGvcpCommand command;
-				guint16 packet_count;
+				guint16 packet_id;
 
 				arv_gvcp_packet_debug (ack_packet, ARV_DEBUG_LEVEL_LOG);
 
 				packet_type = arv_gvcp_packet_get_packet_type (ack_packet);
 				command = arv_gvcp_packet_get_command (ack_packet);
-				packet_count = arv_gvcp_packet_get_packet_count (ack_packet);
+				packet_id = arv_gvcp_packet_get_packet_id (ack_packet);
 
 				if (packet_type == ARV_GVCP_PACKET_TYPE_ACK &&
 				    command == ARV_GVCP_COMMAND_WRITE_MEMORY_ACK &&
-				    packet_count == io_data->packet_count)
+				    packet_id == io_data->packet_id)
 					success = TRUE;
 				else
 					arv_gvcp_packet_debug (ack_packet, ARV_DEBUG_LEVEL_WARNING);
@@ -214,8 +225,8 @@ _read_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 *value_plac
 	packet = arv_gvcp_packet_new_read_register_cmd (address, 0, &packet_size);
 
 	do {
-		io_data->packet_count = arv_gvcp_next_packet_count (io_data->packet_count);
-		arv_gvcp_packet_set_packet_count (packet, io_data->packet_count);
+		io_data->packet_id = arv_gvcp_next_packet_id (io_data->packet_id);
+		arv_gvcp_packet_set_packet_id (packet, io_data->packet_id);
 
 		arv_gvcp_packet_debug (packet, ARV_DEBUG_LEVEL_LOG);
 
@@ -230,17 +241,17 @@ _read_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 *value_plac
 				ArvGvcpPacket *ack_packet = io_data->buffer;
 				ArvGvcpPacketType packet_type;
 				ArvGvcpCommand command;
-				guint16 packet_count;
+				guint16 packet_id;
 
 				arv_gvcp_packet_debug (ack_packet, ARV_DEBUG_LEVEL_LOG);
 
 				packet_type = arv_gvcp_packet_get_packet_type (ack_packet);
 				command = arv_gvcp_packet_get_command (ack_packet);
-				packet_count = arv_gvcp_packet_get_packet_count (ack_packet);
+				packet_id = arv_gvcp_packet_get_packet_id (ack_packet);
 
 				if (packet_type == ARV_GVCP_PACKET_TYPE_ACK &&
 				    command == ARV_GVCP_COMMAND_READ_REGISTER_ACK &&
-				    packet_count == io_data->packet_count) {
+				    packet_id == io_data->packet_id) {
 					*value_placeholder = arv_gvcp_packet_get_read_register_ack_value (ack_packet);
 					success = TRUE;
 				} else
@@ -273,11 +284,11 @@ _write_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 value)
 
 	g_mutex_lock (io_data->mutex);
 
-	packet = arv_gvcp_packet_new_write_register_cmd (address, value, io_data->packet_count, &packet_size);
+	packet = arv_gvcp_packet_new_write_register_cmd (address, value, io_data->packet_id, &packet_size);
 
 	do {
-		io_data->packet_count = arv_gvcp_next_packet_count (io_data->packet_count);
-		arv_gvcp_packet_set_packet_count (packet, io_data->packet_count);
+		io_data->packet_id = arv_gvcp_next_packet_id (io_data->packet_id);
+		arv_gvcp_packet_set_packet_id (packet, io_data->packet_id);
 
 		arv_gvcp_packet_debug (packet, ARV_DEBUG_LEVEL_LOG);
 
@@ -291,19 +302,19 @@ _write_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 value)
 				ArvGvcpPacket *ack_packet = io_data->buffer;
 				ArvGvcpPacketType packet_type;
 				ArvGvcpCommand command;
-				guint16 packet_count;
+				guint16 packet_id;
 
 				arv_gvcp_packet_debug (ack_packet, ARV_DEBUG_LEVEL_LOG);
 
 				packet_type = arv_gvcp_packet_get_packet_type (ack_packet);
 				command = arv_gvcp_packet_get_command (ack_packet);
-				packet_count = arv_gvcp_packet_get_packet_count (ack_packet);
+				packet_id = arv_gvcp_packet_get_packet_id (ack_packet);
 
-				arv_log_gvcp ("%d, %d, %d", packet_type, command, packet_count);
+				arv_log_gvcp ("%d, %d, %d", packet_type, command, packet_id);
 
 				if (packet_type == ARV_GVCP_PACKET_TYPE_ACK &&
 				    command == ARV_GVCP_COMMAND_WRITE_REGISTER_ACK &&
-				    packet_count == io_data->packet_count)
+				    packet_id == io_data->packet_id)
 					success = TRUE;
 				else
 					arv_gvcp_packet_debug (ack_packet, ARV_DEBUG_LEVEL_WARNING);
@@ -482,7 +493,7 @@ _load_genicam (ArvGvDevice *gv_device, guint32 address, size_t  *size)
 
 	arv_debug_device ("[GvDevice::load_genicam] xml url = '%s' at 0x%x", filename, address);
 
-	tokens = g_regex_split (arv_gv_device_url_regex, filename, 0);
+	tokens = g_regex_split (arv_gv_device_get_url_regex (), filename, 0);
 
 	if (tokens[0] != NULL) {
 		if (g_strcmp0 (tokens[1], "File:") == 0)
@@ -713,7 +724,7 @@ arv_gv_device_new (GInetAddress *interface_address, GInetAddress *device_address
 	io_data = g_new0 (ArvGvDeviceIOData, 1);
 
 	io_data->mutex = g_mutex_new ();
-	io_data->packet_count = 65300; /* Start near the end of the circular counter */
+	io_data->packet_id = 65300; /* Start near the end of the circular counter */
 
 	io_data->interface_address = g_inet_socket_address_new (interface_address, 0);
 	io_data->device_address = g_inet_socket_address_new (device_address, ARV_GVCP_PORT);
@@ -817,9 +828,6 @@ arv_gv_device_class_init (ArvGvDeviceClass *gv_device_class)
 	device_class->write_memory = arv_gv_device_write_memory;
 	device_class->read_register = arv_gv_device_read_register;
 	device_class->write_register = arv_gv_device_write_register;
-
-	arv_gv_device_url_regex = g_regex_new ("^(local:|file:|http:)(.+\\.[^;]+);?([0-9:a-f]*)?;?([0-9:a-f]*)?$",
-					       G_REGEX_CASELESS, 0, NULL);
 }
 
 G_DEFINE_TYPE (ArvGvDevice, arv_gv_device, ARV_TYPE_DEVICE)

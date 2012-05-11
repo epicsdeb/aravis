@@ -3,19 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>ArvStatistic</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.75.2">
+<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
 <link rel="home" href="index.html" title="Aravis Reference Manual">
-<link rel="up" href="ch06.html" title="Utils">
+<link rel="up" href="ch07.html" title="Utils">
 <link rel="prev" href="aravis-ArvGst.html" title="ArvGst">
 <link rel="next" href="aravis-ArvValue.html" title="ArvValue">
-<meta name="generator" content="GTK-Doc V1.17 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
 <table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2">
 <tr valign="middle">
 <td><a accesskey="p" href="aravis-ArvGst.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="ch06.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
+<td><a accesskey="u" href="ch07.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
 <td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
 <th width="100%" align="center">Aravis Reference Manual</th>
 <td><a accesskey="n" href="aravis-ArvValue.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
@@ -38,7 +38,7 @@
 <div class="refsynopsisdiv">
 <a name="aravis-ArvStatistic.synopsis"></a><h2>Synopsis</h2>
 <pre class="synopsis">                    <a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic">ArvStatistic</a>;
-<a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="returnvalue">ArvStatistic</span></a> *		    <a class="link" href="aravis-ArvStatistic.html#arv-statistic-new" title="arv_statistic_new ()">arv_statistic_new</a>                   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_histograms</code></em>,
+<a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="returnvalue">ArvStatistic</span></a> *      <a class="link" href="aravis-ArvStatistic.html#arv-statistic-new" title="arv_statistic_new ()">arv_statistic_new</a>                   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_histograms</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_bins</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> bin_step</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> offset</code></em>);
@@ -51,7 +51,7 @@
 <span class="returnvalue">void</span>                <a class="link" href="aravis-ArvStatistic.html#arv-statistic-set-name" title="arv_statistic_set_name ()">arv_statistic_set_name</a>              (<em class="parameter"><code><a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="type">ArvStatistic</span></a> *statistic</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> histogram_id</code></em>,
                                                          <em class="parameter"><code><span class="type">char</span> const *name</code></em>);
-<span class="returnvalue">char</span> *			           <a class="link" href="aravis-ArvStatistic.html#arv-statistic-to-string" title="arv_statistic_to_string ()">arv_statistic_to_string</a>             (<em class="parameter"><code>const <a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="type">ArvStatistic</span></a> *statistic</code></em>);
+<span class="returnvalue">char</span> *              <a class="link" href="aravis-ArvStatistic.html#arv-statistic-to-string" title="arv_statistic_to_string ()">arv_statistic_to_string</a>             (<em class="parameter"><code>const <a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="type">ArvStatistic</span></a> *statistic</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="aravis-ArvStatistic.html#arv-str-parse-double" title="arv_str_parse_double ()">arv_str_parse_double</a>                (<em class="parameter"><code><span class="type">char</span> **str</code></em>,
                                                          <em class="parameter"><code><span class="type">double</span> *x</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="aravis-ArvStatistic.html#arv-str-skip-char" title="arv_str_skip_char ()">arv_str_skip_char</a>                   (<em class="parameter"><code><span class="type">char</span> **str</code></em>,
@@ -74,7 +74,7 @@
 <hr>
 <div class="refsect2">
 <a name="arv-statistic-new"></a><h3>arv_statistic_new ()</h3>
-<pre class="programlisting"><a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="returnvalue">ArvStatistic</span></a> *		    arv_statistic_new                   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_histograms</code></em>,
+<pre class="programlisting"><a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="returnvalue">ArvStatistic</span></a> *      arv_statistic_new                   (<em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_histograms</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> n_bins</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> bin_step</code></em>,
                                                          <em class="parameter"><code><span class="type">int</span> offset</code></em>);</pre>
@@ -129,7 +129,7 @@ Return value: a new <a class="link" href="aravis-ArvStatistic.html#ArvStatistic"
 <hr>
 <div class="refsect2">
 <a name="arv-statistic-to-string"></a><h3>arv_statistic_to_string ()</h3>
-<pre class="programlisting"><span class="returnvalue">char</span> *			           arv_statistic_to_string             (<em class="parameter"><code>const <a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="type">ArvStatistic</span></a> *statistic</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">char</span> *              arv_statistic_to_string             (<em class="parameter"><code>const <a class="link" href="aravis-ArvStatistic.html#ArvStatistic" title="ArvStatistic"><span class="type">ArvStatistic</span></a> *statistic</code></em>);</pre>
 </div>
 <hr>
 <div class="refsect2">
@@ -167,6 +167,6 @@ Return value: a new <a class="link" href="aravis-ArvStatistic.html#ArvStatistic"
 </div>
 <div class="footer">
 <hr>
-          Generated by GTK-Doc V1.17</div>
+          Generated by GTK-Doc V1.18</div>
 </body>
 </html>

@@ -26,6 +26,27 @@ and/or use gtk-doc annotations.  -->
               value="1"
               c:identifier="ARV_ACQUISITION_MODE_SINGLE_FRAME"
               glib:nick="single-frame"/>
+      <function name="from_string"
+                c:identifier="arv_acquisition_mode_from_string">
+        <return-value transfer-ownership="none">
+          <type name="AcquisitionMode" c:type="ArvAcquisitionMode"/>
+        </return-value>
+        <parameters>
+          <parameter name="string" transfer-ownership="none">
+            <type name="utf8" c:type="char*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="to_string" c:identifier="arv_acquisition_mode_to_string">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="char*"/>
+        </return-value>
+        <parameters>
+          <parameter name="value" transfer-ownership="none">
+            <type name="AcquisitionMode" c:type="ArvAcquisitionMode"/>
+          </parameter>
+        </parameters>
+      </function>
     </enumeration>
     <enumeration name="Auto"
                  glib:type-name="ArvAuto"
@@ -43,6 +64,26 @@ and/or use gtk-doc annotations.  -->
               value="2"
               c:identifier="ARV_AUTO_CONTINUOUS"
               glib:nick="continuous"/>
+      <function name="from_string" c:identifier="arv_auto_from_string">
+        <return-value transfer-ownership="none">
+          <type name="Auto" c:type="ArvAuto"/>
+        </return-value>
+        <parameters>
+          <parameter name="string" transfer-ownership="none">
+            <type name="utf8" c:type="char*"/>
+          </parameter>
+        </parameters>
+      </function>
+      <function name="to_string" c:identifier="arv_auto_to_string">
+        <return-value transfer-ownership="none">
+          <type name="utf8" c:type="char*"/>
+        </return-value>
+        <parameters>
+          <parameter name="value" transfer-ownership="none">
+            <type name="Auto" c:type="ArvAuto"/>
+          </parameter>
+        </parameters>
+      </function>
     </enumeration>
     <class name="Buffer"
            c:symbol-prefix="buffer"
@@ -77,6 +118,7 @@ data memory will be freed when the buffer is destroyed.</doc>
 The data space can be either preallocated, and the caller is responsible
 for it's deallocation, or allocated by this function. If it is the case,
 data memory will be freed when the buffer is destroyed.
+
 If @user_data_destroy_func is non NULL, it will be called in order to destroy
 user_data when the buffer is destroyed.</doc>
         <return-value transfer-ownership="full">
@@ -251,7 +293,7 @@ first available camera.</doc>
         <doc xml:whitespace="preserve">Retrieves the list of all available pixel formats.</doc>
         <return-value transfer-ownership="full">
           <doc xml:whitespace="preserve">a newly allocated array of #ArvPixelFormat</doc>
-          <array length="0" c:type="gint64*">
+          <array length="0" zero-terminated="0" c:type="gint64*">
             <type name="gint64" c:type="gint64"/>
           </array>
         </return-value>
@@ -648,8 +690,9 @@ stream.</doc>
 or "Line2". See the camera documentation for the allowed values.
 Activation is set to rising edge. It can be changed by accessing the
 underlying device object.
+
 Source can also be "Software". In this case, an acquisition is triggered
-by a call to @arv_camera_software_trigger.</doc>
+by a call to arv_camera_software_trigger().</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
         </return-value>
@@ -663,7 +706,7 @@ by a call to @arv_camera_software_trigger.</doc>
       <method name="software_trigger"
               c:identifier="arv_camera_software_trigger">
         <doc xml:whitespace="preserve">Sends a software trigger command to @camera. The camera must be previously
-configured to use a software trigger, using @arv_camera_set_trigger.</doc>
+configured to use a software trigger, using @arv_camera_set_trigger().</doc>
         <return-value transfer-ownership="none">
           <type name="none" c:type="void"/>
         </return-value>
@@ -745,7 +788,8 @@ configured to use a software trigger, using @arv_camera_set_trigger.</doc>
         </return-value>
       </virtual-method>
       <virtual-method name="create_stream" invoker="create_stream">
-        <doc xml:whitespace="preserve">Creates a new #ArvStream for video stream handling. See</doc>
+        <doc xml:whitespace="preserve">Creates a new #ArvStream for video stream handling. See
+@ArvStreamCallback for details regarding the callback function.</doc>
         <return-value transfer-ownership="full">
           <doc xml:whitespace="preserve">a new #ArvStream.</doc>
           <type name="Stream" c:type="ArvStream*"/>
@@ -840,7 +884,8 @@ configured to use a software trigger, using @arv_camera_set_trigger.</doc>
         </parameters>
       </virtual-method>
       <method name="create_stream" c:identifier="arv_device_create_stream">
-        <doc xml:whitespace="preserve">Creates a new #ArvStream for video stream handling. See</doc>
+        <doc xml:whitespace="preserve">Creates a new #ArvStream for video stream handling. See
+@ArvStreamCallback for details regarding the callback function.</doc>
         <return-value transfer-ownership="full">
           <doc xml:whitespace="preserve">a new #ArvStream.</doc>
           <type name="Stream" c:type="ArvStream*"/>
@@ -1074,7 +1119,11 @@ configured to use a software trigger, using @arv_camera_set_trigger.</doc>
       <field name="object">
         <type name="GObject.Object" c:type="GObject"/>
       </field>
-      <glib:signal name="control-lost">
+      <glib:signal name="control-lost" when="last">
+        <doc xml:whitespace="preserve">Signal that the control of the device is lost.
+
+This signal may be emited from a thread different than the main one,
+so please take care to shared data access from the callback.</doc>
         <return-value transfer-ownership="none">
           <type name="none"/>
         </return-value>
@@ -1327,107 +1376,168 @@ configured to use a software trigger, using @arv_camera_set_trigger.</doc>
     <record name="EvaluatorPrivate" c:type="ArvEvaluatorPrivate" disguised="1">
     </record>
     <constant name="FAKE_CAMERA_ACQUISITION_FRAME_RATE_DEFAULT"
-              value="25.000000">
+              value="25.000000"
+              c:type="ARV_FAKE_CAMERA_ACQUISITION_FRAME_RATE_DEFAULT">
       <type name="gdouble" c:type="gdouble"/>
     </constant>
-    <constant name="FAKE_CAMERA_BINNING_HORIZONTAL_DEFAULT" value="1">
+    <constant name="FAKE_CAMERA_BINNING_HORIZONTAL_DEFAULT"
+              value="1"
+              c:type="ARV_FAKE_CAMERA_BINNING_HORIZONTAL_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_BINNING_VERTICAL_DEFAULT" value="1">
+    <constant name="FAKE_CAMERA_BINNING_VERTICAL_DEFAULT"
+              value="1"
+              c:type="ARV_FAKE_CAMERA_BINNING_VERTICAL_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_EXPOSURE_TIME_US_DEFAULT" value="10000.000000">
+    <constant name="FAKE_CAMERA_EXPOSURE_TIME_US_DEFAULT"
+              value="10000.000000"
+              c:type="ARV_FAKE_CAMERA_EXPOSURE_TIME_US_DEFAULT">
       <type name="gdouble" c:type="gdouble"/>
     </constant>
-    <constant name="FAKE_CAMERA_HEIGHT_DEFAULT" value="512">
+    <constant name="FAKE_CAMERA_HEIGHT_DEFAULT"
+              value="512"
+              c:type="ARV_FAKE_CAMERA_HEIGHT_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_MEMORY_SIZE" value="65536">
+    <constant name="FAKE_CAMERA_MEMORY_SIZE"
+              value="65536"
+              c:type="ARV_FAKE_CAMERA_MEMORY_SIZE">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_ACQUISITION" value="292">
+    <constant name="FAKE_CAMERA_REGISTER_ACQUISITION"
+              value="292"
+              c:type="ARV_FAKE_CAMERA_REGISTER_ACQUISITION">
       <type name="gint" c:type="gint"/>
     </constant>
     <constant name="FAKE_CAMERA_REGISTER_ACQUISITION_FRAME_PERIOD_US"
-              value="312">
+              value="312"
+              c:type="ARV_FAKE_CAMERA_REGISTER_ACQUISITION_FRAME_PERIOD_US">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_ACQUISITION_MODE" value="300">
+    <constant name="FAKE_CAMERA_REGISTER_ACQUISITION_MODE"
+              value="300"
+              c:type="ARV_FAKE_CAMERA_REGISTER_ACQUISITION_MODE">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_ACQUISITION_START_OFFSET" value="32">
+    <constant name="FAKE_CAMERA_REGISTER_ACQUISITION_START_OFFSET"
+              value="32"
+              c:type="ARV_FAKE_CAMERA_REGISTER_ACQUISITION_START_OFFSET">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_BINNING_HORIZONTAL" value="264">
+    <constant name="FAKE_CAMERA_REGISTER_BINNING_HORIZONTAL"
+              value="264"
+              c:type="ARV_FAKE_CAMERA_REGISTER_BINNING_HORIZONTAL">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_BINNING_VERTICAL" value="268">
+    <constant name="FAKE_CAMERA_REGISTER_BINNING_VERTICAL"
+              value="268"
+              c:type="ARV_FAKE_CAMERA_REGISTER_BINNING_VERTICAL">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_EXPOSURE_TIME_US" value="288">
+    <constant name="FAKE_CAMERA_REGISTER_EXPOSURE_TIME_US"
+              value="288"
+              c:type="ARV_FAKE_CAMERA_REGISTER_EXPOSURE_TIME_US">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_FRAME_START_OFFSET" value="0">
+    <constant name="FAKE_CAMERA_REGISTER_FRAME_START_OFFSET"
+              value="0"
+              c:type="ARV_FAKE_CAMERA_REGISTER_FRAME_START_OFFSET">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_GAIN_MODE" value="276">
+    <constant name="FAKE_CAMERA_REGISTER_GAIN_MODE"
+              value="276"
+              c:type="ARV_FAKE_CAMERA_REGISTER_GAIN_MODE">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_GAIN_RAW" value="272">
+    <constant name="FAKE_CAMERA_REGISTER_GAIN_RAW"
+              value="272"
+              c:type="ARV_FAKE_CAMERA_REGISTER_GAIN_RAW">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_HEIGHT" value="260">
+    <constant name="FAKE_CAMERA_REGISTER_HEIGHT"
+              value="260"
+              c:type="ARV_FAKE_CAMERA_REGISTER_HEIGHT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_PIXEL_FORMAT" value="296">
+    <constant name="FAKE_CAMERA_REGISTER_PIXEL_FORMAT"
+              value="296"
+              c:type="ARV_FAKE_CAMERA_REGISTER_PIXEL_FORMAT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_SENSOR_HEIGHT" value="280">
+    <constant name="FAKE_CAMERA_REGISTER_SENSOR_HEIGHT"
+              value="280"
+              c:type="ARV_FAKE_CAMERA_REGISTER_SENSOR_HEIGHT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_SENSOR_WIDTH" value="284">
+    <constant name="FAKE_CAMERA_REGISTER_SENSOR_WIDTH"
+              value="284"
+              c:type="ARV_FAKE_CAMERA_REGISTER_SENSOR_WIDTH">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_TEST" value="496">
+    <constant name="FAKE_CAMERA_REGISTER_TEST"
+              value="496"
+              c:type="ARV_FAKE_CAMERA_REGISTER_TEST">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_TRIGGER_ACTIVATION" value="776">
+    <constant name="FAKE_CAMERA_REGISTER_TRIGGER_ACTIVATION"
+              value="776"
+              c:type="ARV_FAKE_CAMERA_REGISTER_TRIGGER_ACTIVATION">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_TRIGGER_MODE" value="768">
+    <constant name="FAKE_CAMERA_REGISTER_TRIGGER_MODE"
+              value="768"
+              c:type="ARV_FAKE_CAMERA_REGISTER_TRIGGER_MODE">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_TRIGGER_SOURCE" value="772">
+    <constant name="FAKE_CAMERA_REGISTER_TRIGGER_SOURCE"
+              value="772"
+              c:type="ARV_FAKE_CAMERA_REGISTER_TRIGGER_SOURCE">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_WIDTH" value="256">
+    <constant name="FAKE_CAMERA_REGISTER_WIDTH"
+              value="256"
+              c:type="ARV_FAKE_CAMERA_REGISTER_WIDTH">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_X_OFFSET" value="304">
+    <constant name="FAKE_CAMERA_REGISTER_X_OFFSET"
+              value="304"
+              c:type="ARV_FAKE_CAMERA_REGISTER_X_OFFSET">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_REGISTER_Y_OFFSET" value="308">
+    <constant name="FAKE_CAMERA_REGISTER_Y_OFFSET"
+              value="308"
+              c:type="ARV_FAKE_CAMERA_REGISTER_Y_OFFSET">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_SENSOR_HEIGHT" value="2048">
+    <constant name="FAKE_CAMERA_SENSOR_HEIGHT"
+              value="2048"
+              c:type="ARV_FAKE_CAMERA_SENSOR_HEIGHT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_SENSOR_WIDTH" value="2048">
+    <constant name="FAKE_CAMERA_SENSOR_WIDTH"
+              value="2048"
+              c:type="ARV_FAKE_CAMERA_SENSOR_WIDTH">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_TEST_REGISTER_DEFAULT" value="305419896">
+    <constant name="FAKE_CAMERA_TEST_REGISTER_DEFAULT"
+              value="305419896"
+              c:type="ARV_FAKE_CAMERA_TEST_REGISTER_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_CAMERA_WIDTH_DEFAULT" value="512">
+    <constant name="FAKE_CAMERA_WIDTH_DEFAULT"
+              value="512"
+              c:type="ARV_FAKE_CAMERA_WIDTH_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_DEVICE_ID" value="Fake_1">
-      <type name="utf8" c:type="gchar*"/>
-    </constant>
-    <constant name="FAKE_INTERFACE_DISCOVERY_TIMEOUT_MS" value="1000">
+    <constant name="FAKE_INTERFACE_DISCOVERY_TIMEOUT_MS"
+              value="1000"
+              c:type="ARV_FAKE_INTERFACE_DISCOVERY_TIMEOUT_MS">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="FAKE_INTERFACE_SOCKET_BUFFER_SIZE" value="1024">
+    <constant name="FAKE_INTERFACE_SOCKET_BUFFER_SIZE"
+              value="1024"
+              c:type="ARV_FAKE_INTERFACE_SOCKET_BUFFER_SIZE">
       <type name="gint" c:type="gint"/>
     </constant>
     <class name="FakeCamera"
@@ -1791,31 +1901,49 @@ configured to use a software trigger, using @arv_camera_set_trigger.</doc>
         </parameter>
       </parameters>
     </callback>
-    <constant name="GV_DEVICE_BUFFER_SIZE" value="1024">
+    <constant name="GV_DEVICE_BUFFER_SIZE"
+              value="1024"
+              c:type="ARV_GV_DEVICE_BUFFER_SIZE">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="GV_DEVICE_GVCP_N_RETRIES_DEFAULT" value="5">
+    <constant name="GV_DEVICE_GVCP_N_RETRIES_DEFAULT"
+              value="5"
+              c:type="ARV_GV_DEVICE_GVCP_N_RETRIES_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="GV_DEVICE_GVCP_TIMEOUT_MS_DEFAULT" value="500">
+    <constant name="GV_DEVICE_GVCP_TIMEOUT_MS_DEFAULT"
+              value="500"
+              c:type="ARV_GV_DEVICE_GVCP_TIMEOUT_MS_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="GV_DEVICE_GVSP_PACKET_SIZE_DEFAULT" value="1500">
+    <constant name="GV_DEVICE_GVSP_PACKET_SIZE_DEFAULT"
+              value="1500"
+              c:type="ARV_GV_DEVICE_GVSP_PACKET_SIZE_DEFAULT">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="GV_DEVICE_HEARTBEAT_PERIOD_US" value="1000000">
+    <constant name="GV_DEVICE_HEARTBEAT_PERIOD_US"
+              value="1000000"
+              c:type="ARV_GV_DEVICE_HEARTBEAT_PERIOD_US">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="GV_DEVICE_HEARTBEAT_RETRY_DELAY_US" value="10000">
+    <constant name="GV_DEVICE_HEARTBEAT_RETRY_DELAY_US"
+              value="10000"
+              c:type="ARV_GV_DEVICE_HEARTBEAT_RETRY_DELAY_US">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="GV_DEVICE_HEARTBEAT_RETRY_TIMEOUT_S" value="5.000000">
+    <constant name="GV_DEVICE_HEARTBEAT_RETRY_TIMEOUT_S"
+              value="5.000000"
+              c:type="ARV_GV_DEVICE_HEARTBEAT_RETRY_TIMEOUT_S">
       <type name="gdouble" c:type="gdouble"/>
     </constant>
-    <constant name="GV_INTERFACE_DISCOVERY_TIMEOUT_MS" value="1000">
+    <constant name="GV_INTERFACE_DISCOVERY_TIMEOUT_MS"
+              value="1000"
+              c:type="ARV_GV_INTERFACE_DISCOVERY_TIMEOUT_MS">
       <type name="gint" c:type="gint"/>
     </constant>
-    <constant name="GV_INTERFACE_SOCKET_BUFFER_SIZE" value="1024">
+    <constant name="GV_INTERFACE_SOCKET_BUFFER_SIZE"
+              value="1024"
+              c:type="ARV_GV_INTERFACE_SOCKET_BUFFER_SIZE">
       <type name="gint" c:type="gint"/>
     </constant>
     <class name="Gc"
@@ -2025,7 +2153,7 @@ standard format. See http://www.genicam.org.</doc>
         <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">a list of strings.</doc>
           <type name="GLib.SList" c:type="GSList*">
-            <type name="gpointer" c:type="gpointer"/>
+            <type name="utf8"/>
           </type>
         </return-value>
       </method>
@@ -2188,8 +2316,9 @@ standard format. See http://www.genicam.org.</doc>
       </method>
       <method name="get_entries" c:identifier="arv_gc_enumeration_get_entries">
         <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">the list of enumeration entry nodes.</doc>
           <type name="GLib.SList" c:type="GSList*">
-            <type name="gpointer" c:type="gpointer"/>
+            <type name="GcNode"/>
           </type>
         </return-value>
       </method>
@@ -2847,6 +2976,7 @@ standard format. See http://www.genicam.org.</doc>
       </virtual-method>
       <virtual-method name="get_value_as_string" invoker="get_value_as_string">
         <doc xml:whitespace="preserve">Retrieve the node value a string.
+
 &lt;warning&gt;&lt;para&gt;Please not the string content is still owned by the @node object, which means the returned pointer may not be still valid after a new call to this function.&lt;/para&gt;&lt;/warning&gt;</doc>
         <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">a string representation of the node value, %NULL if not applicable.</doc>
@@ -2921,9 +3051,11 @@ standard format. See http://www.genicam.org.</doc>
         </parameters>
       </method>
       <method name="get_childs" c:identifier="arv_gc_node_get_childs">
+        <doc xml:whitespace="preserve">Get the list of node childs.</doc>
         <return-value transfer-ownership="none">
+          <doc xml:whitespace="preserve">a list of #ArvGcNode.</doc>
           <type name="GLib.SList" c:type="GSList*">
-            <type name="gpointer" c:type="gpointer"/>
+            <type name="GcNode"/>
           </type>
         </return-value>
       </method>
@@ -2971,6 +3103,7 @@ standard format. See http://www.genicam.org.</doc>
       <method name="get_value_as_string"
               c:identifier="arv_gc_node_get_value_as_string">
         <doc xml:whitespace="preserve">Retrieve the node value a string.
+
 &lt;warning&gt;&lt;para&gt;Please not the string content is still owned by the @node object, which means the returned pointer may not be still valid after a new call to this function.&lt;/para&gt;&lt;/warning&gt;</doc>
         <return-value transfer-ownership="none">
           <doc xml:whitespace="preserve">a string representation of the node value, %NULL if not applicable.</doc>
@@ -3549,6 +3682,12 @@ standard format. See http://www.genicam.org.</doc>
           </parameter>
         </parameters>
       </constructor>
+      <function name="get_url_regex"
+                c:identifier="arv_gv_device_get_url_regex">
+        <return-value transfer-ownership="full">
+          <type name="GLib.Regex" c:type="GRegex*"/>
+        </return-value>
+      </function>
       <method name="get_timestamp_tick_frequency"
               c:identifier="arv_gv_device_get_timestamp_tick_frequency">
         <return-value transfer-ownership="none">
@@ -4008,6 +4147,10 @@ connection between a list index and a device ID.</doc>
               value="17563654"
               c:identifier="ARV_PIXEL_FORMAT_MONO_12_PACKED"
               glib:nick="mono-12-packed"/>
+      <member name="mono_14"
+              value="17825829"
+              c:identifier="ARV_PIXEL_FORMAT_MONO_14"
+              glib:nick="mono-14"/>
       <member name="mono_16"
               value="17825799"
               c:identifier="ARV_PIXEL_FORMAT_MONO_16"
@@ -4060,6 +4203,10 @@ connection between a list index and a device ID.</doc>
               value="17825811"
               c:identifier="ARV_PIXEL_FORMAT_BAYER_BG_12"
               glib:nick="bayer-bg-12"/>
+      <member name="bayer_bg_12_packed"
+              value="17563693"
+              c:identifier="ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED"
+              glib:nick="bayer-bg-12-packed"/>
       <member name="rgb_8_packed"
               value="35127316"
               c:identifier="ARV_PIXEL_FORMAT_RGB_8_PACKED"
@@ -4351,7 +4498,16 @@ may contain an invalid image. Caller should check the buffer status before using
       <field name="priv">
         <type name="StreamPrivate" c:type="ArvStreamPrivate*"/>
       </field>
-      <glib:signal name="new-buffer">
+      <glib:signal name="new-buffer" when="last">
+        <doc xml:whitespace="preserve">Signal that a new buffer is available.
+
+This signal is emited from the stream receive thread and only when the
+"emit-signals" property is %TRUE. 
+
+The new buffer can be retrieved with arv_stream_pop_buffer().
+
+Note that this signal is only emited when the "emit-signals" property is
+set to %TRUE, which it is not by default for performance reasons.</doc>
         <return-value transfer-ownership="none">
           <type name="none"/>
         </return-value>
@@ -4457,7 +4613,8 @@ may contain an invalid image. Caller should check the buffer status before using
     <record name="ZipFile" c:type="ArvZipFile" disguised="1">
     </record>
     <function name="acquisition_mode_from_string"
-              c:identifier="arv_acquisition_mode_from_string">
+              c:identifier="arv_acquisition_mode_from_string"
+              moved-to="AcquisitionMode.from_string">
       <return-value transfer-ownership="none">
         <type name="AcquisitionMode" c:type="ArvAcquisitionMode"/>
       </return-value>
@@ -4468,7 +4625,8 @@ may contain an invalid image. Caller should check the buffer status before using
       </parameters>
     </function>
     <function name="acquisition_mode_to_string"
-              c:identifier="arv_acquisition_mode_to_string">
+              c:identifier="arv_acquisition_mode_to_string"
+              moved-to="AcquisitionMode.to_string">
       <return-value transfer-ownership="none">
         <type name="utf8" c:type="char*"/>
       </return-value>
@@ -4478,7 +4636,9 @@ may contain an invalid image. Caller should check the buffer status before using
         </parameter>
       </parameters>
     </function>
-    <function name="auto_from_string" c:identifier="arv_auto_from_string">
+    <function name="auto_from_string"
+              c:identifier="arv_auto_from_string"
+              moved-to="Auto.from_string">
       <return-value transfer-ownership="none">
         <type name="Auto" c:type="ArvAuto"/>
       </return-value>
@@ -4488,7 +4648,9 @@ may contain an invalid image. Caller should check the buffer status before using
         </parameter>
       </parameters>
     </function>
-    <function name="auto_to_string" c:identifier="arv_auto_to_string">
+    <function name="auto_to_string"
+              c:identifier="arv_auto_to_string"
+              moved-to="Auto.to_string">
       <return-value transfer-ownership="none">
         <type name="utf8" c:type="char*"/>
       </return-value>
@@ -4529,11 +4691,18 @@ may contain an invalid image. Caller should check the buffer status before using
       </parameters>
     </function>
     <function name="debug_enable" c:identifier="arv_debug_enable">
+      <doc xml:whitespace="preserve">Configures the debug output using a configuration string consisting of a comma separated list of debug categories or category/debug level pair. This function overwrites the configuration done by ARV_DEBUG environment variable.
+For example, enabling debug level 3 of the gvcp category and default debug level of category genicam is done using:
+
+&lt;informalexample&gt;&lt;programlisting&gt;
+arv_debug_enable ("gvcp:3,genicam");
+&lt;/programlisting&gt;&lt;/informalexample&gt;</doc>
       <return-value transfer-ownership="none">
         <type name="none" c:type="void"/>
       </return-value>
       <parameters>
         <parameter name="category_selection" transfer-ownership="none">
+          <doc xml:whitespace="preserve">debug category configuration string</doc>
           <type name="utf8" c:type="char*"/>
         </parameter>
       </parameters>
