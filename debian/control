@@ -8,6 +8,8 @@ Build-Depends: debhelper (>= 7.0.50~),
                libgtk2.0-dev, libgstreamer0.10-dev,  libgstreamer-plugins-base0.10-dev,
 Standards-Version: 3.9.5
 Homepage: http://live.gnome.org/Aravis
+Vcs-Browser: https://github.com/epicsdeb/aravis
+Vcs-Git: https://github.com/epicsdeb/aravis.git
 
 Package: libaravis0.2
 Section: libs
