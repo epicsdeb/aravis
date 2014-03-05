@@ -13,10 +13,10 @@ Package: libaravis0.2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Library for ethenet video cameras
- Aravis is a glib/gobject based library for the video acquisition of
+Description: vision library for genicam based cameras (shared library)
+ Aravis is a glib/gobject based library for video acquisition using
  Genicam cameras. It currently only implements an ethernet camera
- protocol used for industrial cameras. 
+ protocol used for industrial cameras.
  .
  This package contains libaravis-0.2.so.0
 
@@ -25,10 +25,10 @@ Section: libdevel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
          libaravis0.2 (= ${binary:Version}),
-Description: Library headers for ethenet video cameras
- Aravis is a glib/gobject based library for the video acquisition of
+Description: vision library for genicam based cameras (development files)
+ Aravis is a glib/gobject based library for video acquisition using
  Genicam cameras. It currently only implements an ethernet camera
- protocol used for industrial cameras. 
+ protocol used for industrial cameras.
  .
  This package contains headers and libraries needed to build
  with the Aravis library.
@@ -37,10 +37,10 @@ Package: libaravis0.2-doc
 Section: doc
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends},
-Description: Library headers for ethenet video cameras
- Aravis is a glib/gobject based library for the video acquisition of
+Description: vision library for genicam based cameras (documentation)
+ Aravis is a glib/gobject based library for video acquisition using
  Genicam cameras. It currently only implements an ethernet camera
- protocol used for industrial cameras. 
+ protocol used for industrial cameras.
  .
  This package contains documentation for the Aravis library.
 
@@ -49,10 +49,10 @@ Section: video
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
          libaravis0.2 (= ${binary:Version}),
-Description: Library headers for ethenet video cameras
- Aravis is a glib/gobject based library for the video acquisition of
+Description: vision library for genicam based cameras (tools)
+ Aravis is a glib/gobject based library for video acquisition using
  Genicam cameras. It currently only implements an ethernet camera
  protocol used for industrial cameras.
  .
- This package contains CLI tools for accessing ethenet video cameras
- arv-tool and arv-fake-gv-camera
+ This package contains tools for accessing ethernet video cameras:
+ arv-tool, arv-viewer, and arv-fake-gv-camera.
