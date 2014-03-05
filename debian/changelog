@@ -8,6 +8,7 @@ aravis0.2 (0.1.11-2) UNRELEASED; urgency=low
     - do not install '.la' file (Policy 10.2)
   * d/control: Add Vcs-Browser and Vcs-Git URLs
   * Add watch file
+  * Install upstream changelog (NEWS)
 
  -- Ralph Lange <Ralph.Lange@gmx.de>  Mon, 03 Mar 2014 16:44:11 +0100
 
