@@ -1,8 +1,9 @@
 aravis0.2 (0.1.11-2) UNRELEASED; urgency=low
 
   * Enable build of arv-viewer
+  * d/control: Add Ralph.Lange@gmx.de to Uploaders
 
- -- Joachim Rahn <Joachim.Rahn@helmholtz-berlin.de>  Thu, 27 Feb 2014 13:22:27 +0100
+ -- Ralph Lange <Ralph.Lange@gmx.de>  Mon, 03 Mar 2014 16:44:11 +0100
 
 aravis0.2 (0.1.11-1~wheezy1) wheezy; urgency=low
 
