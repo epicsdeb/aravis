@@ -1,12 +1,12 @@
 Source: aravis0.2
-Section: devel
+Section: video
 Priority: extra
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
 Uploaders: Ralph Lange <Ralph.Lange@gmx.de>
 Build-Depends: debhelper (>= 7.0.50~),
                intltool, libglib2.0-dev, libxml2-dev,
                libgtk2.0-dev, libgstreamer0.10-dev,  libgstreamer-plugins-base0.10-dev,
-Standards-Version: 3.8.0
+Standards-Version: 3.9.5
 Homepage: http://live.gnome.org/Aravis
 
 Package: libaravis0.2
@@ -45,7 +45,6 @@ Description: vision library for genicam based cameras (documentation)
  This package contains documentation for the Aravis library.
 
 Package: aravis-tools
-Section: video
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
          libaravis0.2 (= ${binary:Version}),
