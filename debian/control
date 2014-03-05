@@ -3,7 +3,7 @@ Section: video
 Priority: extra
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
 Uploaders: Ralph Lange <Ralph.Lange@gmx.de>
-Build-Depends: debhelper (>= 7.0.50~),
+Build-Depends: debhelper (>= 9),
                intltool, libglib2.0-dev, libxml2-dev,
                libgtk2.0-dev, libgstreamer0.10-dev,  libgstreamer-plugins-base0.10-dev,
 Standards-Version: 3.9.5
@@ -13,6 +13,8 @@ Vcs-Git: https://github.com/epicsdeb/aravis.git
 
 Package: libaravis0.2
 Section: libs
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: vision library for genicam based cameras (shared library)
@@ -24,6 +26,8 @@ Description: vision library for genicam based cameras (shared library)
 
 Package: libaravis0.2-dev
 Section: libdevel
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
          libaravis0.2 (= ${binary:Version}),
@@ -37,6 +41,7 @@ Description: vision library for genicam based cameras (development files)
 
 Package: libaravis0.2-doc
 Section: doc
+Multi-Arch: foreign
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends},
 Description: vision library for genicam based cameras (documentation)
@@ -47,6 +52,7 @@ Description: vision library for genicam based cameras (documentation)
  This package contains documentation for the Aravis library.
 
 Package: aravis-tools
+Multi-Arch: foreign
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends},
          libaravis0.2 (= ${binary:Version}),

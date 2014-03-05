@@ -1,4 +1,4 @@
-usr/lib/libaravis-*.so
-usr/lib/libaravis-*.a
-usr/lib/pkgconfig/aravis-*.pc
+usr/lib/*/libaravis-*.so
+usr/lib/*/libaravis-*.a
+usr/lib/*/pkgconfig/aravis-*.pc
 usr/include/aravis-*

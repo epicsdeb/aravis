@@ -10,6 +10,7 @@ aravis0.2 (0.1.11-2) UNRELEASED; urgency=low
   * Add watch file
   * Install upstream changelog (NEWS)
   * Link only --as-needed
+  * Change to Multiarch (>= wheezy, dh9)
 
  -- Ralph Lange <Ralph.Lange@gmx.de>  Mon, 03 Mar 2014 16:44:11 +0100
 
