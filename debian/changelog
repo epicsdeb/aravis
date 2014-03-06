@@ -1,4 +1,4 @@
-aravis0.2 (0.1.11-2) UNRELEASED; urgency=low
+aravis0.2 (0.1.11-2) unstable; urgency=low
 
   * Enable build of arv-viewer
   * d/control: Add Ralph.Lange@gmx.de to Uploaders
@@ -13,7 +13,7 @@ aravis0.2 (0.1.11-2) UNRELEASED; urgency=low
   * Change to Multiarch (>= wheezy, dh9)
   * Add required version to Build-Depends: glib2.0 (>= 2.26)
 
- -- Ralph Lange <Ralph.Lange@gmx.de>  Mon, 03 Mar 2014 16:44:11 +0100
+ -- Ralph Lange <Ralph.Lange@gmx.de>  Thu, 06 Mar 2014 22:28:00 +0100
 
 aravis0.2 (0.1.11-1~wheezy1) wheezy; urgency=low
 
