@@ -3,9 +3,9 @@ Section: video
 Priority: extra
 Maintainer: Michael Davidsaver <mdavidsaver@bnl.gov>
 Uploaders: Ralph Lange <Ralph.Lange@gmx.de>
-Build-Depends: debhelper (>= 9),
+Build-Depends: debhelper (>= 9), dh-autoreconf,
                intltool, libglib2.0-dev (>= 2.26), libxml2-dev,
-               libgtk2.0-dev, libgstreamer0.10-dev,  libgstreamer-plugins-base0.10-dev,
+               libgtk2.0-dev, libgstreamer0.10-dev, libgstreamer-plugins-base0.10-dev,
 Standards-Version: 3.9.5
 Homepage: http://live.gnome.org/Aravis
 Vcs-Browser: https://github.com/epicsdeb/aravis
