@@ -1,3 +1,10 @@
+aravis0.2 (0.1.11-2~bpo60+1) squeeze-backports; urgency=low
+
+  * Rebuild for squeeze-backports: needs a backported glib2.0-2.26
+  * Change to dh8 (no Multiarch)
+
+ -- Ralph Lange <Ralph.Lange@gmx.de>  Fri, 07 Mar 2014 19:41:45 +0100
+
 aravis0.2 (0.1.11-2) unstable; urgency=low
 
   * Enable build of arv-viewer
