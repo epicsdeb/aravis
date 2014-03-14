@@ -187,7 +187,8 @@ Standard device listening port for GVCP packets
 	ARV_GVCP_COMMAND_READ_MEMORY_CMD = 0x0084,
 	ARV_GVCP_COMMAND_READ_MEMORY_ACK = 0x0085,
 	ARV_GVCP_COMMAND_WRITE_MEMORY_CMD = 0x0086,
-	ARV_GVCP_COMMAND_WRITE_MEMORY_ACK = 0x0087
+	ARV_GVCP_COMMAND_WRITE_MEMORY_ACK = 0x0087,
+	ARV_GVCP_COMMAND_PENDING_ACK =		0x0089
 } ArvGvcpCommand;
 </pre>
 <div class="variablelist"><table border="0">
@@ -261,6 +262,11 @@ Standard device listening port for GVCP packets
 <tr>
 <td><p><a name="ARV-GVCP-COMMAND-WRITE-MEMORY-ACK:CAPS"></a><span class="term"><code class="literal">ARV_GVCP_COMMAND_WRITE_MEMORY_ACK</code></span></p></td>
 <td>write memory acknowledge
+</td>
+</tr>
+<tr>
+<td><p><a name="ARV-GVCP-COMMAND-PENDING-ACK:CAPS"></a><span class="term"><code class="literal">ARV_GVCP_COMMAND_PENDING_ACK</code></span></p></td>
+<td>pending command acknowledge
 </td>
 </tr>
 </tbody>

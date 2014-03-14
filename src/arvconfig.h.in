@@ -6,6 +6,9 @@
 /* Build viewer */
 #undef ARAVIS_BUILD_VIEWER
 
+/* Use libnotify */
+#undef ARAVIS_WITH_NOTIFY
+
 /* always defined to indicate that i18n is enabled */
 #undef ENABLE_NLS
 

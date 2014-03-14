@@ -32,7 +32,7 @@
 			The content of a GVCP packet is composed by a 64 bit headers, followed or not by a data byte array, depending on the GVCP packet type. Multibyte values are in big endian encoding.
 		</p>
 <div class="table">
-<a name="id378172"></a><p class="title"><b>Table 1. GVCP packet</b></p>
+<a name="id627429"></a><p class="title"><b>Table 1. GVCP packet</b></p>
 <div class="table-contents"><table summary="GVCP packet" border="1">
 <colgroup>
 <col align="left" class="B0">
@@ -68,7 +68,7 @@
 </div>
 <br class="table-break"><div class="sect2">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="id360266"></a>Discovery</h3></div></div></div>
+<a name="id626524"></a>Discovery</h3></div></div></div>
 <p>
 				A device discovery mechanism is implemented using a discovery GVCP packet, broadcasted by the client to the GVCP port. Each available device responds to this discovery packet with an acknowledge packet, containing a description of the device (device name, model name, manufacturer name, MAC Address...).
 			</p>
@@ -76,7 +76,7 @@
 				In the discovery command packet, data size is set to 0 and packet id is equal to 0xffff.
 			</p>
 <div class="table">
-<a name="id373952"></a><p class="title"><b>Table 2. Discovery acknowledge packet</b></p>
+<a name="id626721"></a><p class="title"><b>Table 2. Discovery acknowledge packet</b></p>
 <div class="table-contents"><table summary="Discovery acknowledge packet" border="1">
 <colgroup>
 <col align="left" class="Address">
@@ -241,7 +241,7 @@
 </div>
 <div class="sect2">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="id333544"></a>Read and write register</h3></div></div></div>
+<a name="id625891"></a>Read and write register</h3></div></div></div>
 <p>
 				These packets are used for the read and write of 32 bit registers, accessed using 32 bit adresses. For the read command, a list of addresses is sent ot the client, which returns a list of 32 bit values. For the write command, a list of address/value pairs is sent to the client, which returns a list of 32 bit values.
 			</p>
@@ -251,7 +251,7 @@
 </div>
 <div class="sect2">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="id395551"></a>Read and write memory</h3></div></div></div>
+<a name="id601723"></a>Read and write memory</h3></div></div></div>
 <p>
 				Write memory packet data area consists in a 32 bit address, followed by the data to write. Client returns an acknowledge packet with the target address.
 			</p>

@@ -81,6 +81,9 @@ arv_stream_push_buffer (ArvStream *stream, ArvBuffer *buffer)
  *
  * Pops a buffer from the output queue of @stream. The retrieved buffer
  * may contain an invalid image. Caller should check the buffer status before using it.
+ * This function blocks until a buffer is available.
+ *
+ * since: 0.1.12
  */
 
 ArvBuffer *
@@ -88,22 +91,47 @@ arv_stream_pop_buffer (ArvStream *stream)
 {
 	g_return_val_if_fail (ARV_IS_STREAM (stream), NULL);
 
+	return g_async_queue_pop (stream->priv->output_queue);
+}
+
+/**
+ * arv_stream_try_pop_buffer:
+ * @stream: a #ArvStream
+ * Returns: (transfer full): a #ArvBuffer, NULL if no buffer is available.
+ *
+ * Pops a buffer from the output queue of @stream. The retrieved buffer
+ * may contain an invalid image. Caller should check the buffer status before using it.
+ * This is the non blocking version of pop_buffer.
+ *
+ * since: 0.1.12
+ */
+
+ArvBuffer *
+arv_stream_try_pop_buffer (ArvStream *stream)
+{
+	g_return_val_if_fail (ARV_IS_STREAM (stream), NULL);
+
 	return g_async_queue_try_pop (stream->priv->output_queue);
 }
 
 /**
- * arv_stream_timed_pop_buffer:
+ * arv_stream_timeout_pop_buffer:
  * @stream: a #ArvStream
  * @timeout: timeout, in µs
- * Returns: (transfer full): a #ArvBuffer
+ * Returns: (transfer full): a #ArvBuffer, NULL if no buffer is available until the timeout occurs.
  *
  * Pops a buffer from the output queue of @stream, waiting no more than @timeout. The retrieved buffer
  * may contain an invalid image. Caller should check the buffer status before using it.
  */
 
 ArvBuffer *
-arv_stream_timed_pop_buffer (ArvStream *stream, guint64 timeout)
+arv_stream_timeout_pop_buffer (ArvStream *stream, guint64 timeout)
 {
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_return_val_if_fail (ARV_IS_STREAM (stream), NULL);
+
+	return g_async_queue_timeout_pop (stream->priv->output_queue, timeout);
+#else
 	GTimeVal end_time;
 
 	g_return_val_if_fail (ARV_IS_STREAM (stream), NULL);
@@ -112,6 +140,7 @@ arv_stream_timed_pop_buffer (ArvStream *stream, guint64 timeout)
 	g_time_val_add (&end_time, timeout);
 
 	return g_async_queue_timed_pop (stream->priv->output_queue, &end_time);
+#endif
 }
 
 /**

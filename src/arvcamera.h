@@ -71,9 +71,13 @@ void		arv_camera_get_height_bounds	(ArvCamera *camera, gint *min, gint *max);
 void		arv_camera_set_binning		(ArvCamera *camera, gint dx, gint dy);
 void		arv_camera_get_binning		(ArvCamera *camera, gint *dx, gint *dy);
 
-void 		arv_camera_set_pixel_format 		(ArvCamera *camera, ArvPixelFormat format);
-ArvPixelFormat 	arv_camera_get_pixel_format 		(ArvCamera *camera);
-gint64 *	arv_camera_get_available_pixel_formats 	(ArvCamera *camera, guint *n_pixel_formats);
+void 		arv_camera_set_pixel_format 				(ArvCamera *camera, ArvPixelFormat format);
+void		arv_camera_set_pixel_format_from_string 		(ArvCamera *camera, const char * format);
+ArvPixelFormat	arv_camera_get_pixel_format 				(ArvCamera *camera);
+const char * 	arv_camera_get_pixel_format_as_string			(ArvCamera *camera);
+gint64 *	arv_camera_get_available_pixel_formats			(ArvCamera *camera, guint *n_pixel_formats);
+const char **	arv_camera_get_available_pixel_formats_as_strings	(ArvCamera *camera, guint *n_pixel_formats);
+const char **	arv_camera_get_available_pixel_formats_as_display_names	(ArvCamera *camera, guint *n_pixel_formats);
 
 /* Acquisition control */
 
@@ -83,12 +87,18 @@ void		arv_camera_stop_acquisition		(ArvCamera *camera);
 void			arv_camera_set_acquisition_mode 	(ArvCamera *camera, ArvAcquisitionMode value);
 ArvAcquisitionMode 	arv_camera_get_acquisition_mode 	(ArvCamera *camera);
 
+gboolean 	arv_camera_is_frame_rate_available 	(ArvCamera *camera);
+
 void		arv_camera_set_frame_rate		(ArvCamera *camera, double frame_rate);
 double 		arv_camera_get_frame_rate 		(ArvCamera *camera);
 void		arv_camera_set_trigger			(ArvCamera *camera, const char *source);
+void 		arv_camera_set_trigger_source		(ArvCamera *camera, const char *source);
+const char *	arv_camera_get_trigger_source		(ArvCamera *camera);
 
-void 		arv_camera_set_software_trigger 	(ArvCamera *camera);
 void 		arv_camera_software_trigger 		(ArvCamera *camera);
+
+gboolean 	arv_camera_is_exposure_time_available	(ArvCamera *camera);
+gboolean 	arv_camera_is_exposure_auto_available	(ArvCamera *camera);
 
 void 		arv_camera_set_exposure_time 		(ArvCamera *camera, double exposure_time_us);
 double 		arv_camera_get_exposure_time 		(ArvCamera *camera);
@@ -98,9 +108,12 @@ ArvAuto		arv_camera_get_exposure_time_auto	(ArvCamera *camera);
 
 /* Analog control */
 
-void 		arv_camera_set_gain	 	(ArvCamera *camera, gint gain);
-gint 		arv_camera_get_gain 		(ArvCamera *camera);
-void		arv_camera_get_gain_bounds	(ArvCamera *camera, gint *min, gint *max);
+gboolean 	arv_camera_is_gain_available		(ArvCamera *camera);
+gboolean 	arv_camera_is_gain_auto_available	(ArvCamera *camera);
+
+void 		arv_camera_set_gain	 	(ArvCamera *camera, double gain);
+double 		arv_camera_get_gain 		(ArvCamera *camera);
+void		arv_camera_get_gain_bounds	(ArvCamera *camera, double *min, double *max);
 void		arv_camera_set_gain_auto	(ArvCamera *camera, ArvAuto auto_mode);
 ArvAuto		arv_camera_get_gain_auto	(ArvCamera *camera);
 

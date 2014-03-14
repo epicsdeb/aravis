@@ -44,6 +44,11 @@
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/gio/unstable/GInetAddress.html"><span class="type">GInetAddress</span></a> *device_address</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             <a class="link" href="ArvGvDevice.html#arv-gv-device-get-timestamp-tick-frequency" title="arv_gv_device_get_timestamp_tick_frequency ()">arv_gv_device_get_timestamp_tick_frequency</a>
                                                         (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *gv_device</code></em>);
+<a href="http://library.gnome.org/devel/gio/unstable/GSocketAddress.html"><span class="returnvalue">GSocketAddress</span></a> *    <a class="link" href="ArvGvDevice.html#arv-gv-device-get-device-address" title="arv_gv_device_get_device_address ()">arv_gv_device_get_device_address</a>    (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *device</code></em>);
+<a href="http://library.gnome.org/devel/gio/unstable/GSocketAddress.html"><span class="returnvalue">GSocketAddress</span></a> *    <a class="link" href="ArvGvDevice.html#arv-gv-device-get-interface-address" title="arv_gv_device_get_interface_address ()">arv_gv_device_get_interface_address</a> (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *device</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               <a class="link" href="ArvGvDevice.html#arv-gv-device-get-packet-size" title="arv_gv_device_get_packet_size ()">arv_gv_device_get_packet_size</a>       (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *gv_device</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="ArvGvDevice.html#arv-gv-device-set-packet-size" title="arv_gv_device_set_packet_size ()">arv_gv_device_set_packet_size</a>       (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *gv_device</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> packet_size</code></em>);
 </pre>
 </div>
 <div class="refsect1">
@@ -74,6 +79,59 @@
 <a name="arv-gv-device-get-timestamp-tick-frequency"></a><h3>arv_gv_device_get_timestamp_tick_frequency ()</h3>
 <pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint64"><span class="returnvalue">guint64</span></a>             arv_gv_device_get_timestamp_tick_frequency
                                                         (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *gv_device</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-gv-device-get-device-address"></a><h3>arv_gv_device_get_device_address ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gio/unstable/GSocketAddress.html"><span class="returnvalue">GSocketAddress</span></a> *    arv_gv_device_get_device_address    (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *device</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>device</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the device IP address. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.1.13</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-gv-device-get-interface-address"></a><h3>arv_gv_device_get_interface_address ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/gio/unstable/GSocketAddress.html"><span class="returnvalue">GSocketAddress</span></a> *    arv_gv_device_get_interface_address (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *device</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>device</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>the device host interface IP address. <span class="annotation">[<acronym title="Don't free data after the code is done."><span class="acronym">transfer none</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.1.13</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-gv-device-get-packet-size"></a><h3>arv_gv_device_get_packet_size ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>               arv_gv_device_get_packet_size       (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *gv_device</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-gv-device-set-packet-size"></a><h3>arv_gv_device_set_packet_size ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                arv_gv_device_set_packet_size       (<em class="parameter"><code><a class="link" href="ArvGvDevice.html" title="ArvGvDevice"><span class="type">ArvGvDevice</span></a> *gv_device</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> packet_size</code></em>);</pre>
 </div>
 </div>
 </div>

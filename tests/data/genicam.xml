@@ -18,20 +18,76 @@
 	xsi:schemaLocation="http://www.genicam.org/GenApi/Version_1_0 GenApiSchema.xsd">
 
 	<Category Name="Root" NameSpace="Standard">
+		<pFeature>RWFloat</pFeature>
+		<pFeature>RWBoolean</pFeature>
 		<pFeature>RWInteger</pFeature>
 		<pFeature>Enumeration</pFeature>
 	</Category>
 
 	<Float Name="RWFloat">
 		<Value>0.1</Value>
+		<Min>-10.0</Min>
+		<Max>10.0</Max>
+		<Inc>2.0</Inc>
+	</Float>
+
+	<Float Name="P_RWFloat_Min">
+		<Value>-20.0</Value>
+	</Float>
+
+	<Float Name="P_RWFloat_Max">
+		<Value>20.0</Value>
+	</Float>
+
+	<Float Name="P_RWFloat_Inc">
+		<Value>3.0</Value>
+	</Float>
+
+	<Float Name="P_RWFloat">
+		<pValue>RWFloat</pValue>
+		<pMin>P_RWFloat_Min</pMin>
+		<pMax>P_RWFloat_Max</pMax>
+		<pInc>P_RWFloat_Inc</pInc>
 	</Float>
 
 	<Boolean Name="RWBoolean">
 		<Value>1</Value>
 	</Boolean>
 
+	<Integer Name="RWBooleanValue">
+		<Value>23</Value>
+	</Integer>
+
+	<Boolean Name="P_RWBoolean">
+		<pValue>RWBooleanValue</pValue>
+		<OnValue>23</OnValue>
+		<OffValue>42</OffValue>
+	</Boolean>
+
 	<Integer Name="RWInteger">
 		<Value>1</Value>
+		<Min>-10</Min>
+		<Max>10</Max>
+		<Inc>2</Inc>
+	</Integer>
+
+	<Integer Name="P_RWInteger_Min">
+		<Value>-20</Value>
+	</Integer>
+
+	<Integer Name="P_RWInteger_Max">
+		<Value>20</Value>
+	</Integer>
+
+	<Integer Name="P_RWInteger_Inc">
+		<Value>3</Value>
+	</Integer>
+
+	<Integer Name="P_RWInteger">
+		<pValue>RWInteger</pValue>
+		<pMin>P_RWInteger_Min</pMin>
+		<pMax>P_RWInteger_Max</pMax>
+		<pInc>P_RWInteger_Inc</pInc>
 	</Integer>
 
 	<Enumeration Name="Enumeration">
@@ -62,6 +118,50 @@
 
 	<Integer Name="EnumerationValue">
 		<Value>0</Value>
+	</Integer>
+
+	<Integer Name="IntRegisterAddress">
+		<Value>0x50</Value>
+	</Integer>
+
+	<IntReg Name="IntRegisterA">
+		<Address>0x1000</Address>
+		<pAddress>IntRegisterAddress</pAddress>
+		<Length>8</Length>
+		<AccessMode>RW</AccessMode>
+		<Cachable>NoCache</Cachable>
+		<PollingTime>5</PollingTime>
+		<Sign>Unsigned</Sign>
+		<Endianess>BigEndian</Endianess>
+	</IntReg>
+
+	<IntReg Name="IntRegisterB">
+		<Address>0x2000</Address>
+		<IntSwissKnife Name="IntRegisterBAddress">
+			<Formula>0xff</Formula>
+		</IntSwissKnife>
+		<Length>8</Length>
+		<AccessMode>RW</AccessMode>
+		<Cachable>NoCache</Cachable>
+		<PollingTime>5</PollingTime>
+		<Sign>Unsigned</Sign>
+		<Endianess>BigEndian</Endianess>
+	</IntReg>
+
+	<IntSwissKnife Name="IntSwissKnifeTestEntity">
+		<Formula>(0x12345678 &amp; 0x10305070)</Formula>
+	</IntSwissKnife>
+
+	<IntSwissKnife Name="IntSwissKnifeTest">
+		<Formula>0x1234</Formula>
+	</IntSwissKnife>
+
+	<Integer Name="TLParamsLocked">
+		<ToolTip> Indicates whether a live grab is under way</ToolTip>
+		<Visibility>Invisible</Visibility>
+		<Value>0</Value>
+		<Min>0</Min>
+		<Max>1</Max>
 	</Integer>
 
 </RegisterDescription>

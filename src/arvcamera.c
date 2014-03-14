@@ -72,6 +72,14 @@ struct _ArvCameraPrivate {
 
 	ArvCameraVendor vendor;
 	ArvCameraSeries series;
+
+	gboolean use_gain_raw;
+};
+
+enum
+{
+	PROP_0,
+	PROP_CAMERA_DEVICE
 };
 
 /**
@@ -320,6 +328,22 @@ arv_camera_set_pixel_format (ArvCamera *camera, ArvPixelFormat format)
 }
 
 /**
+ * arv_camera_set_pixel_format_from_string:
+ * @camera: a #ArvCamera
+ * @format: pixel format
+ *
+ * Defines pixel format described by a string.
+ */
+
+void
+arv_camera_set_pixel_format_from_string (ArvCamera *camera, const char * format)
+{
+        g_return_if_fail (ARV_IS_CAMERA (camera));
+
+        arv_device_set_string_feature_value (camera->priv->device, "PixelFormat", format);
+}
+
+/**
  * arv_camera_get_pixel_format:
  * @camera: a #ArvCamera
  *
@@ -335,25 +359,107 @@ arv_camera_get_pixel_format (ArvCamera *camera)
 }
 
 /**
+ * arv_camera_get_pixel_format_as_string:
+ * @camera: a #ArvCamera
+ *
+ * Retuns: pixel format as string, NULL on error.
+ */
+
+const char *
+arv_camera_get_pixel_format_as_string (ArvCamera *camera)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), NULL);
+
+	return arv_device_get_string_feature_value (camera->priv->device, "PixelFormat");
+}
+
+/**
  * arv_camera_get_available_pixel_formats:
  * @camera: a #ArvCamera
  * @n_pixel_formats: (out): number of different pixel formats
  *
  * Retrieves the list of all available pixel formats.
  *
- * Returns: (array length=n_pixel_formats) (transfer full): a newly allocated array of #ArvPixelFormat
+ * Returns: (array length=n_pixel_formats) (transfer container): a newly allocated array of #ArvPixelFormat
  */
 
 gint64 *
 arv_camera_get_available_pixel_formats (ArvCamera *camera, guint *n_pixel_formats)
 {
-	ArvGcNode *enumeration;
-
 	g_return_val_if_fail (ARV_IS_CAMERA (camera), NULL);
 
-	enumeration = arv_gc_get_node (camera->priv->genicam, "PixelFormat");
+	return arv_device_get_available_enumeration_feature_values (camera->priv->device, "PixelFormat", n_pixel_formats);
+}
 
-	return arv_gc_enumeration_get_available_int_values (ARV_GC_ENUMERATION (enumeration), n_pixel_formats);
+/**
+ * arv_camera_get_available_pixel_formats_as_strings:
+ * @camera: a #ArvCamera
+ * @n_pixel_formats: (out): number of different pixel formats
+ *
+ * Retrieves the list of all available pixel formats as strings.
+ *
+ * Returns: (array length=n_pixel_formats) (transfer container): a newly allocated array of strings.
+ */
+
+const char **
+arv_camera_get_available_pixel_formats_as_strings (ArvCamera *camera, guint *n_pixel_formats)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), NULL);
+
+	return arv_device_get_available_enumeration_feature_values_as_strings (camera->priv->device, "PixelFormat", n_pixel_formats);
+}
+
+/**
+ * arv_camera_get_available_pixel_formats_as_display_names:
+ * @camera: a #ArvCamera
+ * @n_pixel_formats: (out): number of different pixel formats
+ *
+ * Retrieves the list of all available pixel formats as display names.
+ * In general, these human-readable strings cannot be used as settings.
+ *
+ * Returns: (array length=n_pixel_formats) (transfer container): a newly allocated array of string constants.
+ */
+
+const char **
+arv_camera_get_available_pixel_formats_as_display_names (ArvCamera *camera, guint *n_pixel_formats)
+{
+	ArvGcNode *node;
+	const GSList *entries, *iter;
+	const char **strings;
+	const char *string = NULL;
+	gboolean is_available, is_implemented;
+	int i;
+
+	g_return_val_if_fail (n_pixel_formats != NULL, NULL);
+	*n_pixel_formats = 0;
+
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), NULL);
+	node = arv_device_get_feature (camera->priv->device, "PixelFormat");
+
+	if (ARV_IS_GC_ENUMERATION (node))
+		entries = arv_gc_enumeration_get_entries (ARV_GC_ENUMERATION (node));
+	else
+		return NULL;
+
+	strings = g_new (const char *, g_slist_length ((GSList*)entries));
+	i = 0;
+	for (iter = entries; iter != NULL; iter = iter->next) {
+		is_available = arv_gc_feature_node_is_available (iter->data, NULL);
+		is_implemented = arv_gc_feature_node_is_implemented (iter->data, NULL);
+		if (is_available && is_implemented) {
+			string = arv_gc_feature_node_get_display_name (iter->data, NULL);
+			if (string == NULL)
+				string = arv_gc_feature_node_get_name (iter->data);
+			if (string == NULL) {
+				g_free (strings);
+				return NULL;
+			}
+			strings[i++] = string;
+		}
+	}
+
+	*n_pixel_formats = i;
+	return strings;
 }
 
 /* Acquisition control */
@@ -531,6 +637,42 @@ arv_camera_set_trigger (ArvCamera *camera, const char *source)
 }
 
 /**
+ * arv_camera_set_trigger_source:
+ * @camera: a #ArvCamera
+ * @source: source name
+ *
+ * Sets the trigger source. This function doesn't check if the camera is configured
+ * to actually use this source as a trigger.
+ */
+
+void
+arv_camera_set_trigger_source (ArvCamera *camera, const char *source)
+{
+	g_return_if_fail (ARV_IS_CAMERA (camera));
+	g_return_if_fail (source != NULL);
+
+	arv_device_set_string_feature_value (camera->priv->device, "TriggerSource", source);
+}
+
+/**
+ * arv_camera_get_trigger_source:
+ * @camera: a #ArvCamera
+ *
+ * Gets the trigger source. This function doesn't check if the camera is configured
+ * to actually use this source as a trigger.
+ *
+ * Returns: a string containing the trigger source name, NULL on error.
+ */
+
+const char *
+arv_camera_get_trigger_source (ArvCamera *camera)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), NULL);
+
+	return arv_device_get_string_feature_value (camera->priv->device, "TriggerSource");
+}
+
+/**
  * arv_camera_software_trigger:
  * @camera: a #ArvCamera
  *
@@ -668,14 +810,17 @@ arv_camera_get_exposure_time_auto (ArvCamera *camera)
  */
 
 void
-arv_camera_set_gain (ArvCamera *camera, gint gain)
+arv_camera_set_gain (ArvCamera *camera, double gain)
 {
 	g_return_if_fail (ARV_IS_CAMERA (camera));
 
 	if (gain < 0)
 		return;
 
-	arv_device_set_integer_feature_value (camera->priv->device, "GainRaw", gain);
+	if (camera->priv->use_gain_raw)
+		arv_device_set_integer_feature_value (camera->priv->device, "GainRaw", gain);
+	else
+		arv_device_set_float_feature_value (camera->priv->device, "Gain", gain);
 }
 
 /**
@@ -685,12 +830,15 @@ arv_camera_set_gain (ArvCamera *camera, gint gain)
  * Returns: the current gain setting.
  */
 
-gint
+double
 arv_camera_get_gain (ArvCamera *camera)
 {
 	g_return_val_if_fail (ARV_IS_CAMERA (camera), 0.0);
 
-	return arv_device_get_integer_feature_value (camera->priv->device, "GainRaw");
+	if (camera->priv->use_gain_raw)
+		return arv_device_get_integer_feature_value (camera->priv->device, "GainRaw");
+
+	return arv_device_get_float_feature_value (camera->priv->device, "Gain");
 }
 
 /**
@@ -703,18 +851,24 @@ arv_camera_get_gain (ArvCamera *camera)
  */
 
 void
-arv_camera_get_gain_bounds (ArvCamera *camera, gint *min, gint *max)
+arv_camera_get_gain_bounds (ArvCamera *camera, double *min, double *max)
 {
 	gint64 min64, max64;
 
 	g_return_if_fail (ARV_IS_CAMERA (camera));
 
-	arv_device_get_integer_feature_bounds (camera->priv->device, "GainRaw", &min64, &max64);
+	if (camera->priv->use_gain_raw) {
+		arv_device_get_integer_feature_bounds (camera->priv->device, "GainRaw", &min64, &max64);
 
-	if (min != NULL)
-		*min = min64;
-	if (max != NULL)
-		*max = max64;
+		if (min != NULL)
+			*min = min64;
+		if (max != NULL)
+			*max = max64;
+
+		return;
+	}
+
+	arv_device_get_float_feature_bounds (camera->priv->device, "Gain", min, max);
 }
 
 /**
@@ -786,6 +940,85 @@ arv_camera_get_device (ArvCamera *camera)
 }
 
 /**
+ * arv_camera_is_frame_rate_available:
+ * @camera: a #ArvCamera
+ * Returns: TRUE if FrameRate feature is available
+ */
+
+gboolean
+arv_camera_is_frame_rate_available (ArvCamera *camera)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), FALSE);
+
+	switch (camera->priv->vendor) {
+		case ARV_CAMERA_VENDOR_BASLER:
+		case ARV_CAMERA_VENDOR_PROSILICA:
+			return arv_device_get_feature (camera->priv->device, "AcquisitionFrameRateAbs") != NULL;
+		case ARV_CAMERA_VENDOR_UNKNOWN:
+		default:
+			return arv_device_get_feature (camera->priv->device, "AcquisitionFrameRate") != NULL;
+	}
+}
+/**
+ * arv_camera_is_exposure_time_available:
+ * @camera: a #ArvCamera
+ * Returns: TRUE if Exposure Time feature is available.
+ */
+
+gboolean
+arv_camera_is_exposure_time_available (ArvCamera *camera)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), FALSE);
+
+	return arv_device_get_feature (camera->priv->device, "ExposureTimeAbs") != NULL;
+}
+
+/**
+ * arv_camera_is_exposure_auto_available:
+ * @camera: a #ArvCamera
+ * Returns: TRUE if Exposure Auto feature is available.
+ */
+
+gboolean
+arv_camera_is_exposure_auto_available (ArvCamera *camera)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), FALSE);
+
+	return arv_device_get_feature (camera->priv->device, "ExposureAuto") != NULL;
+}
+
+/**
+ * arv_camera_is_gain_available:
+ * @camera: a #ArvCamera
+ * Returns: TRUE if Gain feature is available.
+ */
+
+gboolean
+arv_camera_is_gain_available (ArvCamera *camera)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), FALSE);
+
+	if (camera->priv->use_gain_raw)
+		return arv_device_get_feature (camera->priv->device, "GainRaw") != NULL;
+
+	return arv_device_get_feature (camera->priv->device, "Gain") != NULL;
+}
+
+/**
+ * arv_camera_is_gain_auto_available:
+ * @camera: a #ArvCamera
+ * Returns: TRUE if Gain feature is available.
+ */
+
+gboolean
+arv_camera_is_gain_auto_available (ArvCamera *camera)
+{
+	g_return_val_if_fail (ARV_IS_CAMERA (camera), FALSE);
+
+	return arv_device_get_feature (camera->priv->device, "GainAuto") != NULL;
+}
+
+/**
  * arv_camera_new:
  * @name: (allow-none): name of the camera.
  *
@@ -800,19 +1033,60 @@ arv_camera_new (const char *name)
 {
 	ArvCamera *camera;
 	ArvDevice *device;
-	ArvCameraVendor vendor;
-	ArvCameraSeries series;
-	const char *vendor_name;
-	const char *model_name;
+	ArvGcNode *node;
 
 	device = arv_open_device (name);
 
 	if (!ARV_IS_DEVICE (device))
 		return NULL;
 
-	camera = g_object_new (ARV_TYPE_CAMERA, NULL);
-	camera->priv->device = device;
-	camera->priv->genicam = arv_device_get_genicam (device);
+	camera = g_object_new (ARV_TYPE_CAMERA, "device", device, NULL);
+
+	node = arv_device_get_feature (device, "Gain");
+
+	camera->priv->use_gain_raw = !ARV_IS_GC_FLOAT (node);
+
+	return camera;
+}
+
+static void
+arv_camera_init (ArvCamera *camera)
+{
+	camera->priv = G_TYPE_INSTANCE_GET_PRIVATE (camera, ARV_TYPE_CAMERA, ArvCameraPrivate);
+}
+
+static void
+arv_camera_finalize (GObject *object)
+{
+	ArvCamera *camera = ARV_CAMERA (object);
+
+	g_object_unref (camera->priv->device);
+
+	parent_class->finalize (object);
+}
+
+static GObject *
+arv_camera_constructor (GType gtype, guint n_properties, GObjectConstructParam *properties)
+{
+	GObject *object;
+	ArvCamera *camera;
+	ArvCameraVendor vendor;
+	ArvCameraSeries series;
+	const char *vendor_name;
+	const char *model_name;
+
+	/* always call parent constructor */
+	object = parent_class->constructor(gtype, n_properties, properties);
+
+	camera = ARV_CAMERA (object);
+
+	if (!camera->priv->device)
+		camera->priv->device = arv_open_device (NULL);
+
+	if (!ARV_IS_DEVICE (camera->priv->device))
+		return NULL;
+
+	camera->priv->genicam = arv_device_get_genicam (camera->priv->device);
 
 	vendor_name = arv_camera_get_vendor_name (camera);
 	model_name = arv_camera_get_model_name (camera);
@@ -836,23 +1110,39 @@ arv_camera_new (const char *name)
 	camera->priv->vendor = vendor;
 	camera->priv->series = series;
 
-	return camera;
+    return object;
 }
 
 static void
-arv_camera_init (ArvCamera *camera)
-{
-	camera->priv = G_TYPE_INSTANCE_GET_PRIVATE (camera, ARV_TYPE_CAMERA, ArvCameraPrivate);
-}
-
-static void
-arv_camera_finalize (GObject *object)
+arv_camera_set_property (GObject *object, guint prop_id, const GValue *value, GParamSpec *pspec)
 {
 	ArvCamera *camera = ARV_CAMERA (object);
 
-	g_object_unref (camera->priv->device);
+	switch (prop_id)
+	{
+		case PROP_CAMERA_DEVICE:
+			camera->priv->device = g_value_get_object (value);
+			break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+			break;
+	}
+}
 
-	parent_class->finalize (object);
+static void
+arv_camera_get_property (GObject *object, guint prop_id, GValue *value, GParamSpec *pspec)
+{
+	ArvCamera *camera = ARV_CAMERA (object);
+
+	switch (prop_id)
+	{
+		case PROP_CAMERA_DEVICE:
+            g_value_set_object (value, camera->priv->device);
+            break;
+		default:
+			G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+			break;
+	}
 }
 
 static void
@@ -865,6 +1155,17 @@ arv_camera_class_init (ArvCameraClass *camera_class)
 	parent_class = g_type_class_peek_parent (camera_class);
 
 	object_class->finalize = arv_camera_finalize;
+	object_class->constructor = arv_camera_constructor;
+	object_class->set_property = arv_camera_set_property;
+	object_class->get_property = arv_camera_get_property;
+
+	g_object_class_install_property (object_class,
+					 PROP_CAMERA_DEVICE,
+					 g_param_spec_object ("device",
+							      "device",
+							      "the device associated with this camera",
+							      ARV_TYPE_DEVICE,
+							      G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
 }
 
 G_DEFINE_TYPE (ArvCamera, arv_camera, G_TYPE_OBJECT)
