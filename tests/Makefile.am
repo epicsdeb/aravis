@@ -6,7 +6,7 @@ test_progs_ldadd = 					\
 	$(top_builddir)/src/libaravis-@ARAVIS_API_VERSION@.la		\
 	$(ARAVIS_LIBS)
 
-noinst_PROGRAMS = arv-test arv-genicam-test arv-evaluator-test arv-zip-test arv-camera-test
+noinst_PROGRAMS = arv-test arv-genicam-test arv-evaluator-test arv-zip-test arv-camera-test arv-heartbeat-test
 
 arv_test_SOURCES = arvtest.c
 arv_test_LDADD = $(test_progs_ldadd)
@@ -23,7 +23,13 @@ arv_zip_test_LDADD = $(test_progs_ldadd)
 arv_camera_test_SOURCES = arvcameratest.c
 arv_camera_test_LDADD = $(test_progs_ldadd)
 
-TEST_PROGS += evaluator buffer fake genicam cpp
+arv_heartbeat_test_SOURCES = arvheartbeattest.c
+arv_heartbeat_test_LDADD = $(test_progs_ldadd)
+
+TEST_PROGS += evaluator buffer misc fake genicam
+if ARAVIS_BUILD_CPP_TEST
+TEST_PROGS += cpp
+endif
 
 noinst_PROGRAMS += $(TEST_PROGS)
 
@@ -32,6 +38,9 @@ evaluator_LDADD = $(test_progs_ldadd)
 
 buffer_SOURCES = buffer.c
 buffer_LDADD = $(test_progs_ldadd)
+
+misc_SOURCES = misc.c
+misc_LDADD = $(test_progs_ldadd)
 
 fake_SOURCES = fake.c
 fake_CFLAGS = -DGENICAM_FILENAME="\"$(top_srcdir)/src/arv-fake-camera.xml\""

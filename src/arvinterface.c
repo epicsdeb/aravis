@@ -22,7 +22,7 @@
 
 /**
  * SECTION: arvinterface
- * @short_description: Base abstract class for camera discovery
+ * @short_description: Abstract base class for camera discovery
  *
  * #ArvCamera is an abstract base class for camera discovery. It maintains a
  * list of the available devices and help to instantiate the corresponding
@@ -39,6 +39,19 @@ struct _ArvInterfacePrivate {
 	GArray *device_ids;
 };
 
+static void
+arv_interface_clear_device_ids (ArvInterface *interface)
+{
+	unsigned int i;
+
+	for (i = 0; i < interface->priv->device_ids->len; i++) {
+		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->device);
+		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->physical);
+		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->address);
+	}
+	g_array_set_size (interface->priv->device_ids, 0);
+}
+
 /**
  * arv_interface_update_device_list
  * @interface: a #ArvInterface
@@ -51,6 +64,8 @@ void
 arv_interface_update_device_list (ArvInterface *interface)
 {
 	g_return_if_fail (ARV_IS_INTERFACE (interface));
+
+	arv_interface_clear_device_ids (interface);
 
 	ARV_INTERFACE_GET_CLASS (interface)->update_device_list (interface, interface->priv->device_ids);
 }
@@ -93,7 +108,60 @@ arv_interface_get_device_id (ArvInterface *interface, unsigned int index)
 	if (index >= interface->priv->device_ids->len)
 		return NULL;
 
-	return g_array_index (interface->priv->device_ids, char *, index);
+	return g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, index)->device;
+}
+
+/**
+ * arv_interface_get_device_physical_id
+ * @interface: a #ArvInterface
+ * @index: device index
+ * Return value: a physical device id
+ *
+ * Queries the physical device id corresponding to index such
+ * as the MAC address for Ethernet based devices, bus id for PCI,
+ * USB or Firewire based devices.
+ *
+ * Prior to this call the @arv_interface_update_device_list
+ * function must be called.
+ **/
+
+const char *
+arv_interface_get_device_physical_id (ArvInterface *interface, unsigned int index)
+{
+	g_return_val_if_fail (ARV_IS_INTERFACE (interface), 0);
+	g_return_val_if_fail (interface->priv->device_ids != NULL, 0);
+
+	if (index >= interface->priv->device_ids->len)
+		return NULL;
+
+	return g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, index)->physical;
+}
+
+/**
+ * arv_interface_get_device_address
+ * @interface: a #ArvInterface
+ * @index: device index
+ * Return value: (transfer none): the device address
+ *
+ * queries the device address (IP address in the case of an ethernet camera). Useful
+ * for constructing manual connections to devices using @arv_gv_device_new
+ *
+ * Prior to this call the @arv_interface_update_device_list
+ * function must be called.
+ *
+ * since: 0.1.14
+ **/
+
+const char *
+arv_interface_get_device_address (ArvInterface *interface, unsigned int index)
+{
+	g_return_val_if_fail (ARV_IS_INTERFACE (interface), 0);
+	g_return_val_if_fail (interface->priv->device_ids != NULL, 0);
+
+	if (index >= interface->priv->device_ids->len)
+		return NULL;
+
+	return g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, index)->address;
 }
 
 /**
@@ -127,19 +195,17 @@ arv_interface_init (ArvInterface *interface)
 {
 	interface->priv = G_TYPE_INSTANCE_GET_PRIVATE (interface, ARV_TYPE_INTERFACE, ArvInterfacePrivate);
 
-	interface->priv->device_ids = g_array_new (FALSE, TRUE, sizeof (char *));
+	interface->priv->device_ids = g_array_new (FALSE, TRUE, sizeof (ArvInterfaceDeviceIds *));
 }
 
 static void
 arv_interface_finalize (GObject *object)
 {
 	ArvInterface *interface = ARV_INTERFACE (object);
-	unsigned int i;
 
 	parent_class->finalize (object);
 
-	for (i = 0; i < interface->priv->device_ids->len; i++)
-		g_free (g_array_index (interface->priv->device_ids, char *, i));
+	arv_interface_clear_device_ids (interface);
 	g_array_free (interface->priv->device_ids, TRUE);
 	interface->priv->device_ids = NULL;
 }

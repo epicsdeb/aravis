@@ -33,7 +33,7 @@
 <div class="refnamediv"><table width="100%"><tr>
 <td valign="top">
 <h2><span class="refentrytitle"><a name="ArvInterface.top_of_page"></a>ArvInterface</span></h2>
-<p>ArvInterface — Base abstract class for camera discovery</p>
+<p>ArvInterface — Abstract base class for camera discovery</p>
 </td>
 <td valign="top" align="right"></td>
 </tr></table></div>
@@ -42,6 +42,8 @@
 <pre class="synopsis">                    <a class="link" href="ArvInterface.html#ArvInterface-struct" title="ArvInterface">ArvInterface</a>;
 const <span class="returnvalue">char</span> *        <a class="link" href="ArvInterface.html#arv-get-device-id" title="arv_get_device_id ()">arv_get_device_id</a>                   (<em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);
 const <span class="returnvalue">char</span> *        <a class="link" href="ArvInterface.html#arv-get-interface-id" title="arv_get_interface_id ()">arv_get_interface_id</a>                (<em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="ArvInterface.html#arv-disable-interface" title="arv_disable_interface ()">arv_disable_interface</a>               (<em class="parameter"><code>const <span class="type">char</span> *interface_id</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="ArvInterface.html#arv-enable-interface" title="arv_enable_interface ()">arv_enable_interface</a>                (<em class="parameter"><code>const <span class="type">char</span> *interface_id</code></em>);
 unsigned <span class="returnvalue">int</span>        <a class="link" href="ArvInterface.html#arv-get-n-devices" title="arv_get_n_devices ()">arv_get_n_devices</a>                   (<em class="parameter"><code><span class="type">void</span></code></em>);
 unsigned <span class="returnvalue">int</span>        <a class="link" href="ArvInterface.html#arv-get-n-interfaces" title="arv_get_n_interfaces ()">arv_get_n_interfaces</a>                (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvInterface.html#arv-update-device-list" title="arv_update_device_list ()">arv_update_device_list</a>              (<em class="parameter"><code><span class="type">void</span></code></em>);
@@ -49,6 +51,11 @@ unsigned <span class="returnvalue">int</span>        <a class="link" href="ArvIn
 <span class="returnvalue">void</span>                <a class="link" href="ArvInterface.html#arv-shutdown" title="arv_shutdown ()">arv_shutdown</a>                        (<em class="parameter"><code><span class="type">void</span></code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvInterface.html#arv-interface-update-device-list" title="arv_interface_update_device_list ()">arv_interface_update_device_list</a>    (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>);
 const <span class="returnvalue">char</span> *        <a class="link" href="ArvInterface.html#arv-interface-get-device-id" title="arv_interface_get_device_id ()">arv_interface_get_device_id</a>         (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);
+const <span class="returnvalue">char</span> *        <a class="link" href="ArvInterface.html#arv-interface-get-device-physical-id" title="arv_interface_get_device_physical_id ()">arv_interface_get_device_physical_id</a>
+                                                        (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);
+const <span class="returnvalue">char</span> *        <a class="link" href="ArvInterface.html#arv-interface-get-device-address" title="arv_interface_get_device_address ()">arv_interface_get_device_address</a>    (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>,
                                                          <em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);
 unsigned <span class="returnvalue">int</span>        <a class="link" href="ArvInterface.html#arv-interface-get-n-devices" title="arv_interface_get_n_devices ()">arv_interface_get_n_devices</a>         (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>);
 <a class="link" href="ArvDevice.html" title="ArvDevice"><span class="returnvalue">ArvDevice</span></a> *         <a class="link" href="ArvInterface.html#arv-interface-open-device" title="arv_interface_open_device ()">arv_interface_open_device</a>           (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>,
@@ -89,6 +96,36 @@ not worry about this class and just use <a class="link" href="ArvCamera.html#arv
 <div class="refsect2">
 <a name="arv-get-interface-id"></a><h3>arv_get_interface_id ()</h3>
 <pre class="programlisting">const <span class="returnvalue">char</span> *        arv_get_interface_id                (<em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);</pre>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-disable-interface"></a><h3>arv_disable_interface ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                arv_disable_interface               (<em class="parameter"><code>const <span class="type">char</span> *interface_id</code></em>);</pre>
+<p>
+Disable an interface by name. By default, all interfaces are enabled, except "Fake".
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>interface_id</code></em> :</span></p></td>
+<td>name of the interface</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-enable-interface"></a><h3>arv_enable_interface ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                arv_enable_interface                (<em class="parameter"><code>const <span class="type">char</span> *interface_id</code></em>);</pre>
+<p>
+Enable an interface by name. By default, all interfaces are enabled, except "Fake".
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>interface_id</code></em> :</span></p></td>
+<td>name of the interface</td>
+</tr></tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2">
@@ -168,6 +205,67 @@ Return value: a unique device id</td>
 </tr>
 </tbody>
 </table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-interface-get-device-physical-id"></a><h3>arv_interface_get_device_physical_id ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> *        arv_interface_get_device_physical_id
+                                                        (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);</pre>
+<p>
+Queries the physical device id corresponding to index such
+as the MAC address for Ethernet based devices, bus id for PCI,
+USB or Firewire based devices.
+</p>
+<p>
+Prior to this call the <em class="parameter"><code>arv_interface_update_device_list</code></em>
+function must be called.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>interface</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>index</code></em> :</span></p></td>
+<td>device index
+Return value: a physical device id</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-interface-get-device-address"></a><h3>arv_interface_get_device_address ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> *        arv_interface_get_device_address    (<em class="parameter"><code><a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a> *interface</code></em>,
+                                                         <em class="parameter"><code>unsigned <span class="type">int</span> index</code></em>);</pre>
+<p>
+queries the device address (IP address in the case of an ethernet camera). Useful
+for constructing manual connections to devices using <em class="parameter"><code>arv_gv_device_new</code></em>
+</p>
+<p>
+Prior to this call the <em class="parameter"><code>arv_interface_update_device_list</code></em>
+function must be called.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>interface</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvInterface.html" title="ArvInterface"><span class="type">ArvInterface</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>index</code></em> :</span></p></td>
+<td>device index
+Return value: (transfer none): the device address</td>
+</tr>
+</tbody>
+</table></div>
+<p class="since">Since 0.1.14</p>
 </div>
 <hr>
 <div class="refsect2">

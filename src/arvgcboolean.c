@@ -1,6 +1,6 @@
 /* Aravis - Digital camera library
  *
- * Copyright © 2009-2010 Emmanuel Pacaud
+ * Copyright © 2009-2012 Emmanuel Pacaud
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -26,69 +26,175 @@
  */
 
 #include <arvgcboolean.h>
+#include <arvgcinteger.h>
 #include <arvgc.h>
 #include <arvmisc.h>
 #include <string.h>
 
 static GObjectClass *parent_class = NULL;
 
-/* ArvGcNode implementation */
+/* ArvDomNode implementation */
 
 static const char *
-arv_gc_boolean_get_node_name (ArvGcNode *node)
+arv_gc_boolean_get_node_name (ArvDomNode *node)
 {
 	return "Boolean";
 }
 
 static void
-arv_gc_boolean_add_element (ArvGcNode *node, const char *name, const char *content, const char **attributes)
+arv_gc_boolean_post_new_child (ArvDomNode *self, ArvDomNode *child)
 {
-	ArvGcBoolean *gc_boolean = ARV_GC_BOOLEAN (node);
+	ArvGcBoolean *node = ARV_GC_BOOLEAN (self);
 
-	if (strcmp (name, "Value") == 0) {
-		arv_force_g_value_to_int64 (&gc_boolean->value,
-					    g_ascii_strtoll (content, NULL, 0));
-	} else if (strcmp (name, "pValue") == 0) {
-		arv_force_g_value_to_string (&gc_boolean->value, content);
-	} else if (strcmp (name, "OnValue") == 0) {
-		gc_boolean->on_value = g_ascii_strtoll (content, NULL, 0);
-	} else if (strcmp (name, "OffValue") == 0) {
-		gc_boolean->off_value = g_ascii_strtoll (content, NULL, 0);
-	} else
-		ARV_GC_NODE_CLASS (parent_class)->add_element (node, name, content, attributes);
+	if (ARV_IS_GC_PROPERTY_NODE (child)) {
+		ArvGcPropertyNode *property_node = ARV_GC_PROPERTY_NODE (child);
+		
+		switch (arv_gc_property_node_get_node_type (property_node)) {
+			case ARV_GC_PROPERTY_NODE_TYPE_VALUE:
+			case ARV_GC_PROPERTY_NODE_TYPE_P_VALUE:
+				node->value = property_node;
+				break;
+			case ARV_GC_PROPERTY_NODE_TYPE_ON_VALUE:
+				node->on_value = property_node;
+				break;
+			case ARV_GC_PROPERTY_NODE_TYPE_OFF_VALUE:
+				node->off_value = property_node;
+				break;
+			default:
+				ARV_DOM_NODE_CLASS (parent_class)->post_new_child (self, child);
+				break;
+		}
+	}
 }
 
 static void
-arv_gc_boolean_set_value_from_string (ArvGcNode *node, const char *string)
+arv_gc_boolean_pre_remove_child (ArvDomNode *self, ArvDomNode *child)
 {
-	arv_gc_boolean_set_value (ARV_GC_BOOLEAN (node), g_strcmp0 (string, "true") == 0);
+	g_assert_not_reached ();
+}
+
+/* ArvGcFeatureNode implementation */
+
+static void
+arv_gc_boolean_set_value_from_string (ArvGcFeatureNode *node, const char *string, GError **error)
+{
+	GError *local_error = NULL;
+
+	arv_gc_boolean_set_value (ARV_GC_BOOLEAN (node), g_strcmp0 (string, "true") == 0, &local_error);
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
 }
 
 static const char *
-arv_gc_boolean_get_value_as_string (ArvGcNode *node)
+arv_gc_boolean_get_value_as_string (ArvGcFeatureNode *node, GError **error)
 {
-	return arv_gc_boolean_get_value (ARV_GC_BOOLEAN (node)) ? "true" : "false";
+	const char *string;
+	GError *local_error = NULL;
+
+	string = arv_gc_boolean_get_value (ARV_GC_BOOLEAN (node), &local_error) ? "true" : "false";
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return NULL;
+	}
+
+	return string;
 }
 
 /* ArvGcBoolean implementation */
 
-gboolean
-arv_gc_boolean_get_value (ArvGcBoolean *gc_boolean)
+static gint64
+arv_gc_boolean_get_on_value (ArvGcBoolean *gc_boolean, GError **error)
 {
-	g_return_val_if_fail (ARV_IS_GC_BOOLEAN (gc_boolean), FALSE);
+	gint64 on_value;
+	GError *local_error = NULL;
 
-	return arv_gc_get_int64_from_value (arv_gc_node_get_genicam (ARV_GC_NODE (gc_boolean)),
-					    &gc_boolean->value) == gc_boolean->on_value;
+	if (gc_boolean->on_value == NULL)
+		return 1;
+
+	on_value = arv_gc_property_node_get_int64 (gc_boolean->on_value, &local_error);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return 1;
+	}
+
+	return on_value;
+}
+
+static gint64
+arv_gc_boolean_get_off_value (ArvGcBoolean *gc_boolean, GError **error)
+{
+	gint64 off_value;
+	GError *local_error = NULL;
+
+	if (gc_boolean->off_value == NULL)
+		return 0;
+
+	off_value = arv_gc_property_node_get_int64 (gc_boolean->off_value, &local_error);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return 0;
+	}
+
+	return off_value;
+}
+
+gboolean
+arv_gc_boolean_get_value (ArvGcBoolean *gc_boolean, GError **error)
+{
+	gboolean value;
+	gint64 on_value;
+	GError *local_error = NULL;
+
+	g_return_val_if_fail (ARV_IS_GC_BOOLEAN (gc_boolean), FALSE);
+	g_return_val_if_fail (error == NULL || *error == NULL, FALSE);
+
+	if (gc_boolean->value == NULL)
+		return FALSE;
+
+	value = arv_gc_property_node_get_int64 (gc_boolean->value, &local_error);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+       	on_value = arv_gc_boolean_get_on_value (gc_boolean, &local_error);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return FALSE;
+	}
+
+	return value == on_value;
 }
 
 void
-arv_gc_boolean_set_value (ArvGcBoolean *gc_boolean, gboolean v_boolean)
+arv_gc_boolean_set_value (ArvGcBoolean *gc_boolean, gboolean v_boolean, GError **error)
 {
-	g_return_if_fail (ARV_IS_GC_BOOLEAN (gc_boolean));
+	gboolean value;
+	GError *local_error = NULL;
 
-	arv_gc_set_int64_to_value (arv_gc_node_get_genicam (ARV_GC_NODE (gc_boolean)),
-				   &gc_boolean->value,
-				   v_boolean ? gc_boolean->on_value : gc_boolean->off_value);
+	g_return_if_fail (ARV_IS_GC_BOOLEAN (gc_boolean));
+	g_return_if_fail (error == NULL || *error == NULL);
+
+	if (v_boolean)
+		value = arv_gc_boolean_get_on_value (gc_boolean, &local_error);
+	else
+		value = arv_gc_boolean_get_off_value (gc_boolean, &local_error);
+
+	if (local_error != NULL) {
+		g_propagate_error (error, local_error);
+		return;
+	}
+
+	arv_gc_property_node_set_int64 (gc_boolean->value, value, &local_error);
+
+	if (local_error != NULL)
+		g_propagate_error (error, local_error);
 }
 
 ArvGcNode *
@@ -104,38 +210,55 @@ arv_gc_boolean_new (void)
 static void
 arv_gc_boolean_init (ArvGcBoolean *gc_boolean)
 {
-	g_value_init (&gc_boolean->value, G_TYPE_INT64);
-	g_value_set_int64 (&gc_boolean->value, 0);
-	gc_boolean->on_value = 1;
-	gc_boolean->off_value = 0;
 }
 
 static void
 arv_gc_boolean_finalize (GObject *object)
 {
-	ArvGcBoolean *gc_boolean = ARV_GC_BOOLEAN (object);
-
-	g_value_unset (&gc_boolean->value);
-
 	parent_class->finalize (object);
 }
 
 static void
-arv_gc_boolean_class_init (ArvGcBooleanClass *boolean_class)
+arv_gc_boolean_class_init (ArvGcBooleanClass *this_class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (boolean_class);
-	ArvGcNodeClass *node_class = ARV_GC_NODE_CLASS (boolean_class);
+	GObjectClass *object_class = G_OBJECT_CLASS (this_class);
+	ArvDomNodeClass *dom_node_class = ARV_DOM_NODE_CLASS (this_class);
+	ArvGcFeatureNodeClass *gc_feature_node_class = ARV_GC_FEATURE_NODE_CLASS (this_class);
 
-	parent_class = g_type_class_peek_parent (boolean_class);
+	parent_class = g_type_class_peek_parent (this_class);
 
 	object_class->finalize = arv_gc_boolean_finalize;
-
-	node_class->get_node_name = arv_gc_boolean_get_node_name;
-	node_class->add_element = arv_gc_boolean_add_element;
-	node_class->set_value_from_string = arv_gc_boolean_set_value_from_string;
-	node_class->get_value_as_string = arv_gc_boolean_get_value_as_string;
+	dom_node_class->get_node_name = arv_gc_boolean_get_node_name;
+	dom_node_class->post_new_child = arv_gc_boolean_post_new_child;
+	dom_node_class->pre_remove_child = arv_gc_boolean_pre_remove_child;
+	gc_feature_node_class->set_value_from_string = arv_gc_boolean_set_value_from_string;
+	gc_feature_node_class->get_value_as_string = arv_gc_boolean_get_value_as_string;
 }
 
 /* ArvGcInteger interface implementation */
 
-G_DEFINE_TYPE (ArvGcBoolean, arv_gc_boolean, ARV_TYPE_GC_NODE)
+static gint64
+arv_gc_boolean_get_integer_value (ArvGcInteger *gc_integer, GError **error)
+{
+	ArvGcBoolean *gc_boolean = ARV_GC_BOOLEAN (gc_integer);
+
+	return arv_gc_boolean_get_value (gc_boolean, error) ? 1 : 0 ;
+}
+
+static void
+arv_gc_boolean_set_integer_value (ArvGcInteger *gc_integer, gint64 value, GError **error)
+{
+	ArvGcBoolean *gc_boolean = ARV_GC_BOOLEAN (gc_integer);
+
+	return arv_gc_boolean_set_value (gc_boolean, value != 0, error);
+}
+
+static void
+arv_gc_boolean_integer_interface_init (ArvGcIntegerInterface *interface)
+{
+	interface->get_value = arv_gc_boolean_get_integer_value;
+	interface->set_value = arv_gc_boolean_set_integer_value;
+}
+
+G_DEFINE_TYPE_WITH_CODE (ArvGcBoolean, arv_gc_boolean, ARV_TYPE_GC_FEATURE_NODE,
+			 G_IMPLEMENT_INTERFACE (ARV_TYPE_GC_INTEGER, arv_gc_boolean_integer_interface_init))

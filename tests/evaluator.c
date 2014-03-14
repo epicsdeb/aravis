@@ -50,7 +50,9 @@ static const ExpressionTestData expression_test_data[] = {
 	{"/evaluator/left-shift",	"1<<4",			16,	16.0},
 	{"/evaluator/right-shift",	"16>>4",		1,	1.0},
 	{"/evaluator/cos",		"COS(PI)",		-1,	-1.0},
-	{"/evaluator/sin",		"SIN(-PI/2)",		-1,	-1.0}
+	{"/evaluator/sin",		"SIN(-PI/2)",		-1,	-1.0},
+
+	{"/evaluator/bugs/remaining-op",	"(0 & 1)=0?((0 & 1)+2):1",	2, 2.0}
 };
 
 static void
@@ -59,11 +61,15 @@ expression_test (ExpressionTestData *data)
 	ArvEvaluator *evaluator;
 	gint64 v_int64;
 	double v_double;
+	GError *error = NULL;
 
 	evaluator = arv_evaluator_new (data->expression);
 
-	v_int64 = arv_evaluator_evaluate_as_int64 (evaluator, NULL);
-	v_double = arv_evaluator_evaluate_as_double (evaluator, NULL);
+	v_int64 = arv_evaluator_evaluate_as_int64 (evaluator, &error);
+	g_assert (error == NULL);
+
+	v_double = arv_evaluator_evaluate_as_double (evaluator, &error);
+	g_assert (error == NULL);
 
 	g_assert_cmpint (v_int64, ==, data->result_int64);
 	g_assert_cmpfloat (v_double, ==, data->result_double);

@@ -26,6 +26,8 @@
                   <a href="#ArvCamera.description" class="shortcut">Description</a>
                    | 
                   <a href="#ArvCamera.object-hierarchy" class="shortcut">Object Hierarchy</a>
+                   | 
+                  <a href="#ArvCamera.properties" class="shortcut">Properties</a>
 </td></tr>
 </table>
 <div class="refentry">
@@ -77,9 +79,20 @@ const <span class="returnvalue">char</span> *        <a class="link" href="ArvCa
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *dx</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *dy</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-pixel-format" title="arv_camera_set_pixel_format ()">arv_camera_set_pixel_format</a>         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
-                                                         <em class="parameter"><code><span class="type">ArvPixelFormat</span> format</code></em>);
-<span class="returnvalue">ArvPixelFormat</span>      <a class="link" href="ArvCamera.html#arv-camera-get-pixel-format" title="arv_camera_get_pixel_format ()">arv_camera_get_pixel_format</a>         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+                                                         <em class="parameter"><code><a class="link" href="aravis-ArvPixelFormat.html#ArvPixelFormat" title="ArvPixelFormat"><span class="type">ArvPixelFormat</span></a> format</code></em>);
+<a class="link" href="aravis-ArvPixelFormat.html#ArvPixelFormat" title="ArvPixelFormat"><span class="returnvalue">ArvPixelFormat</span></a>      <a class="link" href="ArvCamera.html#arv-camera-get-pixel-format" title="arv_camera_get_pixel_format ()">arv_camera_get_pixel_format</a>         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+const <span class="returnvalue">char</span> *        <a class="link" href="ArvCamera.html#arv-camera-get-pixel-format-as-string" title="arv_camera_get_pixel_format_as_string ()">arv_camera_get_pixel_format_as_string</a>
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-pixel-format-from-string" title="arv_camera_set_pixel_format_from_string ()">arv_camera_set_pixel_format_from_string</a>
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *format</code></em>);
 <a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint64"><span class="returnvalue">gint64</span></a> *            <a class="link" href="ArvCamera.html#arv-camera-get-available-pixel-formats" title="arv_camera_get_available_pixel_formats ()">arv_camera_get_available_pixel_formats</a>
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_pixel_formats</code></em>);
+const <span class="returnvalue">char</span> **       <a class="link" href="ArvCamera.html#arv-camera-get-available-pixel-formats-as-display-names" title="arv_camera_get_available_pixel_formats_as_display_names ()">arv_camera_get_available_pixel_formats_as_display_names</a>
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_pixel_formats</code></em>);
+const <span class="returnvalue">char</span> **       <a class="link" href="ArvCamera.html#arv-camera-get-available-pixel-formats-as-strings" title="arv_camera_get_available_pixel_formats_as_strings ()">arv_camera_get_available_pixel_formats_as_strings</a>
                                                         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
                                                          <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_pixel_formats</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-start-acquisition" title="arv_camera_start_acquisition ()">arv_camera_start_acquisition</a>        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
@@ -87,13 +100,20 @@ const <span class="returnvalue">char</span> *        <a class="link" href="ArvCa
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-acquisition-mode" title="arv_camera_set_acquisition_mode ()">arv_camera_set_acquisition_mode</a>     (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
                                                          <em class="parameter"><code><a class="link" href="ArvCamera.html#ArvAcquisitionMode" title="enum ArvAcquisitionMode"><span class="type">ArvAcquisitionMode</span></a> value</code></em>);
 <a class="link" href="ArvCamera.html#ArvAcquisitionMode" title="enum ArvAcquisitionMode"><span class="returnvalue">ArvAcquisitionMode</span></a>  <a class="link" href="ArvCamera.html#arv-camera-get-acquisition-mode" title="arv_camera_get_acquisition_mode ()">arv_camera_get_acquisition_mode</a>     (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="ArvCamera.html#arv-camera-is-frame-rate-available" title="arv_camera_is_frame_rate_available ()">arv_camera_is_frame_rate_available</a>  (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-frame-rate" title="arv_camera_set_frame_rate ()">arv_camera_set_frame_rate</a>           (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
                                                          <em class="parameter"><code><span class="type">double</span> frame_rate</code></em>);
 <span class="returnvalue">double</span>              <a class="link" href="ArvCamera.html#arv-camera-get-frame-rate" title="arv_camera_get_frame_rate ()">arv_camera_get_frame_rate</a>           (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-trigger" title="arv_camera_set_trigger ()">arv_camera_set_trigger</a>              (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
                                                          <em class="parameter"><code>const <span class="type">char</span> *source</code></em>);
-<span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-software-trigger" title="arv_camera_set_software_trigger ()">arv_camera_set_software_trigger</a>     (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+<span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-trigger-source" title="arv_camera_set_trigger_source ()">arv_camera_set_trigger_source</a>       (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *source</code></em>);
+const <span class="returnvalue">char</span> *        <a class="link" href="ArvCamera.html#arv-camera-get-trigger-source" title="arv_camera_get_trigger_source ()">arv_camera_get_trigger_source</a>       (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-software-trigger" title="arv_camera_software_trigger ()">arv_camera_software_trigger</a>         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="ArvCamera.html#arv-camera-is-exposure-time-available" title="arv_camera_is_exposure_time_available ()">arv_camera_is_exposure_time_available</a>
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="ArvCamera.html#arv-camera-is-exposure-auto-available" title="arv_camera_is_exposure_auto_available ()">arv_camera_is_exposure_auto_available</a>
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-exposure-time" title="arv_camera_set_exposure_time ()">arv_camera_set_exposure_time</a>        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
                                                          <em class="parameter"><code><span class="type">double</span> exposure_time_us</code></em>);
 <span class="returnvalue">double</span>              <a class="link" href="ArvCamera.html#arv-camera-get-exposure-time" title="arv_camera_get_exposure_time ()">arv_camera_get_exposure_time</a>        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
@@ -103,12 +123,14 @@ const <span class="returnvalue">char</span> *        <a class="link" href="ArvCa
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-exposure-time-auto" title="arv_camera_set_exposure_time_auto ()">arv_camera_set_exposure_time_auto</a>   (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
                                                          <em class="parameter"><code><a class="link" href="ArvCamera.html#ArvAuto" title="enum ArvAuto"><span class="type">ArvAuto</span></a> auto_mode</code></em>);
 <a class="link" href="ArvCamera.html#ArvAuto" title="enum ArvAuto"><span class="returnvalue">ArvAuto</span></a>             <a class="link" href="ArvCamera.html#arv-camera-get-exposure-time-auto" title="arv_camera_get_exposure_time_auto ()">arv_camera_get_exposure_time_auto</a>   (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="ArvCamera.html#arv-camera-is-gain-available" title="arv_camera_is_gain_available ()">arv_camera_is_gain_available</a>        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            <a class="link" href="ArvCamera.html#arv-camera-is-gain-auto-available" title="arv_camera_is_gain_auto_available ()">arv_camera_is_gain_auto_available</a>   (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-gain" title="arv_camera_set_gain ()">arv_camera_set_gain</a>                 (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> gain</code></em>);
-<a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                <a class="link" href="ArvCamera.html#arv-camera-get-gain" title="arv_camera_get_gain ()">arv_camera_get_gain</a>                 (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
+                                                         <em class="parameter"><code><span class="type">double</span> gain</code></em>);
+<span class="returnvalue">double</span>              <a class="link" href="ArvCamera.html#arv-camera-get-gain" title="arv_camera_get_gain ()">arv_camera_get_gain</a>                 (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-get-gain-bounds" title="arv_camera_get_gain_bounds ()">arv_camera_get_gain_bounds</a>          (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *min</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *max</code></em>);
+                                                         <em class="parameter"><code><span class="type">double</span> *min</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> *max</code></em>);
 <span class="returnvalue">void</span>                <a class="link" href="ArvCamera.html#arv-camera-set-gain-auto" title="arv_camera_set_gain_auto ()">arv_camera_set_gain_auto</a>            (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
                                                          <em class="parameter"><code><a class="link" href="ArvCamera.html#ArvAuto" title="enum ArvAuto"><span class="type">ArvAuto</span></a> auto_mode</code></em>);
 <a class="link" href="ArvCamera.html#ArvAuto" title="enum ArvAuto"><span class="returnvalue">ArvAuto</span></a>             <a class="link" href="ArvCamera.html#arv-camera-get-gain-auto" title="arv_camera_get_gain_auto ()">arv_camera_get_gain_auto</a>            (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);
@@ -123,6 +145,12 @@ const <span class="returnvalue">char</span> *        <a class="link" href="ArvCa
 <pre class="synopsis">
   <a href="http://library.gnome.org/devel/gobject/unstable/gobject-The-Base-Object-Type.html#GObject">GObject</a>
    +----ArvCamera
+</pre>
+</div>
+<div class="refsect1">
+<a name="ArvCamera.properties"></a><h2>Properties</h2>
+<pre class="synopsis">
+  "<a class="link" href="ArvCamera.html#ArvCamera--device" title='The "device" property'>device</a>"                   <a class="link" href="ArvDevice.html" title="ArvDevice"><span class="type">ArvDevice</span></a>*            : Read / Write / Construct Only
 </pre>
 </div>
 <div class="refsect1">
@@ -550,7 +578,7 @@ Retrieves binning in both directions.
 <div class="refsect2">
 <a name="arv-camera-set-pixel-format"></a><h3>arv_camera_set_pixel_format ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                arv_camera_set_pixel_format         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
-                                                         <em class="parameter"><code><span class="type">ArvPixelFormat</span> format</code></em>);</pre>
+                                                         <em class="parameter"><code><a class="link" href="aravis-ArvPixelFormat.html#ArvPixelFormat" title="ArvPixelFormat"><span class="type">ArvPixelFormat</span></a> format</code></em>);</pre>
 <p>
 Defines pixel format.
 </p>
@@ -572,7 +600,7 @@ Defines pixel format.
 <hr>
 <div class="refsect2">
 <a name="arv-camera-get-pixel-format"></a><h3>arv_camera_get_pixel_format ()</h3>
-<pre class="programlisting"><span class="returnvalue">ArvPixelFormat</span>      arv_camera_get_pixel_format         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<pre class="programlisting"><a class="link" href="aravis-ArvPixelFormat.html#ArvPixelFormat" title="ArvPixelFormat"><span class="returnvalue">ArvPixelFormat</span></a>      arv_camera_get_pixel_format         (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -584,6 +612,47 @@ Defines pixel format.
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
 <td>pixel format.</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-pixel-format-as-string"></a><h3>arv_camera_get_pixel_format_as_string ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> *        arv_camera_get_pixel_format_as_string
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<p>
+Retuns: pixel format as string, NULL on error.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-set-pixel-format-from-string"></a><h3>arv_camera_set_pixel_format_from_string ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                arv_camera_set_pixel_format_from_string
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *format</code></em>);</pre>
+<p>
+Defines pixel format described by a string.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>format</code></em> :</span></p></td>
+<td>pixel format</td>
 </tr>
 </tbody>
 </table></div>
@@ -612,7 +681,68 @@ Retrieves the list of all available pixel formats.
 </tr>
 <tr>
 <td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
-<td>a newly allocated array of <span class="type">ArvPixelFormat</span>. <span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n_pixel_formats][<acronym title="Free data after the code is done."><span class="acronym">transfer full</span></acronym>]</span>
+<td>a newly allocated array of <a class="link" href="aravis-ArvPixelFormat.html#ArvPixelFormat" title="ArvPixelFormat"><span class="type">ArvPixelFormat</span></a>. <span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n_pixel_formats][<acronym title="Free data container after the code is done."><span class="acronym">transfer container</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-available-pixel-formats-as-display-names"></a><h3>arv_camera_get_available_pixel_formats_as_display_names ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> **       arv_camera_get_available_pixel_formats_as_display_names
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_pixel_formats</code></em>);</pre>
+<p>
+Retrieves the list of all available pixel formats as display names.
+In general, these human-readable strings cannot be used as settings.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_pixel_formats</code></em> :</span></p></td>
+<td>number of different pixel formats. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a newly allocated array of string constants. <span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n_pixel_formats][<acronym title="Free data container after the code is done."><span class="acronym">transfer container</span></acronym>]</span>
+</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-available-pixel-formats-as-strings"></a><h3>arv_camera_get_available_pixel_formats_as_strings ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> **       arv_camera_get_available_pixel_formats_as_strings
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_pixel_formats</code></em>);</pre>
+<p>
+Retrieves the list of all available pixel formats as strings.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>n_pixel_formats</code></em> :</span></p></td>
+<td>number of different pixel formats. <span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a newly allocated array of strings. <span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n_pixel_formats][<acronym title="Free data container after the code is done."><span class="acronym">transfer container</span></acronym>]</span>
 </td>
 </tr>
 </tbody>
@@ -673,6 +803,19 @@ Stops video stream acquisition.
 <td>acquisition mode.</td>
 </tr>
 </tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-is-frame-rate-available"></a><h3>arv_camera_is_frame_rate_available ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            arv_camera_is_frame_rate_available  (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+Returns: TRUE if FrameRate feature is available</td>
+</tr></tbody>
 </table></div>
 </div>
 <hr>
@@ -750,8 +893,50 @@ by a call to <a class="link" href="ArvCamera.html#arv-camera-software-trigger" t
 </div>
 <hr>
 <div class="refsect2">
-<a name="arv-camera-set-software-trigger"></a><h3>arv_camera_set_software_trigger ()</h3>
-<pre class="programlisting"><span class="returnvalue">void</span>                arv_camera_set_software_trigger     (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<a name="arv-camera-set-trigger-source"></a><h3>arv_camera_set_trigger_source ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>                arv_camera_set_trigger_source       (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                                         <em class="parameter"><code>const <span class="type">char</span> *source</code></em>);</pre>
+<p>
+Sets the trigger source. This function doesn't check if the camera is configured
+to actually use this source as a trigger.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>source</code></em> :</span></p></td>
+<td>source name</td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-trigger-source"></a><h3>arv_camera_get_trigger_source ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> *        arv_camera_get_trigger_source       (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<p>
+Gets the trigger source. This function doesn't check if the camera is configured
+to actually use this source as a trigger.
+</p>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody>
+<tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+</td>
+</tr>
+<tr>
+<td><p><span class="term"><span class="emphasis"><em>Returns</em></span> :</span></p></td>
+<td>a string containing the trigger source name, NULL on error.</td>
+</tr>
+</tbody>
+</table></div>
 </div>
 <hr>
 <div class="refsect2">
@@ -767,6 +952,34 @@ configured to use a software trigger, using <em class="parameter"><code><a class
 <td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
 <td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
 </td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-is-exposure-time-available"></a><h3>arv_camera_is_exposure_time_available ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            arv_camera_is_exposure_time_available
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+Returns: TRUE if Exposure Time feature is available.</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-is-exposure-auto-available"></a><h3>arv_camera_is_exposure_auto_available ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            arv_camera_is_exposure_auto_available
+                                                        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+Returns: TRUE if Exposure Auto feature is available.</td>
 </tr></tbody>
 </table></div>
 </div>
@@ -887,9 +1100,35 @@ Configures automatic exposure feature.
 </div>
 <hr>
 <div class="refsect2">
+<a name="arv-camera-is-gain-available"></a><h3>arv_camera_is_gain_available ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            arv_camera_is_gain_available        (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+Returns: TRUE if Gain feature is available.</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-is-gain-auto-available"></a><h3>arv_camera_is_gain_auto_available ()</h3>
+<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>            arv_camera_is_gain_auto_available   (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="variablelist"><table border="0">
+<col align="left" valign="top">
+<tbody><tr>
+<td><p><span class="term"><em class="parameter"><code>camera</code></em> :</span></p></td>
+<td>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a>
+Returns: TRUE if Gain feature is available.</td>
+</tr></tbody>
+</table></div>
+</div>
+<hr>
+<div class="refsect2">
 <a name="arv-camera-set-gain"></a><h3>arv_camera_set_gain ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                arv_camera_set_gain                 (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> gain</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">double</span> gain</code></em>);</pre>
 <p>
 Sets the gain of the ADC converter.
 </p>
@@ -911,7 +1150,7 @@ Sets the gain of the ADC converter.
 <hr>
 <div class="refsect2">
 <a name="arv-camera-get-gain"></a><h3>arv_camera_get_gain ()</h3>
-<pre class="programlisting"><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="returnvalue">gint</span></a>                arv_camera_get_gain                 (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<pre class="programlisting"><span class="returnvalue">double</span>              arv_camera_get_gain                 (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
 <div class="variablelist"><table border="0">
 <col align="left" valign="top">
 <tbody>
@@ -931,8 +1170,8 @@ Sets the gain of the ADC converter.
 <div class="refsect2">
 <a name="arv-camera-get-gain-bounds"></a><h3>arv_camera_get_gain_bounds ()</h3>
 <pre class="programlisting"><span class="returnvalue">void</span>                arv_camera_get_gain_bounds          (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *min</code></em>,
-                                                         <em class="parameter"><code><a href="http://library.gnome.org/devel/glib/unstable/glib-Basic-Types.html#gint"><span class="type">gint</span></a> *max</code></em>);</pre>
+                                                         <em class="parameter"><code><span class="type">double</span> *min</code></em>,
+                                                         <em class="parameter"><code><span class="type">double</span> *max</code></em>);</pre>
 <p>
 Retrieves gain bounds.
 </p>
@@ -1055,6 +1294,14 @@ for the creation of the stream buffers.
 <div class="refsect2">
 <a name="arv-acquisition-mode-from-string"></a><h3>arv_acquisition_mode_from_string ()</h3>
 <pre class="programlisting"><a class="link" href="ArvCamera.html#ArvAcquisitionMode" title="enum ArvAcquisitionMode"><span class="returnvalue">ArvAcquisitionMode</span></a>  arv_acquisition_mode_from_string    (<em class="parameter"><code>const <span class="type">char</span> *string</code></em>);</pre>
+</div>
+</div>
+<div class="refsect1">
+<a name="ArvCamera.property-details"></a><h2>Property Details</h2>
+<div class="refsect2">
+<a name="ArvCamera--device"></a><h3>The <code class="literal">"device"</code> property</h3>
+<pre class="programlisting">  "device"                   <a class="link" href="ArvDevice.html" title="ArvDevice"><span class="type">ArvDevice</span></a>*            : Read / Write / Construct Only</pre>
+<p>the device associated with this camera.</p>
 </div>
 </div>
 </div>

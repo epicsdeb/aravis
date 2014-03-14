@@ -25,21 +25,33 @@ GType arv_auto_get_type	(void) G_GNUC_CONST;
 #define ARV_TYPE_ACQUISITION_MODE	(arv_acquisition_mode_get_type())
 GType arv_acquisition_mode_get_type	(void) G_GNUC_CONST;
 
-#define ARV_TYPE_PIXEL_FORMAT	(arv_pixel_format_get_type())
-GType arv_pixel_format_get_type	(void) G_GNUC_CONST;
-
 /* Enumerations from "arvdebug.h" */
 
 #define ARV_TYPE_DEBUG_LEVEL	(arv_debug_level_get_type())
 GType arv_debug_level_get_type	(void) G_GNUC_CONST;
 
-/* Enumerations from "arvgcregister.h" */
+/* Enumerations from "arvdomnode.h" */
+
+#define ARV_TYPE_DOM_NODE_TYPE	(arv_dom_node_type_get_type())
+GType arv_dom_node_type_get_type	(void) G_GNUC_CONST;
+
+/* Enumerations from "arvgcpropertynode.h" */
+
+#define ARV_TYPE_GC_PROPERTY_NODE_TYPE	(arv_gc_property_node_type_get_type())
+GType arv_gc_property_node_type_get_type	(void) G_GNUC_CONST;
+
+/* Enumerations from "arvgcregisternode.h" */
 
 #define ARV_TYPE_GC_SIGN	(arv_gc_sign_get_type())
 GType arv_gc_sign_get_type	(void) G_GNUC_CONST;
 
-#define ARV_TYPE_GC_REGISTER_TYPE	(arv_gc_register_type_get_type())
-GType arv_gc_register_type_get_type	(void) G_GNUC_CONST;
+#define ARV_TYPE_GC_REGISTER_NODE_TYPE	(arv_gc_register_node_type_get_type())
+GType arv_gc_register_node_type_get_type	(void) G_GNUC_CONST;
+
+/* Enumerations from "arvdevice.h" */
+
+#define ARV_TYPE_DEVICE_STATUS	(arv_device_status_get_type())
+GType arv_device_status_get_type	(void) G_GNUC_CONST;
 
 /* Enumerations from "arvstream.h" */
 

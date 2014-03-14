@@ -30,6 +30,8 @@
 #include <arvdebug.h>
 
 #define ARV_FAKE_DEVICE_ID "Fake_1"
+#define ARV_FAKE_PHYSICAL_ID "Fake_1"
+#define ARV_FAKE_ADDRESS "0.0.0.0"
 
 static GObjectClass *parent_class = NULL;
 
@@ -40,17 +42,25 @@ struct _ArvFakeInterfacePrivate {
 static void
 arv_fake_interface_update_device_list (ArvInterface *interface, GArray *device_ids)
 {
-	char *device_id;
+	ArvInterfaceDeviceIds *ids;
+
+	ids = g_new0 (ArvInterfaceDeviceIds, 1);
 
 	g_array_set_size (device_ids, 0);
-	device_id = g_strdup (ARV_FAKE_DEVICE_ID);
-	g_array_append_val (device_ids, device_id);
+
+	ids->device = g_strdup (ARV_FAKE_DEVICE_ID);
+	ids->physical = g_strdup (ARV_FAKE_PHYSICAL_ID);
+	ids->address = g_strdup (ARV_FAKE_ADDRESS);
+
+	g_array_append_val (device_ids, ids);
 }
 
 static ArvDevice *
 arv_fake_interface_open_device (ArvInterface *interface, const char *device_id)
 {
 	if (g_strcmp0 (device_id, ARV_FAKE_DEVICE_ID) == 0)
+		return arv_fake_device_new ("1");
+	if (g_strcmp0 (device_id, ARV_FAKE_PHYSICAL_ID) == 0)
 		return arv_fake_device_new ("1");
 
 	return NULL;

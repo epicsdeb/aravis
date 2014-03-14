@@ -1,6 +1,6 @@
 /* Aravis - Digital camera library
  *
- * Copyright © 2009-2010 Emmanuel Pacaud
+ * Copyright © 2009-2012 Emmanuel Pacaud
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -24,7 +24,8 @@
 #define ARV_GC_ENUMERATION_H
 
 #include <arvtypes.h>
-#include <arvgcnode.h>
+#include <arvgcfeaturenode.h>
+#include <arvgcpropertynode.h>
 
 G_BEGIN_DECLS
 
@@ -38,26 +39,27 @@ G_BEGIN_DECLS
 typedef struct _ArvGcEnumerationClass ArvGcEnumerationClass;
 
 struct _ArvGcEnumeration {
-	ArvGcNode	node;
+	ArvGcFeatureNode base;
 
-	GValue value;
+	ArvGcPropertyNode *value;
+	GSList *entries;
 };
 
 struct _ArvGcEnumerationClass {
-	ArvGcNodeClass parent_class;
+	ArvGcFeatureNodeClass parent_class;
 };
 
 GType 		arv_gc_enumeration_get_type 	(void);
-
 ArvGcNode * 	arv_gc_enumeration_new 				(void);
 
-const char *	arv_gc_enumeration_get_string_value		(ArvGcEnumeration *enumeration);
-void		arv_gc_enumeration_set_string_value		(ArvGcEnumeration *enumeration, const char *value);
-gint64 		arv_gc_enumeration_get_int_value		(ArvGcEnumeration *enumeration);
-void		arv_gc_enumeration_set_int_value		(ArvGcEnumeration *enumeration, gint64 value);
 const GSList *	arv_gc_enumeration_get_entries			(ArvGcEnumeration *enumeration);
 
-gint64 *	arv_gc_enumeration_get_available_int_values	(ArvGcEnumeration *enumeration,	guint *n_values);
+const char *	arv_gc_enumeration_get_string_value		(ArvGcEnumeration *enumeration, GError **error);
+void		arv_gc_enumeration_set_string_value		(ArvGcEnumeration *enumeration, const char *value, GError **error);
+gint64 		arv_gc_enumeration_get_int_value		(ArvGcEnumeration *enumeration, GError **error);
+void		arv_gc_enumeration_set_int_value		(ArvGcEnumeration *enumeration, gint64 value, GError **error);
+gint64 *	arv_gc_enumeration_get_available_int_values	(ArvGcEnumeration *enumeration,	guint *n_values, GError **error);
+const char **	arv_gc_enumeration_get_available_string_values	(ArvGcEnumeration *enumeration,	guint *n_values, GError **error);
 
 G_END_DECLS
 

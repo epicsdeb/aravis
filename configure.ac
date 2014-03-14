@@ -2,7 +2,7 @@ AC_PREREQ(2.63.0)
 
 m4_define([aravis_version_major], [0])
 m4_define([aravis_version_minor], [1])
-m4_define([aravis_version_micro], [11])
+m4_define([aravis_version_micro], [15])
 m4_define([aravis_version], [aravis_version_major.aravis_version_minor.aravis_version_micro])
 
 AC_INIT([aravis],[aravis_version],[http://bugzilla.gnome.org/enter_bug.cgi?product=aravis],[aravis])
@@ -39,21 +39,49 @@ AC_ARG_ENABLE(viewer,
 	      [  --enable-viewer         build viewer],
 	      [enable_viewer=$enableval],
 	      [enable_viewer=no])
+AC_ARG_ENABLE(gtk3,
+	      [  --enable-gtk3           build viewer with gtk+-3.0],
+	      [enable_gtk3=$enableval],
+	      [enable_gtk3=no])
+AC_ARG_ENABLE(notify,
+	      [  --enable-notify         build viewer with libnotify],
+	      [enable_notify=$enableval],
+	      [enable_notify=no])
+AC_ARG_ENABLE(cpp_test,
+	      [  --enable-cpp-test       build c++ test],
+	      [enable_cpp_test=$enableval],
+	      [enable_cpp_test=no])
 
 PKG_PROG_PKG_CONFIG([0.14])
 
-ARAVIS_REQUIRES="[gobject-2.0 glib-2.0 >= 2.22 gio-2.0 libxml-2.0 gthread-2.0]"
+ARAVIS_REQUIREMENTS="glib-2.0 >= 2.26 gobject-2.0 gio-2.0 libxml-2.0 gthread-2.0"
+ARAVIS_GSTREAMER_REQUIREMENTS="gstreamer-base-0.10 >= 0.10.31 gstreamer-app-0.10 gstreamer-interfaces-0.10"
 
-PKG_CHECK_MODULES(ARAVIS, $ARAVIS_REQUIRES)
+PKG_CHECK_MODULES(ARAVIS, [$ARAVIS_REQUIREMENTS])
 
 AC_SUBST(ARAVIS_CFLAGS)
 AC_SUBST(ARAVIS_LIBS)
 
 AC_SUBST(aravis_datadir, '$(datadir)/aravis-$(ARAVIS_API_VERSION)')
 
+ARAVIS_VIEWER_REQUIREMENTS=$ARAVIS_GSTREAMER_REQUIREMENTS
+if test "x$enable_gtk3" = "xyes"; then
+	ARAVIS_VIEWER_REQUIREMENTS+=" gtk+-3.0"
+else
+	ARAVIS_VIEWER_REQUIREMENTS+=" gtk+-2.0 >= 2.14"
+fi
+AM_CONDITIONAL(ARAVIS_WITH_GTK3, test "x$enable_gtk3" = "xyes")
+
+if test "x$enable_notify" = "xyes"; then
+	PKG_CHECK_MODULES(Notify, "libnotify")
+	ARAVIS_VIEWER_REQUIREMENTS+=" libnotify"
+	AC_DEFINE([ARAVIS_WITH_NOTIFY], 1, [Use libnotify])
+fi
+AM_CONDITIONAL(ARAVIS_WITH_NOTIFY, test "x$enable_notify" = "xyes")
+
 build_viewer=no
 if test "x$enable_viewer" = "xyes"; then
-	PKG_CHECK_MODULES([ARAVIS_VIEWER],   [gtk+-2.0 >= 2.12 gstreamer-base-0.10 >= 0.10 gstreamer-app-0.10 gstreamer-interfaces-0.10],
+	PKG_CHECK_MODULES([ARAVIS_VIEWER], [$ARAVIS_VIEWER_REQUIREMENTS],
 			  [AC_DEFINE([ARAVIS_BUILD_VIEWER], [1], [Build viewer])
 			  build_viewer=yes],
 			  [echo -n])
@@ -65,12 +93,14 @@ AC_SUBST(ARAVIS_VIEWER_LIBS)
 
 build_gst_plugin=no
 if test "x$enable_gst_plugin" = "xyes"; then
-	PKG_CHECK_MODULES([ARAVIS_GST_PLUGIN],   [gstreamer-base-0.10 >= 0.10 gstreamer-app-0.10 gstreamer-interfaces-0.10],
+	PKG_CHECK_MODULES([ARAVIS_GST_PLUGIN], [$ARAVIS_GSTREAMER_REQUIREMENTS],
 			  [AC_DEFINE([ARAVIS_BUILD_GST_PLUGIN], [1], [Build gstreamer plugin])
 			  build_gst_plugin=yes],
 			  [echo -n])
 fi
 AM_CONDITIONAL(ARAVIS_BUILD_GST_PLUGIN, test "x$build_gst_plugin" = "xyes")
+
+AM_CONDITIONAL(ARAVIS_BUILD_CPP_TEST, test "x$enable_cpp_test" = "xyes")
 
 AC_SUBST(ARAVIS_GST_PLUGIN_CFLAGS)
 AC_SUBST(ARAVIS_GST_PLUGIN_LIBS)
@@ -95,6 +125,7 @@ AC_CONFIG_FILES([
 Makefile
 src/Makefile
 viewer/Makefile
+viewer/data/arv-viewer.desktop.in
 gst/Makefile
 tests/Makefile
 po/Makefile.in
@@ -108,9 +139,10 @@ AC_OUTPUT
 echo ""
 echo "Configuration:"
 echo ""
-echo "	Build viewer:		$build_viewer"
-echo "	Build gstreamer plugin:	$build_gst_plugin"
 echo "	Compiler:		${CC}"
 echo "	Compiler flags:		${ARAVIS_CFLAGS}"
 echo "	Linker flags:		${ARAVIS_LIBS}"
+echo ""
+echo "	Build viewer:		$build_viewer"
+echo "	Build gstreamer plugin:	$build_gst_plugin"
 echo ""

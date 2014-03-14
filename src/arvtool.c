@@ -3,59 +3,28 @@
 #include <string.h>
 #include <stdio.h>
 
-static char *arv_option_device_name = NULL;
-static char *arv_option_debug_domains = NULL;
-
-static const GOptionEntry arv_option_entries[] =
-{
-	{ "name",		'n', 0, G_OPTION_ARG_STRING,
-		&arv_option_device_name,	NULL, "<device_name>"},
-	{ "debug", 		'd', 0, G_OPTION_ARG_STRING,
-		&arv_option_debug_domains, 	NULL, "<category>[:<level>][,...]" },
-	{ NULL }
-};
-
-void
-arv_tool_show_devices (void)
-{
-	unsigned int n_devices;
-
-	arv_update_device_list ();
-	n_devices = arv_get_n_devices ();
-
-	if (n_devices < 1)
-		printf ("No device found\n");
-	else {
-		unsigned int i;
-
-		for (i = 0; i < n_devices; i++) {
-			const char *device_id;
-
-			device_id = arv_get_device_id (i);
-			if (device_id != NULL)
-				printf ("%s\n",  device_id);
-		}
-	}
-}
-
 static void
 arv_tool_list_features (ArvGc *genicam, const char *feature, gboolean show_description, int level)
 {
 	ArvGcNode *node;
 
 	node = arv_gc_get_node (genicam, feature);
-	if (ARV_IS_GC_NODE (node)) {
+	if (ARV_IS_GC_FEATURE_NODE (node) &&
+	    arv_gc_feature_node_is_implemented (ARV_GC_FEATURE_NODE (node), NULL)) {
 		int i;
 
 		for (i = 0; i < level; i++)
 			printf ("    ");
 
-		printf ("%s: '%s'\n", arv_gc_node_get_node_name (node), feature);
+		printf ("%s: '%s'%s\n",
+			arv_dom_node_get_node_name (ARV_DOM_NODE (node)),
+			feature,
+			arv_gc_feature_node_is_available (ARV_GC_FEATURE_NODE (node), NULL) ? "" : " (Not available)");
 
 		if (show_description) {
 			const char *description;
 
-			description = arv_gc_node_get_description (node);
+			description = arv_gc_feature_node_get_description (ARV_GC_FEATURE_NODE (node), NULL);
 			if (description)
 				printf ("%s\n", description);
 		}
@@ -72,18 +41,150 @@ arv_tool_list_features (ArvGc *genicam, const char *feature, gboolean show_descr
 			const GSList *childs;
 			const GSList *iter;
 
-			childs = arv_gc_node_get_childs (node);
+			childs = arv_gc_enumeration_get_entries (ARV_GC_ENUMERATION (node));
 			for (iter = childs; iter != NULL; iter = iter->next) {
-				for (i = 0; i < level + 1; i++)
-					printf ("    ");
+				if (arv_gc_feature_node_is_implemented (iter->data, NULL)) {
+					for (i = 0; i < level + 1; i++)
+						printf ("    ");
 
-				printf ("%s: '%s'\n",
-					arv_gc_node_get_node_name (iter->data),
-					arv_gc_node_get_name (iter->data));
+					printf ("%s: '%s'%s\n",
+						arv_dom_node_get_node_name (iter->data),
+						arv_gc_feature_node_get_name (iter->data),
+						arv_gc_feature_node_is_available (iter->data, NULL) ? "" : " (Not available)");
+				}
 			}
 		}
 	}
 }
+
+static void
+arv_tool_execute_command (int argc, char **argv, const char *device_name)
+{
+	ArvDevice *device;
+	ArvGc *genicam;
+	const char *command = argv[1];
+
+	device = arv_open_device (device_name);
+	if (!ARV_IS_DEVICE (device)) {
+		if (device_name != NULL)
+			printf ("Device '%s' not found\n", device_name);
+		else
+			printf ("No device found\n");
+		return;
+	}
+
+	genicam = arv_device_get_genicam (device);
+
+	if (g_strcmp0 (command, "genicam") == 0) {
+		const char *xml;
+		size_t size;
+
+		xml = arv_device_get_genicam_xml (device, &size);
+		if (xml != NULL)
+			printf ("%*s\n", (int) size, xml);
+	} else if (g_strcmp0 (command, "features") == 0) {
+		arv_tool_list_features (genicam, "Root", FALSE, 0);
+	} else if (g_strcmp0 (command, "description") == 0) {
+		if (argc < 3)
+			arv_tool_list_features (genicam, "Root", TRUE, 0);
+		else {
+			int i;
+
+			for (i = 2; i < argc; i++) {
+				ArvGcNode *node;
+
+				node = arv_gc_get_node (genicam, argv[i]);
+				if (ARV_IS_GC_NODE (node)) {
+					const char *description;
+
+					printf ("%s: '%s'\n", arv_dom_node_get_node_name (ARV_DOM_NODE (node)), argv[i]);
+
+					description = arv_gc_feature_node_get_description (ARV_GC_FEATURE_NODE (node), NULL);
+					if (description)
+						printf ("%s\n", description);
+				}
+			}
+		}
+	} else if (g_strcmp0 (command, "control") == 0) {
+		int i;
+
+		for (i = 2; i < argc; i++) {
+			ArvGcNode *feature;
+			char **tokens;
+
+			tokens = g_strsplit (argv[i], "=", 2);
+			feature = arv_device_get_feature (device, tokens[0]);
+			if (!ARV_IS_GC_NODE (feature))
+				if (g_strrstr (tokens[0], "R[") == tokens[0]) {
+					guint32 value;
+					guint32 address;
+
+					address = g_ascii_strtoll(&tokens[0][2], NULL, 0);
+
+					if (tokens[1] != NULL) {
+						arv_device_write_register (device,
+									   address,
+									   g_ascii_strtoll (tokens[1],
+											    NULL, 0), NULL); /* TODO error handling */
+					}
+
+					arv_device_read_register (device, address, &value, NULL); /* TODO error handling */
+
+					printf ("R[0x%08x] = 0x%08x\n",
+						address, value);
+				} else
+					printf ("Feature '%s' not found\n", tokens[0]);
+				else {
+					if (ARV_IS_GC_COMMAND (feature)) {
+						arv_gc_command_execute (ARV_GC_COMMAND (feature), NULL);
+						printf ("%s executed\n", tokens[0]);
+					} else {
+						if (tokens[1] != NULL)
+							arv_gc_feature_node_set_value_from_string (ARV_GC_FEATURE_NODE (feature),
+												   tokens[1], NULL);
+
+						if (ARV_IS_GC_STRING (feature))
+							printf ("%s = %s\n", tokens[0],
+								arv_gc_string_get_value (ARV_GC_STRING (feature), NULL));
+						else if (ARV_IS_GC_FLOAT (feature))
+							printf ("%s = %g (min:%g-max:%g)\n", tokens[0],
+								arv_gc_float_get_value (ARV_GC_FLOAT (feature), NULL),
+								arv_gc_float_get_min (ARV_GC_FLOAT (feature), NULL),
+								arv_gc_float_get_max (ARV_GC_FLOAT (feature), NULL));
+						else if (ARV_IS_GC_INTEGER (feature))
+							printf ("%s = %" G_GINT64_FORMAT
+								" (min:%" G_GINT64_FORMAT 
+								"-max:%" G_GINT64_FORMAT
+								")\n", tokens[0],
+								arv_gc_integer_get_value (ARV_GC_INTEGER (feature), NULL),
+								arv_gc_integer_get_min (ARV_GC_INTEGER (feature), NULL),
+								arv_gc_integer_get_max (ARV_GC_INTEGER (feature), NULL));
+						else
+							printf ("%s = %s\n", tokens[0],
+								arv_gc_feature_node_get_value_as_string (ARV_GC_FEATURE_NODE (feature),
+													 NULL));
+					}
+				}
+			g_strfreev (tokens);
+		}
+	} else {
+		printf ("Unkown command\n");
+	}
+
+	g_object_unref (device);
+}
+
+static char *arv_option_device_name = NULL;
+static char *arv_option_debug_domains = NULL;
+
+static const GOptionEntry arv_option_entries[] =
+{
+	{ "name",		'n', 0, G_OPTION_ARG_STRING,
+		&arv_option_device_name,	NULL, "<device_name>"},
+	{ "debug", 		'd', 0, G_OPTION_ARG_STRING,
+		&arv_option_debug_domains, 	NULL, "<category>[:<level>][,...]" },
+	{ NULL }
+};
 
 static const char
 description_content[] =
@@ -108,8 +209,12 @@ description_content[] =
 int
 main (int argc, char **argv)
 {
+	GPatternSpec *pattern;
 	GOptionContext *context;
 	GError *error = NULL;
+	unsigned int n_devices;
+	unsigned int i;
+	unsigned int count = 0;
 
 	g_thread_init (NULL);
 	g_type_init ();
@@ -130,120 +235,31 @@ main (int argc, char **argv)
 
 	arv_debug_enable (arv_option_debug_domains);
 
-	if (argc < 2) {
-		if (arv_option_device_name != NULL) {
-			ArvDevice *device;
+	arv_update_device_list ();
+	n_devices = arv_get_n_devices ();
 
-			device = arv_open_device (arv_option_device_name);
-			if (!ARV_IS_DEVICE (device)) {
-				printf ("Device '%s' not found\n", arv_option_device_name);
+	if (arv_option_device_name != NULL)
+		pattern = g_pattern_spec_new (arv_option_device_name);
+	else
+		pattern = g_pattern_spec_new ("*");
 
-				arv_shutdown ();
+	for (i = 0; i < n_devices; i++) {
+		const char *device_id;
 
-				return EXIT_FAILURE;
-			}
-			printf ("%s found\n", arv_option_device_name);
+		device_id = arv_get_device_id (i);
 
-			g_object_unref (device);
-		} else
-			arv_tool_show_devices ();
-	} else {
-		ArvDevice *device;
-		ArvGc *genicam;
-		const char *command = argv[1];
-
-		device = arv_open_device (arv_option_device_name);
-		if (!ARV_IS_DEVICE (device)) {
-			if (arv_option_device_name != NULL)
-				printf ("Device '%s' not found\n", arv_option_device_name);
-			else
-				printf ("No device found\n");
-
-			arv_shutdown ();
-
-			return EXIT_FAILURE;
-		}
-		genicam = arv_device_get_genicam (device);
-
-		if (g_strcmp0 (command, "genicam") == 0) {
-			const char *xml;
-			size_t size;
-
-			xml = arv_device_get_genicam_xml (device, &size);
-			if (xml != NULL)
-				printf ("%*s\n", (int) size, xml);
-		} else if (g_strcmp0 (command, "features") == 0) {
-			arv_tool_list_features (genicam, "Root", FALSE, 0);
-		} else if (g_strcmp0 (command, "description") == 0) {
-			if (argc < 3)
-				arv_tool_list_features (genicam, "Root", TRUE, 0);
-			else {
-				int i;
-
-				for (i = 2; i < argc; i++) {
-					ArvGcNode *node;
-
-					node = arv_gc_get_node (genicam, argv[i]);
-					if (ARV_IS_GC_NODE (node)) {
-						const char *description;
-
-						printf ("%s: '%s'\n", arv_gc_node_get_node_name (node), argv[i]);
-
-						description = arv_gc_node_get_description (node);
-						if (description)
-							printf ("%s\n", description);
-					}
-				}
-			}
-		} else if (g_strcmp0 (command, "control") == 0) {
-			int i;
-
-			for (i = 2; i < argc; i++) {
-				ArvGcNode *feature;
-				char **tokens;
-
-				tokens = g_strsplit (argv[i], "=", 2);
-				feature = arv_device_get_feature (device, tokens[0]);
-				if (!ARV_IS_GC_NODE (feature))
-					if (g_strrstr (tokens[0], "R[") == tokens[0]) {
-						guint32 value;
-						guint32 address;
-
-						address = g_ascii_strtoll(&tokens[0][2], NULL, 0);
-
-						if (tokens[1] != NULL) {
-							arv_device_write_register (device,
-										   address,
-										   g_ascii_strtoll (tokens[1],
-												    NULL, 0));
-						}
-
-						arv_device_read_register (device, address, &value);
-
-						printf ("R[0x%08x] = 0x%08x\n",
-							address, value);
-					} else
-						printf ("Feature '%s' not found\n", tokens[0]);
-					else {
-						if (ARV_IS_GC_COMMAND (feature)) {
-							arv_gc_command_execute (ARV_GC_COMMAND (feature));
-							printf ("%s executed\n", tokens[0]);
-						} else {
-							if (tokens[1] != NULL)
-								arv_gc_node_set_value_from_string (feature, tokens[1]);
-
-							printf ("%s = %s\n", tokens[0],
-								arv_gc_node_get_value_as_string (feature));
-						}
-					}
-				g_strfreev (tokens);
-			}
-		} else {
-			printf ("Unkown command\n");
-			arv_shutdown ();
-			return EXIT_FAILURE;
+		if (g_pattern_match_string (pattern, device_id)) {
+			printf ("%s\n", device_id);
+			if (argc >= 2)
+				arv_tool_execute_command (argc, argv, device_id);
+			count++;
 		}
 	}
+
+	if (count == 0)
+		printf ("No device found\n");
+
+	g_pattern_spec_free (pattern);
 
 	arv_shutdown ();
 

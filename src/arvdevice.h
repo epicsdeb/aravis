@@ -28,6 +28,23 @@
 
 G_BEGIN_DECLS
 
+#define ARV_DEVICE_ERROR arv_device_error_quark()
+
+/**
+ * ArvDeviceStatus:
+ * @ARV_DEVICE_STATUS_UNKNOWN: unknown status
+ * @ARV_DEVICE_STATUS_SUCCESS: no error has occured
+ * @ARV_DEVICE_STATUS_TIMEOUT: action failed on a timeout
+ * @ARV_DEVICE_STATUS_WRITE_ERROR: write on a read only node
+ */
+
+typedef enum {
+	ARV_DEVICE_STATUS_UNKNOWN = -1,
+	ARV_DEVICE_STATUS_SUCCESS =  0,
+	ARV_DEVICE_STATUS_TIMEOUT,
+	ARV_DEVICE_STATUS_WRITE_ERROR
+} ArvDeviceStatus;
+
 #define ARV_TYPE_DEVICE             (arv_device_get_type ())
 #define ARV_DEVICE(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), ARV_TYPE_DEVICE, ArvDevice))
 #define ARV_DEVICE_CLASS(klass)     (G_TYPE_CHECK_CLASS_CAST ((klass), ARV_TYPE_DEVICE, ArvDeviceClass))
@@ -39,6 +56,9 @@ typedef struct _ArvDeviceClass ArvDeviceClass;
 
 struct _ArvDevice {
 	GObject	object;
+
+	ArvDeviceStatus status;
+	char *status_message;
 };
 
 struct _ArvDeviceClass {
@@ -49,10 +69,10 @@ struct _ArvDeviceClass {
 	const char *	(*get_genicam_xml)	(ArvDevice *device, size_t *size);
 	ArvGc *		(*get_genicam)		(ArvDevice *device);
 
-	gboolean	(*read_memory)		(ArvDevice *device, guint32 address, guint32 size, void *buffer);
-	gboolean	(*write_memory)		(ArvDevice *device, guint32 address, guint32 size, void *buffer);
-	gboolean	(*read_register)	(ArvDevice *device, guint32 address, guint32 *value);
-	gboolean	(*write_register)	(ArvDevice *device, guint32 address, guint32 value);
+	gboolean	(*read_memory)		(ArvDevice *device, guint32 address, guint32 size, void *buffer, GError **error);
+	gboolean	(*write_memory)		(ArvDevice *device, guint32 address, guint32 size, void *buffer, GError **error);
+	gboolean	(*read_register)	(ArvDevice *device, guint32 address, guint32 *value, GError **error);
+	gboolean	(*write_register)	(ArvDevice *device, guint32 address, guint32 value, GError **error);
 
 	/* signals */
 	void		(*control_lost)		(ArvDevice *device);
@@ -60,20 +80,25 @@ struct _ArvDeviceClass {
 
 GType arv_device_get_type (void);
 
+GQuark 		arv_device_error_quark 		(void);
+
 ArvStream *	arv_device_create_stream	(ArvDevice *device, ArvStreamCallback callback, void *user_data);
-gboolean	arv_device_read_memory 		(ArvDevice *device, guint32 address, guint32 size,
-						 void *buffer);
-gboolean	arv_device_write_memory	 	(ArvDevice *device, guint32 address, guint32 size,
-						 void *buffer);
-gboolean 	arv_device_read_register	(ArvDevice *device, guint32 address, guint32 *value);
-gboolean	arv_device_write_register 	(ArvDevice *device, guint32 address, guint32 value);
+
+gboolean	arv_device_read_memory 		(ArvDevice *device, guint32 address, guint32 size, void *buffer, GError **error);
+gboolean	arv_device_write_memory	 	(ArvDevice *device, guint32 address, guint32 size, void *buffer, GError **error);
+gboolean 	arv_device_read_register	(ArvDevice *device, guint32 address, guint32 *value, GError **error);
+gboolean	arv_device_write_register 	(ArvDevice *device, guint32 address, guint32 value, GError **error);
 
 const char * 	arv_device_get_genicam_xml 		(ArvDevice *device, size_t *size);
 ArvGc *		arv_device_get_genicam			(ArvDevice *device);
 
-void 		arv_device_execute_command 		(ArvDevice *device, const char *feature);
+void 		arv_device_emit_control_lost_signal 	(ArvDevice *device);
 
 ArvGcNode *	arv_device_get_feature			(ArvDevice *device, const char *feature);
+
+/* This functions may change the device status */
+
+void 		arv_device_execute_command 		(ArvDevice *device, const char *feature);
 
 void		arv_device_set_string_feature_value	(ArvDevice *device, const char *feature, const char *value);
 const char *	arv_device_get_string_feature_value	(ArvDevice *device, const char *feature);
@@ -88,7 +113,10 @@ double		arv_device_get_float_feature_value	(ArvDevice *device, const char *featu
 void 		arv_device_get_float_feature_bounds 	(ArvDevice *device, const char *feature,
 							 double *min, double *max);
 
-void 		arv_device_emit_control_lost_signal 	(ArvDevice *device);
+gint64 *	arv_device_get_available_enumeration_feature_values		(ArvDevice *device, const char *feature, guint *n_values);
+const char **	arv_device_get_available_enumeration_feature_values_as_strings	(ArvDevice *device, const char *feature, guint *n_values);
+
+ArvDeviceStatus arv_device_get_status			(ArvDevice *device);
 
 G_END_DECLS
 

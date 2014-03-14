@@ -1,6 +1,6 @@
 /* Aravis - Digital camera library
  *
- * Copyright © 2009-2011 Emmanuel Pacaud
+ * Copyright © 2009-2012 Emmanuel Pacaud
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -20,15 +20,19 @@
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
 
+#include <arvconfig.h>
 #include <gtk/gtk.h>
 #include <gst/gst.h>
 #include <gst/app/gstappsrc.h>
 #include <gst/interfaces/xoverlay.h>
 #include <gdk/gdkx.h>
 #include <arv.h>
-#include <arvenumtypes.h>
 #include <stdlib.h>
 #include <math.h>
+#include <glib/gi18n-lib.h>
+#ifdef ARAVIS_WITH_NOTIFY
+#include <libnotify/notify.h>
+#endif
 
 static char *arv_viewer_option_debug_domains = NULL;
 static gboolean arv_viewer_option_auto_socket_buffer = FALSE;
@@ -42,14 +46,24 @@ typedef struct {
 	ArvStream *stream;
 	ArvBuffer *last_buffer;
 
+	const char *pixel_format_string;
+
 	GstElement *pipeline;
 	GstElement *appsrc;
+	GstElement *transform;
+
+	guint rotation;
+	gboolean flip_vertical;
+	gboolean flip_horizontal;
 
 	guint64 timestamp_offset;
 	guint64 last_timestamp;
 
 	GtkWidget *main_window;
 	GtkWidget *snapshot_button;
+	GtkWidget *rotate_cw_button;
+	GtkWidget *flip_vertical_toggle;
+	GtkWidget *flip_horizontal_toggle;
 	GtkWidget *drawing_area;
 	GtkWidget *camera_combo_box;
 	GtkWidget *trigger_combo_box;
@@ -72,6 +86,12 @@ typedef struct {
 
 	guint gain_update_event;
 	guint exposure_update_event;
+
+	gulong video_window_xid;
+
+#ifdef ARAVIS_WITH_NOTIFY
+	NotifyNotification *notification;
+#endif
 } ArvViewer;
 
 double
@@ -268,7 +288,7 @@ gboolean
 arv_viewer_update_gain_cb (void *data)
 {
 	ArvViewer *viewer = data;
-	gint64 gain;
+	double gain;
 
 	gain = arv_camera_get_gain (viewer->camera);
 
@@ -342,25 +362,6 @@ arv_viewer_release_camera (ArvViewer *viewer)
 	viewer->last_timestamp = 0;
 }
 
-static const char *
-arv_enum_to_string (GType type,
-		    guint enum_value)
-{
-	GEnumClass *enum_class;
-	GEnumValue *value;
-	const char *retval = NULL;
-
-	enum_class = g_type_class_ref (type);
-
-	value = g_enum_get_value (enum_class, enum_value);
-	if (value)
-		retval = value->value_nick;
-
-	g_type_class_unref (enum_class);
-
-	return retval;
-}
-
 void
 arv_viewer_snapshot_cb (GtkButton *button, ArvViewer *viewer)
 {
@@ -387,16 +388,93 @@ arv_viewer_snapshot_cb (GtkButton *button, ArvViewer *viewer)
 				    arv_camera_get_device_id (viewer->camera),
 				    viewer->last_buffer->width,
 				    viewer->last_buffer->height,
-				    arv_enum_to_string (ARV_TYPE_PIXEL_FORMAT,
-							viewer->last_buffer->pixel_format),
+				    viewer->pixel_format_string != NULL ? viewer->pixel_format_string : "Unknown",
 				    date_string);
 	path = g_build_filename (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES),
 				 "Aravis", filename, NULL);
 	g_file_set_contents (path, viewer->last_buffer->data, viewer->last_buffer->size, NULL);
+
+#ifdef ARAVIS_WITH_NOTIFY
+	if (viewer->notification) {
+		notify_notification_update (viewer->notification,
+					    "Snapshot saved to Image folder",
+					    path,
+					    "gtk-save");
+		notify_notification_show (viewer->notification, NULL);
+	}
+#endif
+
 	g_free (path);
 	g_free (filename);
 	g_free (date_string);
 	g_date_time_unref (date);
+}
+
+static void
+_update_transform (ArvViewer *viewer)
+{
+	static const gint methods[4][4] = {
+		{0, 1, 2, 3},
+		{4, 6, 5, 7},
+		{5, 7, 4, 6},
+		{2, 3, 0, 1}
+	};
+	int index = (viewer->flip_horizontal ? 1 : 0) + (viewer->flip_vertical ? 2 : 0);
+
+	g_object_set (viewer->transform, "method", methods[index][viewer->rotation % 4], NULL);
+}
+
+void
+arv_viewer_rotate_cw_cb (GtkButton *button, ArvViewer *viewer)
+{
+	viewer->rotation = (viewer->rotation + 1) % 4;
+
+	_update_transform (viewer);
+}
+
+void
+arv_viewer_flip_horizontal_cb (GtkToggleButton *toggle, ArvViewer *viewer)
+{
+	viewer->flip_horizontal = gtk_toggle_button_get_active (toggle);
+
+	_update_transform (viewer);
+}
+
+void
+arv_viewer_flip_vertical_cb (GtkToggleButton *toggle, ArvViewer *viewer)
+{
+	viewer->flip_vertical = gtk_toggle_button_get_active (toggle);
+
+	_update_transform (viewer);
+}
+
+static GstBusSyncReply
+bus_sync_handler (GstBus *bus, GstMessage *message, gpointer user_data)
+{
+	ArvViewer *viewer = user_data;
+
+	if (GST_MESSAGE_TYPE (message) != GST_MESSAGE_ELEMENT)
+		return GST_BUS_PASS;
+	if (!gst_structure_has_name (message->structure, "prepare-xwindow-id"))
+		return GST_BUS_PASS;
+
+	if (viewer->video_window_xid != 0) {
+		GstXOverlay *xoverlay;
+
+		xoverlay = GST_X_OVERLAY (GST_MESSAGE_SRC (message));
+		gst_x_overlay_set_window_handle (xoverlay, viewer->video_window_xid);
+
+		if (g_strcmp0 (G_OBJECT_TYPE_NAME (xoverlay), "GstXvImageSink"))
+			g_object_set (xoverlay, "draw-borders", TRUE, NULL);
+
+		g_object_set (xoverlay, "force-aspect-ratio", TRUE, "sync", FALSE, NULL);
+	} else {
+		g_warning ("Should have obtained video_window_xid by now!");
+	}
+
+	gst_message_unref (message);
+
+	return GST_BUS_DROP;
 }
 
 void
@@ -404,10 +482,10 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *list_store;
-	GdkWindow *window;
 	GstCaps *caps;
 	GstElement *ffmpegcolorspace;
-	GstElement *ximagesink;
+	GstElement *videosink;
+	GstBus *bus;
 	ArvPixelFormat pixel_format;
 	char *camera_id;
 	char *string;
@@ -415,11 +493,15 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 	int width;
 	int height;
 	unsigned int i;
-	gulong window_xid;
 	double frame_rate;
-	gint gain_min, gain_max;
+	double gain_min, gain_max;
 	gboolean auto_gain, auto_exposure;
 	const char *caps_string;
+	gboolean is_frame_rate_available;
+	gboolean is_exposure_available;
+	gboolean is_exposure_auto_available;
+	gboolean is_gain_available;
+	gboolean is_gain_auto_available;
 
 	g_return_if_fail (viewer != NULL);
 
@@ -431,6 +513,7 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 	viewer->camera = arv_camera_new (camera_id);
 	g_free (camera_id);
 
+	viewer->rotation = 0;
 	viewer->stream = arv_camera_create_stream (viewer->camera, NULL, NULL);
 	if (viewer->stream == NULL) {
 		g_object_unref (viewer->camera);
@@ -460,11 +543,18 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 
 	arv_camera_get_region (viewer->camera, NULL, NULL, &width, &height);
 	pixel_format = arv_camera_get_pixel_format (viewer->camera);
+	viewer->pixel_format_string = arv_camera_get_pixel_format_as_string (viewer->camera);
 	arv_camera_get_exposure_time_bounds (viewer->camera, &viewer->exposure_min, &viewer->exposure_max);
 	arv_camera_get_gain_bounds (viewer->camera, &gain_min, &gain_max);
 	frame_rate = arv_camera_get_frame_rate (viewer->camera);
 	auto_gain = arv_camera_get_gain_auto (viewer->camera) != ARV_AUTO_OFF;
 	auto_exposure = arv_camera_get_gain_auto (viewer->camera) != ARV_AUTO_OFF;
+
+	is_frame_rate_available = arv_camera_is_frame_rate_available (viewer->camera);
+	is_exposure_available = arv_camera_is_exposure_time_available (viewer->camera);
+	is_exposure_auto_available = arv_camera_is_exposure_auto_available (viewer->camera);
+	is_gain_available = arv_camera_is_gain_available (viewer->camera);
+	is_gain_auto_available = arv_camera_is_gain_auto_available (viewer->camera);
 
 	g_signal_handler_block (viewer->gain_hscale, viewer->gain_hscale_changed);
 	g_signal_handler_block (viewer->gain_spin_button, viewer->gain_spin_changed);
@@ -480,9 +570,17 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 	gtk_range_set_range (GTK_RANGE (viewer->exposure_hscale), 0.0, 1.0);
 	gtk_range_set_range (GTK_RANGE (viewer->gain_hscale), gain_min, gain_max);
 
+	gtk_widget_set_sensitive (viewer->frame_rate_entry, is_frame_rate_available);
+
 	string = g_strdup_printf ("%g", frame_rate);
 	gtk_entry_set_text (GTK_ENTRY (viewer->frame_rate_entry), string);
 	g_free (string);
+
+	gtk_widget_set_sensitive (viewer->gain_hscale, is_gain_available);
+	gtk_widget_set_sensitive (viewer->gain_spin_button, is_gain_available);
+
+	gtk_widget_set_sensitive (viewer->exposure_hscale, is_exposure_available);
+	gtk_widget_set_sensitive (viewer->exposure_spin_button, is_exposure_available);
 
 	g_signal_handler_unblock (viewer->gain_hscale, viewer->gain_hscale_changed);
 	g_signal_handler_unblock (viewer->gain_spin_button, viewer->gain_spin_changed);
@@ -497,14 +595,21 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 
 	g_signal_handler_block (viewer->auto_gain_toggle, viewer->auto_gain_clicked);
 	g_signal_handler_block (viewer->auto_exposure_toggle, viewer->auto_exposure_clicked);
+	
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (viewer->auto_gain_toggle), auto_gain);
 	gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (viewer->auto_exposure_toggle), auto_exposure);
+
+	gtk_widget_set_sensitive (viewer->auto_gain_toggle, is_gain_auto_available);
+	gtk_widget_set_sensitive (viewer->auto_exposure_toggle, is_exposure_auto_available);
+
 	g_signal_handler_unblock (viewer->auto_gain_toggle, viewer->auto_gain_clicked);
 	g_signal_handler_unblock (viewer->auto_exposure_toggle, viewer->auto_exposure_clicked);
 
 	caps_string = arv_pixel_format_to_gst_caps_string (pixel_format);
-	if (caps_string == NULL)
+	if (caps_string == NULL) {
+		g_message ("GStreamer cannot understand the camera pixel format: 0x%x!\n", (int) pixel_format);
 		return;
+	}
 
 	arv_camera_start_acquisition (viewer->camera);
 
@@ -512,12 +617,24 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 
 	viewer->appsrc = gst_element_factory_make ("appsrc", NULL);
 	ffmpegcolorspace = gst_element_factory_make ("ffmpegcolorspace", NULL);
-	ximagesink = gst_element_factory_make ("xvimagesink", NULL);
+	viewer->transform = gst_element_factory_make ("videoflip", NULL);
+	videosink = gst_element_factory_make ("autovideosink", NULL);
 
-	g_object_set (ximagesink, "force-aspect-ratio", TRUE, "draw-borders", TRUE, "sync", FALSE, NULL);
+	if (g_str_has_prefix (caps_string, "video/x-raw-bayer")) {
+		GstElement *bayer2rgb;
 
-	gst_bin_add_many (GST_BIN (viewer->pipeline), viewer->appsrc, ffmpegcolorspace, ximagesink, NULL);
-	gst_element_link_many (viewer->appsrc, ffmpegcolorspace, ximagesink, NULL);
+		bayer2rgb = gst_element_factory_make ("bayer2rgb", NULL);
+
+		gst_bin_add_many (GST_BIN (viewer->pipeline), viewer->appsrc, bayer2rgb,
+				  ffmpegcolorspace, viewer->transform, videosink, NULL);
+		gst_element_link_many (viewer->appsrc, bayer2rgb,
+				       ffmpegcolorspace, viewer->transform, videosink, NULL);
+	} else {
+		gst_bin_add_many (GST_BIN (viewer->pipeline), viewer->appsrc,
+				  ffmpegcolorspace, viewer->transform, videosink, NULL);
+		gst_element_link_many (viewer->appsrc, ffmpegcolorspace,
+				       viewer->transform, videosink, NULL);
+	}
 
 	caps = gst_caps_from_string (caps_string);
 	gst_caps_set_simple (caps,
@@ -528,11 +645,11 @@ arv_viewer_select_camera_cb (GtkComboBox *combo_box, ArvViewer *viewer)
 	gst_app_src_set_caps (GST_APP_SRC (viewer->appsrc), caps);
 	gst_caps_unref (caps);
 
-	gst_element_set_state (viewer->pipeline, GST_STATE_PLAYING);
+	bus = gst_pipeline_get_bus (GST_PIPELINE (viewer->pipeline));
+	gst_bus_set_sync_handler (bus, (GstBusSyncHandler) bus_sync_handler, viewer);
+	gst_object_unref (bus);
 
-	window = gtk_widget_get_window (viewer->drawing_area);
-	window_xid = GDK_WINDOW_XID (window);
-	gst_x_overlay_set_xwindow_id (GST_X_OVERLAY (ximagesink), window_xid);
+	gst_element_set_state (viewer->pipeline, GST_STATE_PLAYING);
 
 	g_signal_connect (viewer->stream, "new-buffer", G_CALLBACK (arv_viewer_new_buffer_cb), viewer);
 }
@@ -541,6 +658,11 @@ void
 arv_viewer_free (ArvViewer *viewer)
 {
 	g_return_if_fail (viewer != NULL);
+
+#ifdef ARAVIS_WITH_NOTIFY
+	if (viewer->notification)
+		g_object_unref (viewer->notification);
+#endif
 
 	if (viewer->exposure_update_event > 0)
 		g_source_remove (viewer->exposure_update_event);
@@ -558,6 +680,12 @@ arv_viewer_quit_cb (GtkWidget *widget, ArvViewer *viewer)
 	gtk_main_quit ();
 }
 
+static void
+drawing_area_realize_cb (GtkWidget * widget, ArvViewer *viewer)
+{
+	viewer->video_window_xid = GDK_WINDOW_XID (gtk_widget_get_window (widget));
+}
+
 ArvViewer *
 arv_viewer_new (void)
 {
@@ -570,8 +698,17 @@ arv_viewer_new (void)
 
 	builder = gtk_builder_new ();
 
-	ui_filename = g_build_filename (ARAVIS_DATA_DIR, "arv-viewer.ui", NULL);
-	gtk_builder_add_from_file (builder, ui_filename, NULL);
+	ui_filename = g_build_filename (ARAVIS_DATA_DIR,
+#if GTK_CHECK_VERSION(3,0,0)
+					"arv-viewer-3.ui",
+#else
+					"arv-viewer-2.ui",
+#endif
+					NULL);
+
+	if (!gtk_builder_add_from_file (builder, ui_filename, NULL))
+		g_error ("The user interface file is missing ('%s')", ui_filename);
+
 	g_free (ui_filename);
 
 	viewer->camera_combo_box = GTK_WIDGET (gtk_builder_get_object (builder, "camera_combobox"));
@@ -586,6 +723,9 @@ arv_viewer_new (void)
 	viewer->gain_hscale = GTK_WIDGET (gtk_builder_get_object (builder, "gain_hscale"));
 	viewer->auto_exposure_toggle = GTK_WIDGET (gtk_builder_get_object (builder, "auto_exposure_togglebutton"));
 	viewer->auto_gain_toggle = GTK_WIDGET (gtk_builder_get_object (builder, "auto_gain_togglebutton"));
+	viewer->rotate_cw_button = GTK_WIDGET (gtk_builder_get_object (builder, "rotate_cw_button"));
+	viewer->flip_vertical_toggle = GTK_WIDGET (gtk_builder_get_object (builder, "flip_vertical_togglebutton"));
+	viewer->flip_horizontal_toggle = GTK_WIDGET (gtk_builder_get_object (builder, "flip_horizontal_togglebutton"));
 
 	g_object_unref (builder);
 
@@ -595,10 +735,16 @@ arv_viewer_new (void)
 
 	gtk_widget_set_no_show_all (viewer->trigger_combo_box, TRUE);
 
+	g_signal_connect (viewer->drawing_area, "realize", G_CALLBACK (drawing_area_realize_cb), viewer);
+	gtk_widget_set_double_buffered (viewer->drawing_area, FALSE);
+
 	gtk_widget_show_all (viewer->main_window);
 
 	g_signal_connect (viewer->main_window, "destroy", G_CALLBACK (arv_viewer_quit_cb), viewer);
 	g_signal_connect (viewer->snapshot_button, "clicked", G_CALLBACK (arv_viewer_snapshot_cb), viewer);
+	g_signal_connect (viewer->rotate_cw_button, "clicked", G_CALLBACK (arv_viewer_rotate_cw_cb), viewer);
+	g_signal_connect (viewer->flip_horizontal_toggle, "clicked", G_CALLBACK (arv_viewer_flip_horizontal_cb), viewer);
+	g_signal_connect (viewer->flip_vertical_toggle, "clicked", G_CALLBACK (arv_viewer_flip_vertical_cb), viewer);
 	g_signal_connect (viewer->camera_combo_box, "changed", G_CALLBACK (arv_viewer_select_camera_cb), viewer);
 
 	g_signal_connect (viewer->frame_rate_entry, "changed", G_CALLBACK (arv_viewer_frame_rate_entry_cb), viewer);
@@ -615,6 +761,10 @@ arv_viewer_new (void)
 							  G_CALLBACK (arv_viewer_auto_exposure_cb), viewer);
 	viewer->auto_gain_clicked = g_signal_connect (viewer->auto_gain_toggle, "clicked",
 						      G_CALLBACK (arv_viewer_auto_gain_cb), viewer);
+
+#ifdef ARAVIS_WITH_NOTIFY
+	viewer->notification = notify_notification_new (NULL, NULL, NULL);
+#endif
 
 	return viewer;
 }
@@ -651,6 +801,10 @@ main (int argc,char *argv[])
 	GOptionContext *context;
 	GError *error = NULL;
 
+	bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
+	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+	textdomain (GETTEXT_PACKAGE);
+
 	g_thread_init (NULL);
 
 	context = g_option_context_new (NULL);
@@ -671,12 +825,22 @@ main (int argc,char *argv[])
 
 	arv_debug_enable (arv_viewer_option_debug_domains);
 
+	arv_enable_interface ("Fake");
+
+#ifdef ARAVIS_WITH_NOTIFY
+	notify_init ("Aravis Viewer");
+#endif
+
 	viewer = arv_viewer_new ();
 
 	arv_viewer_update_device_list_cb (viewer);
 	arv_viewer_select_camera_cb (NULL, viewer);
 
 	gtk_main ();
+
+#ifdef ARAVIS_WITH_NOTIFY
+	notify_uninit ();
+#endif
 
 	/* For debug purpose only */
 	arv_shutdown ();

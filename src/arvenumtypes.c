@@ -128,161 +128,6 @@ arv_acquisition_mode_get_type (void)
 	return the_type;
 }
 
-GType
-arv_pixel_format_get_type (void)
-{
-	static GType the_type = 0;
-
-	if (the_type == 0)
-	{
-		static const GEnumValue values[] = {
-			{ ARV_PIXEL_FORMAT_MONO_8,
-			  "ARV_PIXEL_FORMAT_MONO_8",
-			  "mono-8" },
-			{ ARV_PIXEL_FORMAT_MONO_8_SIGNED,
-			  "ARV_PIXEL_FORMAT_MONO_8_SIGNED",
-			  "mono-8-signed" },
-			{ ARV_PIXEL_FORMAT_MONO_10,
-			  "ARV_PIXEL_FORMAT_MONO_10",
-			  "mono-10" },
-			{ ARV_PIXEL_FORMAT_MONO_10_PACKED,
-			  "ARV_PIXEL_FORMAT_MONO_10_PACKED",
-			  "mono-10-packed" },
-			{ ARV_PIXEL_FORMAT_MONO_12,
-			  "ARV_PIXEL_FORMAT_MONO_12",
-			  "mono-12" },
-			{ ARV_PIXEL_FORMAT_MONO_12_PACKED,
-			  "ARV_PIXEL_FORMAT_MONO_12_PACKED",
-			  "mono-12-packed" },
-			{ ARV_PIXEL_FORMAT_MONO_14,
-			  "ARV_PIXEL_FORMAT_MONO_14",
-			  "mono-14" },
-			{ ARV_PIXEL_FORMAT_MONO_16,
-			  "ARV_PIXEL_FORMAT_MONO_16",
-			  "mono-16" },
-			{ ARV_PIXEL_FORMAT_BAYER_GR_8,
-			  "ARV_PIXEL_FORMAT_BAYER_GR_8",
-			  "bayer-gr-8" },
-			{ ARV_PIXEL_FORMAT_BAYER_RG_8,
-			  "ARV_PIXEL_FORMAT_BAYER_RG_8",
-			  "bayer-rg-8" },
-			{ ARV_PIXEL_FORMAT_BAYER_GB_8,
-			  "ARV_PIXEL_FORMAT_BAYER_GB_8",
-			  "bayer-gb-8" },
-			{ ARV_PIXEL_FORMAT_BAYER_BG_8,
-			  "ARV_PIXEL_FORMAT_BAYER_BG_8",
-			  "bayer-bg-8" },
-			{ ARV_PIXEL_FORMAT_BAYER_GR_10,
-			  "ARV_PIXEL_FORMAT_BAYER_GR_10",
-			  "bayer-gr-10" },
-			{ ARV_PIXEL_FORMAT_BAYER_RG_10,
-			  "ARV_PIXEL_FORMAT_BAYER_RG_10",
-			  "bayer-rg-10" },
-			{ ARV_PIXEL_FORMAT_BAYER_GB_10,
-			  "ARV_PIXEL_FORMAT_BAYER_GB_10",
-			  "bayer-gb-10" },
-			{ ARV_PIXEL_FORMAT_BAYER_BG_10,
-			  "ARV_PIXEL_FORMAT_BAYER_BG_10",
-			  "bayer-bg-10" },
-			{ ARV_PIXEL_FORMAT_BAYER_GR_12,
-			  "ARV_PIXEL_FORMAT_BAYER_GR_12",
-			  "bayer-gr-12" },
-			{ ARV_PIXEL_FORMAT_BAYER_RG_12,
-			  "ARV_PIXEL_FORMAT_BAYER_RG_12",
-			  "bayer-rg-12" },
-			{ ARV_PIXEL_FORMAT_BAYER_GB_12,
-			  "ARV_PIXEL_FORMAT_BAYER_GB_12",
-			  "bayer-gb-12" },
-			{ ARV_PIXEL_FORMAT_BAYER_BG_12,
-			  "ARV_PIXEL_FORMAT_BAYER_BG_12",
-			  "bayer-bg-12" },
-			{ ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED,
-			  "ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED",
-			  "bayer-bg-12-packed" },
-			{ ARV_PIXEL_FORMAT_RGB_8_PACKED,
-			  "ARV_PIXEL_FORMAT_RGB_8_PACKED",
-			  "rgb-8-packed" },
-			{ ARV_PIXEL_FORMAT_BGR_8_PACKED,
-			  "ARV_PIXEL_FORMAT_BGR_8_PACKED",
-			  "bgr-8-packed" },
-			{ ARV_PIXEL_FORMAT_RGBA_8_PACKED,
-			  "ARV_PIXEL_FORMAT_RGBA_8_PACKED",
-			  "rgba-8-packed" },
-			{ ARV_PIXEL_FORMAT_BGRA_8_PACKED,
-			  "ARV_PIXEL_FORMAT_BGRA_8_PACKED",
-			  "bgra-8-packed" },
-			{ ARV_PIXEL_FORMAT_RGB_10_PACKED,
-			  "ARV_PIXEL_FORMAT_RGB_10_PACKED",
-			  "rgb-10-packed" },
-			{ ARV_PIXEL_FORMAT_BGR_10_PACKED,
-			  "ARV_PIXEL_FORMAT_BGR_10_PACKED",
-			  "bgr-10-packed" },
-			{ ARV_PIXEL_FORMAT_RGB_12_PACKED,
-			  "ARV_PIXEL_FORMAT_RGB_12_PACKED",
-			  "rgb-12-packed" },
-			{ ARV_PIXEL_FORMAT_BGR_12_PACKED,
-			  "ARV_PIXEL_FORMAT_BGR_12_PACKED",
-			  "bgr-12-packed" },
-			{ ARV_PIXEL_FORMAT_YUV_411_PACKED,
-			  "ARV_PIXEL_FORMAT_YUV_411_PACKED",
-			  "yuv-411-packed" },
-			{ ARV_PIXEL_FORMAT_YUV_422_PACKED,
-			  "ARV_PIXEL_FORMAT_YUV_422_PACKED",
-			  "yuv-422-packed" },
-			{ ARV_PIXEL_FORMAT_YUV_444_PACKED,
-			  "ARV_PIXEL_FORMAT_YUV_444_PACKED",
-			  "yuv-444-packed" },
-			{ ARV_PIXEL_FORMAT_RGB_8_PLANAR,
-			  "ARV_PIXEL_FORMAT_RGB_8_PLANAR",
-			  "rgb-8-planar" },
-			{ ARV_PIXEL_FORMAT_RGB_10_PLANAR,
-			  "ARV_PIXEL_FORMAT_RGB_10_PLANAR",
-			  "rgb-10-planar" },
-			{ ARV_PIXEL_FORMAT_RGB_12_PLANAR,
-			  "ARV_PIXEL_FORMAT_RGB_12_PLANAR",
-			  "rgb-12-planar" },
-			{ ARV_PIXEL_FORMAT_RGB_16_PLANAR,
-			  "ARV_PIXEL_FORMAT_RGB_16_PLANAR",
-			  "rgb-16-planar" },
-			{ ARV_PIXEL_FORMAT_YUV_422_YUYV_PACKED,
-			  "ARV_PIXEL_FORMAT_YUV_422_YUYV_PACKED",
-			  "yuv-422-yuyv-packed" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_GR_12_PACKED,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_GR_12_PACKED",
-			  "custom-bayer-gr-12-packed" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_RG_12_PACKED,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_RG_12_PACKED",
-			  "custom-bayer-rg-12-packed" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_GB_12_PACKED,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_GB_12_PACKED",
-			  "custom-bayer-gb-12-packed" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_BG_12_PACKED,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_BG_12_PACKED",
-			  "custom-bayer-bg-12-packed" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_YUV_422_YUYV_PACKED,
-			  "ARV_PIXEL_FORMAT_CUSTOM_YUV_422_YUYV_PACKED",
-			  "custom-yuv-422-yuyv-packed" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_GR_16,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_GR_16",
-			  "custom-bayer-gr-16" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_RG_16,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_RG_16",
-			  "custom-bayer-rg-16" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_GB_16,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_GB_16",
-			  "custom-bayer-gb-16" },
-			{ ARV_PIXEL_FORMAT_CUSTOM_BAYER_BG_16,
-			  "ARV_PIXEL_FORMAT_CUSTOM_BAYER_BG_16",
-			  "custom-bayer-bg-16" },
-			{ 0, NULL, NULL }
-		};
-		the_type = g_enum_register_static (
-				g_intern_static_string ("ArvPixelFormat"),
-				values);
-	}
-	return the_type;
-}
-
 #include "arvdebug.h"
 
 GType
@@ -317,7 +162,210 @@ arv_debug_level_get_type (void)
 	return the_type;
 }
 
-#include "arvgcregister.h"
+#include "arvdomnode.h"
+
+GType
+arv_dom_node_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_DOM_NODE_TYPE_ELEMENT_NODE,
+			  "ARV_DOM_NODE_TYPE_ELEMENT_NODE",
+			  "element-node" },
+			{ ARV_DOM_NODE_TYPE_ATTRIBUTE_NODE,
+			  "ARV_DOM_NODE_TYPE_ATTRIBUTE_NODE",
+			  "attribute-node" },
+			{ ARV_DOM_NODE_TYPE_TEXT_NODE,
+			  "ARV_DOM_NODE_TYPE_TEXT_NODE",
+			  "text-node" },
+			{ ARV_DOM_NODE_TYPE_CDATA_SECTION_NODE,
+			  "ARV_DOM_NODE_TYPE_CDATA_SECTION_NODE",
+			  "cdata-section-node" },
+			{ ARV_DOM_NODE_TYPE_ENTITY_REFERENCE_NODE,
+			  "ARV_DOM_NODE_TYPE_ENTITY_REFERENCE_NODE",
+			  "entity-reference-node" },
+			{ ARV_DOM_NODE_TYPE_ENTITY_NODE,
+			  "ARV_DOM_NODE_TYPE_ENTITY_NODE",
+			  "entity-node" },
+			{ ARV_DOM_NODE_TYPE_PROCESSING_INSTRUCTION_NODE,
+			  "ARV_DOM_NODE_TYPE_PROCESSING_INSTRUCTION_NODE",
+			  "processing-instruction-node" },
+			{ ARV_DOM_NODE_TYPE_COMMENT_NODE,
+			  "ARV_DOM_NODE_TYPE_COMMENT_NODE",
+			  "comment-node" },
+			{ ARV_DOM_NODE_TYPE_DOCUMENT_NODE,
+			  "ARV_DOM_NODE_TYPE_DOCUMENT_NODE",
+			  "document-node" },
+			{ ARV_DOM_NODE_TYPE_DOCUMENT_TYPE_NODE,
+			  "ARV_DOM_NODE_TYPE_DOCUMENT_TYPE_NODE",
+			  "document-type-node" },
+			{ ARV_DOM_NODE_TYPE_DOCUMENT_FRAGMENT_NODE,
+			  "ARV_DOM_NODE_TYPE_DOCUMENT_FRAGMENT_NODE",
+			  "document-fragment-node" },
+			{ ARV_DOM_NODE_TYPE_NOTATION_NODE,
+			  "ARV_DOM_NODE_TYPE_NOTATION_NODE",
+			  "notation-node" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvDomNodeType"),
+				values);
+	}
+	return the_type;
+}
+
+#include "arvgcpropertynode.h"
+
+GType
+arv_gc_property_node_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_GC_PROPERTY_NODE_TYPE_UNKNOWN,
+			  "ARV_GC_PROPERTY_NODE_TYPE_UNKNOWN",
+			  "unknown" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_VALUE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_VALUE",
+			  "value" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_ADDRESS,
+			  "ARV_GC_PROPERTY_NODE_TYPE_ADDRESS",
+			  "address" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_DESCRIPTION,
+			  "ARV_GC_PROPERTY_NODE_TYPE_DESCRIPTION",
+			  "description" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_TOOLTIP,
+			  "ARV_GC_PROPERTY_NODE_TYPE_TOOLTIP",
+			  "tooltip" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_DISPLAY_NAME,
+			  "ARV_GC_PROPERTY_NODE_TYPE_DISPLAY_NAME",
+			  "display-name" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_MINIMUM,
+			  "ARV_GC_PROPERTY_NODE_TYPE_MINIMUM",
+			  "minimum" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_MAXIMUM,
+			  "ARV_GC_PROPERTY_NODE_TYPE_MAXIMUM",
+			  "maximum" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_INCREMENT,
+			  "ARV_GC_PROPERTY_NODE_TYPE_INCREMENT",
+			  "increment" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_UNIT,
+			  "ARV_GC_PROPERTY_NODE_TYPE_UNIT",
+			  "unit" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_ON_VALUE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_ON_VALUE",
+			  "on-value" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_OFF_VALUE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_OFF_VALUE",
+			  "off-value" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_LENGTH,
+			  "ARV_GC_PROPERTY_NODE_TYPE_LENGTH",
+			  "length" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_FORMULA,
+			  "ARV_GC_PROPERTY_NODE_TYPE_FORMULA",
+			  "formula" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_FORMULA_TO,
+			  "ARV_GC_PROPERTY_NODE_TYPE_FORMULA_TO",
+			  "formula-to" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_FORMULA_FROM,
+			  "ARV_GC_PROPERTY_NODE_TYPE_FORMULA_FROM",
+			  "formula-from" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_EXPRESSION,
+			  "ARV_GC_PROPERTY_NODE_TYPE_EXPRESSION",
+			  "expression" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_CONSTANT,
+			  "ARV_GC_PROPERTY_NODE_TYPE_CONSTANT",
+			  "constant" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_ACCESS_MODE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_ACCESS_MODE",
+			  "access-mode" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_CACHABLE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_CACHABLE",
+			  "cachable" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_POLLING_TIME,
+			  "ARV_GC_PROPERTY_NODE_TYPE_POLLING_TIME",
+			  "polling-time" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_ENDIANESS,
+			  "ARV_GC_PROPERTY_NODE_TYPE_ENDIANESS",
+			  "endianess" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_SIGN,
+			  "ARV_GC_PROPERTY_NODE_TYPE_SIGN",
+			  "sign" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_LSB,
+			  "ARV_GC_PROPERTY_NODE_TYPE_LSB",
+			  "lsb" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_MSB,
+			  "ARV_GC_PROPERTY_NODE_TYPE_MSB",
+			  "msb" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_BIT,
+			  "ARV_GC_PROPERTY_NODE_TYPE_BIT",
+			  "bit" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_COMMAND_VALUE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_COMMAND_VALUE",
+			  "command-value" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_UNKNONW,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_UNKNONW",
+			  "p-unknonw" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_FEATURE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_FEATURE",
+			  "p-feature" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_VALUE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_VALUE",
+			  "p-value" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_ADDRESS,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_ADDRESS",
+			  "p-address" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_IS_IMPLEMENTED,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_IS_IMPLEMENTED",
+			  "p-is-implemented" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_IS_LOCKED,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_IS_LOCKED",
+			  "p-is-locked" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_IS_AVAILABLE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_IS_AVAILABLE",
+			  "p-is-available" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_MINIMUM,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_MINIMUM",
+			  "p-minimum" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_MAXIMUM,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_MAXIMUM",
+			  "p-maximum" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_INCREMENT,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_INCREMENT",
+			  "p-increment" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_INDEX,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_INDEX",
+			  "p-index" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_LENGTH,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_LENGTH",
+			  "p-length" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_PORT,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_PORT",
+			  "p-port" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_VARIABLE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_VARIABLE",
+			  "p-variable" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_INVALIDATOR,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_INVALIDATOR",
+			  "p-invalidator" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_P_COMMAND_VALUE,
+			  "ARV_GC_PROPERTY_NODE_TYPE_P_COMMAND_VALUE",
+			  "p-command-value" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvGcPropertyNodeType"),
+				values);
+	}
+	return the_type;
+}
+
+#include "arvgcregisternode.h"
 
 GType
 arv_gc_sign_get_type (void)
@@ -343,32 +391,66 @@ arv_gc_sign_get_type (void)
 }
 
 GType
-arv_gc_register_type_get_type (void)
+arv_gc_register_node_type_get_type (void)
 {
 	static GType the_type = 0;
 
 	if (the_type == 0)
 	{
 		static const GEnumValue values[] = {
-			{ ARV_GC_REGISTER_TYPE_REGISTER,
-			  "ARV_GC_REGISTER_TYPE_REGISTER",
+			{ ARV_GC_REGISTER_NODE_TYPE_REGISTER,
+			  "ARV_GC_REGISTER_NODE_TYPE_REGISTER",
 			  "register" },
-			{ ARV_GC_REGISTER_TYPE_INTEGER,
-			  "ARV_GC_REGISTER_TYPE_INTEGER",
+			{ ARV_GC_REGISTER_NODE_TYPE_INTEGER,
+			  "ARV_GC_REGISTER_NODE_TYPE_INTEGER",
 			  "integer" },
-			{ ARV_GC_REGISTER_TYPE_MASKED_INTEGER,
-			  "ARV_GC_REGISTER_TYPE_MASKED_INTEGER",
+			{ ARV_GC_REGISTER_NODE_TYPE_MASKED_INTEGER,
+			  "ARV_GC_REGISTER_NODE_TYPE_MASKED_INTEGER",
 			  "masked-integer" },
-			{ ARV_GC_REGISTER_TYPE_FLOAT,
-			  "ARV_GC_REGISTER_TYPE_FLOAT",
+			{ ARV_GC_REGISTER_NODE_TYPE_FLOAT,
+			  "ARV_GC_REGISTER_NODE_TYPE_FLOAT",
 			  "float" },
-			{ ARV_GC_REGISTER_TYPE_STRING,
-			  "ARV_GC_REGISTER_TYPE_STRING",
+			{ ARV_GC_REGISTER_NODE_TYPE_STRING,
+			  "ARV_GC_REGISTER_NODE_TYPE_STRING",
 			  "string" },
+			{ ARV_GC_REGISTER_NODE_TYPE_STRUCT_REGISTER,
+			  "ARV_GC_REGISTER_NODE_TYPE_STRUCT_REGISTER",
+			  "struct-register" },
 			{ 0, NULL, NULL }
 		};
 		the_type = g_enum_register_static (
-				g_intern_static_string ("ArvGcRegisterType"),
+				g_intern_static_string ("ArvGcRegisterNodeType"),
+				values);
+	}
+	return the_type;
+}
+
+#include "arvdevice.h"
+
+GType
+arv_device_status_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_DEVICE_STATUS_UNKNOWN,
+			  "ARV_DEVICE_STATUS_UNKNOWN",
+			  "unknown" },
+			{ ARV_DEVICE_STATUS_SUCCESS,
+			  "ARV_DEVICE_STATUS_SUCCESS",
+			  "success" },
+			{ ARV_DEVICE_STATUS_TIMEOUT,
+			  "ARV_DEVICE_STATUS_TIMEOUT",
+			  "timeout" },
+			{ ARV_DEVICE_STATUS_WRITE_ERROR,
+			  "ARV_DEVICE_STATUS_WRITE_ERROR",
+			  "write-error" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvDeviceStatus"),
 				values);
 	}
 	return the_type;
@@ -577,6 +659,9 @@ arv_gvcp_command_get_type (void)
 			{ ARV_GVCP_COMMAND_WRITE_MEMORY_ACK,
 			  "ARV_GVCP_COMMAND_WRITE_MEMORY_ACK",
 			  "write-memory-ack" },
+			{ ARV_GVCP_COMMAND_PENDING_ACK,
+			  "ARV_GVCP_COMMAND_PENDING_ACK",
+			  "pending-ack" },
 			{ 0, NULL, NULL }
 		};
 		the_type = g_enum_register_static (

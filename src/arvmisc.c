@@ -316,96 +316,6 @@ arv_statistic_to_string (const ArvStatistic *statistic)
 	return str;
 }
 
-/* ArvStr implementation */
-
-gboolean
-arv_str_parse_double (char **str, double *x)
-{
-	char *end, *c;
-	gboolean integer_part = FALSE;
-	gboolean fractional_part = FALSE;
-	gboolean exponent_part = FALSE;
-	double mantissa = 0.0;
-	double exponent =0.0;
-	double divisor;
-	gboolean mantissa_sign = 1.0;
-	gboolean exponent_sign = 1.0;
-
-	c = *str;
-
-	if (*c == '-') {
-		mantissa_sign = -1.0;
-		c++;
-	} else if (*c == '+')
-		c++;
-
-	if (*c >= '0' && *c <= '9') {
-		integer_part = TRUE;
-		mantissa = *c - '0';
-		c++;
-
-		while (*c >= '0' && *c <= '9') {
-			mantissa = mantissa * 10.0 + *c - '0';
-			c++;
-		}
-	}
-
-
-	if (*c == '.')
-		c++;
-	else if (!integer_part)
-		return FALSE;
-
-	if (*c >= '0' && *c <= '9') {
-		fractional_part = TRUE;
-		mantissa += (*c - '0') * 0.1;
-		divisor = 0.01;
-		c++;
-
-		while (*c >= '0' && *c <= '9') {
-			mantissa += (*c - '0') * divisor;
-			divisor *= 0.1;
-			c++;
-		}
-	}
-
-	if (!fractional_part && !integer_part)
-		return FALSE;
-
-	end = c;
-
-	if (*c == 'E' || *c == 'e') {
-		c++;
-
-		if (*c == '-') {
-			exponent_sign = -1.0;
-			c++;
-		} else if (*c == '+')
-			c++;
-
-		if (*c >= '0' && *c <= '9') {
-			exponent_part = TRUE;
-			exponent = *c - '0';
-			c++;
-
-			while (*c >= '0' && *c <= '9') {
-				exponent = exponent * 10.0 + *c - '0';
-				c++;
-			}
-		}
-	}
-
-	if (exponent_part) {
-		end = c;
-		*x = mantissa_sign * mantissa * pow (10.0, exponent_sign * exponent);
-	} else
-		*x = mantissa_sign * mantissa;
-
-	*str = end;
-
-	return TRUE;
-}
-
 /**
  * SECTION: arvvalue
  * @short_description: An int64/double value storage
@@ -511,81 +421,6 @@ double
 arv_value_holds_double (ArvValue *value)
 {
 	return value->type == G_TYPE_DOUBLE;
-}
-
-/* GValue utilities */
-
-/**
- * arv_create_int64_g_value:
- * @v_int64: default 64 bit integer value
- * Return value: (transfer full) a new GValue holding a gint64.
- */
-
-GValue *
-arv_create_int64_g_value (gint64 v_int64)
-{
-	GValue *value = g_new0 (GValue, 1);
-
-	g_value_init (value, G_TYPE_INT64);
-	g_value_set_int64 (value, v_int64);
-
-	return value;
-}
-
-/**
- * arv_create_string_g_value:
- * @v_string: default 64 bit integer value
- * Return value: (transfer full) a new GValue holding a string.
- */
-
-GValue *
-arv_create_string_g_value (const char *v_string)
-{
-	GValue *value = g_new0 (GValue, 1);
-
-	g_value_init (value, G_TYPE_STRING);
-	g_value_set_string (value, v_string);
-
-	return value;
-}
-
-void
-arv_free_g_value (GValue *value)
-{
-	g_return_if_fail (G_IS_VALUE (value));
-
-	g_value_unset (value);
-	g_free (value);
-}
-
-void
-arv_force_g_value_to_int64 (GValue *value, gint64 v_int64)
-{
-	if (!G_VALUE_HOLDS_INT64 (value)) {
-		g_value_unset (value);
-		g_value_init (value, G_TYPE_INT64);
-	}
-	g_value_set_int64 (value, v_int64);
-}
-
-void
-arv_force_g_value_to_double (GValue *value, double v_double)
-{
-	if (!G_VALUE_HOLDS_DOUBLE (value)) {
-		g_value_unset (value);
-		g_value_init (value, G_TYPE_DOUBLE);
-	}
-	g_value_set_double (value, v_double);
-}
-
-void
-arv_force_g_value_to_string (GValue *value, const char * v_string)
-{
-	if (!G_VALUE_HOLDS_STRING (value)) {
-		g_value_unset (value);
-		g_value_init (value, G_TYPE_STRING);
-	}
-	g_value_set_string (value, v_string);
 }
 
 void
@@ -792,14 +627,24 @@ ArvGstCapsInfos arv_gst_caps_infos[] = {
 	       "video/x-raw-bayer",	8,	8,	0
 	},
 	{
-	       ARV_PIXEL_FORMAT_BAYER_BG_12,
-	       "video/x-raw-bayer, bpp=(int)16, depth=(int)12",
-	       "video/x-raw-bayer",	16,	12,	0
+		ARV_PIXEL_FORMAT_BAYER_GR_8,
+		"video/x-raw-bayer, format=grbg, bpp=(int)8, depth=(int)8",
+		"video/x-raw-bayer",     8,      8,      0
 	},
 	{
-	       ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED,
-	       "video/x-raw-bayer, bpp=(int)12, depth=(int)12",
-	       "video/x-raw-bayer",	12,	12,	0
+		ARV_PIXEL_FORMAT_BAYER_BG_12,
+		"video/x-raw-bayer, bpp=(int)16, depth=(int)12",
+		"video/x-raw-bayer",	16,	12,	0
+	},
+	{
+		ARV_PIXEL_FORMAT_BAYER_GR_12,
+		"video/x-raw-bayer, format=grbg, bpp=(int)16, depth=(int)12",
+		"video/x-raw-bayer",     16,     12,     0
+	},
+	{
+		ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED,
+		"video/x-raw-bayer, bpp=(int)12, depth=(int)12",
+		"video/x-raw-bayer",	12,	12,	0
 	},
 	{
 		ARV_PIXEL_FORMAT_YUV_422_PACKED,
@@ -807,9 +652,9 @@ ArvGstCapsInfos arv_gst_caps_infos[] = {
 		"video/x-raw-yuv",	0,	0,	ARV_MAKE_FOURCC ('U','Y','V','Y')
 	},
 	{
-	       ARV_PIXEL_FORMAT_YUV_422_YUYV_PACKED,
-	       "video/x-raw-yuv, format=(fourcc)YUY2",
-	       "video/x-raw-yuv",	0,	0,	ARV_MAKE_FOURCC ('Y','U','Y','2')
+		ARV_PIXEL_FORMAT_YUV_422_YUYV_PACKED,
+		"video/x-raw-yuv, format=(fourcc)YUY2",
+		"video/x-raw-yuv",	0,	0,	ARV_MAKE_FOURCC ('Y','U','Y','2')
 	},
 	{
 		ARV_PIXEL_FORMAT_RGB_8_PACKED,
