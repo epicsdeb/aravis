@@ -1,10 +1,10 @@
-aravis0.2 (0.1.15-1) UNRELEASED; urgency=low
+aravis0.2 (0.1.15-1) unstable; urgency=low
 
   * New upstream release 0.1.15
   * Use autogen.sh from upstream repo to run autotools reconfigure
   * Enable gtk-doc build
 
- -- Ralph Lange <Ralph.Lange@gmx.de>  Fri, 14 Mar 2014 13:52:56 +0100
+ -- Ralph Lange <Ralph.Lange@gmx.de>  Tue, 18 Mar 2014 17:23:35 +0100
 
 aravis0.2 (0.1.11-2) unstable; urgency=low
 
