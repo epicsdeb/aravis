@@ -194,7 +194,7 @@ clean-local:
 	@rm -rf .libs
 
 distclean-local:
-	@rm -rf $(REPORT_FILES) $(DOC_MODULE).pdf \
+	@rm -rf xml html $(REPORT_FILES) $(DOC_MODULE).pdf \
 	    $(DOC_MODULE)-decl-list.txt $(DOC_MODULE)-decl.txt
 	@if test "$(abs_srcdir)" != "$(abs_builddir)" ; then \
 	    rm -f $(SETUP_FILES) $(expand_content_files) $(DOC_MODULE).types; \
