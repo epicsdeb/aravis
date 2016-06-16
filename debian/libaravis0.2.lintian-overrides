@@ -1,2 +1,0 @@
-# Be consistent with what glib2.0 package does
-libaravis0.2: package-name-doesnt-match-sonames libaravis-0.2-0
