@@ -1,3 +1,13 @@
+aravis0.4 (0.3.8-1) unstable; urgency=medium
+
+  * New upstream release 0.3.8
+    SO name changes from 0.2 -> 0.4
+    patch: Camera discovery via. unicast (on different sub-net)
+           by setting environment variable ARV_IPS with colon
+           seperated list of IP addresses.
+
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Thu, 16 Jun 2016 14:32:15 -0400
+
 aravis0.2 (0.1.15-1) unstable; urgency=low
 
   * New upstream release 0.1.15
