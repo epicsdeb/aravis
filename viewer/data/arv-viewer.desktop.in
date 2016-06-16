@@ -2,13 +2,13 @@
 _Name=Aravis
 _X-GNOME-FullName=Aravis Simple Viewer
 _Comment=Display the video stream from your cameras
-Exec=arv-viewer-0.2
+Exec=arv-viewer
 Terminal=false
 Type=Application
 StartupNotify=false
 Icon=aravis
-Categories=GNOME;AudioVideo;
+Categories=GNOME;AudioVideo;Video;
 X-GNOME-Bugzilla-Bugzilla=GNOME
 X-GNOME-Bugzilla-Product=aravis
 X-GNOME-Bugzilla-Component=viewer
-X-GNOME-Bugzilla-Version=0.1.15
+X-GNOME-Bugzilla-Version=0.3.8

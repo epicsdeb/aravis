@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -58,16 +58,13 @@ typedef enum {
 #define ARV_IS_GV_STREAM_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), ARV_TYPE_GV_STREAM))
 #define ARV_GV_STREAM_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), ARV_TYPE_GV_STREAM, ArvGvStreamClass))
 
+typedef struct _ArvGvStreamPrivate ArvGvStreamPrivate;
 typedef struct _ArvGvStreamClass ArvGvStreamClass;
 
 struct _ArvGvStream {
 	ArvStream	stream;
 
-	GSocket *socket;
-	GSocketAddress *incoming_address;
-
-	GThread *thread;
-	void *thread_data;
+	ArvGvStreamPrivate *priv;
 };
 
 struct _ArvGvStreamClass {

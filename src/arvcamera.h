@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -83,6 +83,7 @@ const char **	arv_camera_get_available_pixel_formats_as_display_names	(ArvCamera
 
 void		arv_camera_start_acquisition		(ArvCamera *camera);
 void		arv_camera_stop_acquisition		(ArvCamera *camera);
+void		arv_camera_abort_acquisition		(ArvCamera *camera);
 
 void			arv_camera_set_acquisition_mode 	(ArvCamera *camera, ArvAcquisitionMode value);
 ArvAcquisitionMode 	arv_camera_get_acquisition_mode 	(ArvCamera *camera);
@@ -91,6 +92,7 @@ gboolean 	arv_camera_is_frame_rate_available 	(ArvCamera *camera);
 
 void		arv_camera_set_frame_rate		(ArvCamera *camera, double frame_rate);
 double 		arv_camera_get_frame_rate 		(ArvCamera *camera);
+void		arv_camera_get_frame_rate_bounds 	(ArvCamera * camera, double *min, double *max);
 void		arv_camera_set_trigger			(ArvCamera *camera, const char *source);
 void 		arv_camera_set_trigger_source		(ArvCamera *camera, const char *source);
 const char *	arv_camera_get_trigger_source		(ArvCamera *camera);
@@ -120,6 +122,28 @@ ArvAuto		arv_camera_get_gain_auto	(ArvCamera *camera);
 /* Transport layer control */
 
 guint		arv_camera_get_payload		(ArvCamera *camera);
+
+/* GigEVision specific API */
+
+gboolean	arv_camera_is_gv_device			(ArvCamera *camera);
+
+gint		arv_camera_gv_get_n_stream_channels	(ArvCamera *camera);
+void		arv_camera_gv_select_stream_channel	(ArvCamera *camera, gint channel_id);
+int 		arv_camera_gv_get_current_stream_channel(ArvCamera *camera);
+
+void		arv_camera_gv_set_packet_delay		(ArvCamera *camera, gint64 delay_ns);
+gint64 		arv_camera_gv_get_packet_delay 		(ArvCamera *camera);
+void 		arv_camera_gv_set_packet_size 		(ArvCamera *camera, gint packet_size);
+gint		arv_camera_gv_get_packet_size		(ArvCamera *camera);
+
+/* Chunk data */
+
+void 			arv_camera_set_chunk_mode 	(ArvCamera *camera, gboolean is_active);
+gboolean 		arv_camera_get_chunk_mode 	(ArvCamera *camera);
+void 			arv_camera_set_chunk_state 	(ArvCamera *camera, const char *chunk, gboolean is_enabled);
+gboolean 		arv_camera_get_chunk_state 	(ArvCamera *camera, const char *chunk);
+void 			arv_camera_set_chunks 		(ArvCamera *camera, const char *chunk_list);
+ArvChunkParser * 	arv_camera_create_chunk_parser 	(ArvCamera *camera);
 
 G_END_DECLS
 

@@ -63,6 +63,14 @@ GType arv_stream_callback_type_get_type	(void) G_GNUC_CONST;
 #define ARV_TYPE_BUFFER_STATUS	(arv_buffer_status_get_type())
 GType arv_buffer_status_get_type	(void) G_GNUC_CONST;
 
+#define ARV_TYPE_BUFFER_PAYLOAD_TYPE	(arv_buffer_payload_type_get_type())
+GType arv_buffer_payload_type_get_type	(void) G_GNUC_CONST;
+
+/* Enumerations from "arvchunkparser.h" */
+
+#define ARV_TYPE_CHUNK_PARSER_STATUS	(arv_chunk_parser_status_get_type())
+GType arv_chunk_parser_status_get_type	(void) G_GNUC_CONST;
+
 /* Enumerations from "arvgvstream.h" */
 
 #define ARV_TYPE_GV_STREAM_SOCKET_BUFFER	(arv_gv_stream_socket_buffer_get_type())
@@ -86,6 +94,9 @@ GType arv_gvsp_packet_type_get_type	(void) G_GNUC_CONST;
 
 #define ARV_TYPE_GVSP_CONTENT_TYPE	(arv_gvsp_content_type_get_type())
 GType arv_gvsp_content_type_get_type	(void) G_GNUC_CONST;
+
+#define ARV_TYPE_GVSP_PAYLOAD_TYPE	(arv_gvsp_payload_type_get_type())
+GType arv_gvsp_payload_type_get_type	(void) G_GNUC_CONST;
 
 G_END_DECLS
 

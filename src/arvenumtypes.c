@@ -308,6 +308,9 @@ arv_gc_property_node_type_get_type (void)
 			{ ARV_GC_PROPERTY_NODE_TYPE_COMMAND_VALUE,
 			  "ARV_GC_PROPERTY_NODE_TYPE_COMMAND_VALUE",
 			  "command-value" },
+			{ ARV_GC_PROPERTY_NODE_TYPE_CHUNK_ID,
+			  "ARV_GC_PROPERTY_NODE_TYPE_CHUNK_ID",
+			  "chunk-id" },
 			{ ARV_GC_PROPERTY_NODE_TYPE_P_UNKNONW,
 			  "ARV_GC_PROPERTY_NODE_TYPE_P_UNKNONW",
 			  "p-unknonw" },
@@ -497,6 +500,9 @@ arv_buffer_status_get_type (void)
 	if (the_type == 0)
 	{
 		static const GEnumValue values[] = {
+			{ ARV_BUFFER_STATUS_UNKNOWN,
+			  "ARV_BUFFER_STATUS_UNKNOWN",
+			  "unknown" },
 			{ ARV_BUFFER_STATUS_SUCCESS,
 			  "ARV_BUFFER_STATUS_SUCCESS",
 			  "success" },
@@ -525,6 +531,87 @@ arv_buffer_status_get_type (void)
 		};
 		the_type = g_enum_register_static (
 				g_intern_static_string ("ArvBufferStatus"),
+				values);
+	}
+	return the_type;
+}
+
+GType
+arv_buffer_payload_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_BUFFER_PAYLOAD_TYPE_UNKNOWN,
+			  "ARV_BUFFER_PAYLOAD_TYPE_UNKNOWN",
+			  "unknown" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_IMAGE,
+			  "ARV_BUFFER_PAYLOAD_TYPE_IMAGE",
+			  "image" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_RAWDATA,
+			  "ARV_BUFFER_PAYLOAD_TYPE_RAWDATA",
+			  "rawdata" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_FILE,
+			  "ARV_BUFFER_PAYLOAD_TYPE_FILE",
+			  "file" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_CHUNK_DATA,
+			  "ARV_BUFFER_PAYLOAD_TYPE_CHUNK_DATA",
+			  "chunk-data" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_EXTENDED_CHUNK_DATA,
+			  "ARV_BUFFER_PAYLOAD_TYPE_EXTENDED_CHUNK_DATA",
+			  "extended-chunk-data" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_JPEG,
+			  "ARV_BUFFER_PAYLOAD_TYPE_JPEG",
+			  "jpeg" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_JPEG2000,
+			  "ARV_BUFFER_PAYLOAD_TYPE_JPEG2000",
+			  "jpeg2000" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_H264,
+			  "ARV_BUFFER_PAYLOAD_TYPE_H264",
+			  "h264" },
+			{ ARV_BUFFER_PAYLOAD_TYPE_MULTIZONE_IMAGE,
+			  "ARV_BUFFER_PAYLOAD_TYPE_MULTIZONE_IMAGE",
+			  "multizone-image" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvBufferPayloadType"),
+				values);
+	}
+	return the_type;
+}
+
+#include "arvchunkparser.h"
+
+GType
+arv_chunk_parser_status_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_CHUNK_PARSER_STATUS_UNKNOWN,
+			  "ARV_CHUNK_PARSER_STATUS_UNKNOWN",
+			  "unknown" },
+			{ ARV_CHUNK_PARSER_STATUS_SUCCESS,
+			  "ARV_CHUNK_PARSER_STATUS_SUCCESS",
+			  "success" },
+			{ ARV_CHUNK_PARSER_STATUS_BUFFER_NOT_FOUND,
+			  "ARV_CHUNK_PARSER_STATUS_BUFFER_NOT_FOUND",
+			  "buffer-not-found" },
+			{ ARV_CHUNK_PARSER_STATUS_CHUNK_NOT_FOUND,
+			  "ARV_CHUNK_PARSER_STATUS_CHUNK_NOT_FOUND",
+			  "chunk-not-found" },
+			{ ARV_CHUNK_PARSER_STATUS_INVALID_FEATURE_NAME,
+			  "ARV_CHUNK_PARSER_STATUS_INVALID_FEATURE_NAME",
+			  "invalid-feature-name" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvChunkParserStatus"),
 				values);
 	}
 	return the_type;
@@ -684,6 +771,9 @@ arv_gvsp_packet_type_get_type (void)
 			{ ARV_GVSP_PACKET_TYPE_OK,
 			  "ARV_GVSP_PACKET_TYPE_OK",
 			  "ok" },
+			{ ARV_GVSP_PACKET_TYPE_RESEND,
+			  "ARV_GVSP_PACKET_TYPE_RESEND",
+			  "resend" },
 			{ ARV_GVSP_PACKET_TYPE_ERROR,
 			  "ARV_GVSP_PACKET_TYPE_ERROR",
 			  "error" },
@@ -717,6 +807,50 @@ arv_gvsp_content_type_get_type (void)
 		};
 		the_type = g_enum_register_static (
 				g_intern_static_string ("ArvGvspContentType"),
+				values);
+	}
+	return the_type;
+}
+
+GType
+arv_gvsp_payload_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_GVSP_PAYLOAD_TYPE_IMAGE,
+			  "ARV_GVSP_PAYLOAD_TYPE_IMAGE",
+			  "image" },
+			{ ARV_GVSP_PAYLOAD_TYPE_RAWDATA,
+			  "ARV_GVSP_PAYLOAD_TYPE_RAWDATA",
+			  "rawdata" },
+			{ ARV_GVSP_PAYLOAD_TYPE_FILE,
+			  "ARV_GVSP_PAYLOAD_TYPE_FILE",
+			  "file" },
+			{ ARV_GVSP_PAYLOAD_TYPE_CHUNK_DATA,
+			  "ARV_GVSP_PAYLOAD_TYPE_CHUNK_DATA",
+			  "chunk-data" },
+			{ ARV_GVSP_PAYLOAD_TYPE_EXTENDED_CHUNK_DATA,
+			  "ARV_GVSP_PAYLOAD_TYPE_EXTENDED_CHUNK_DATA",
+			  "extended-chunk-data" },
+			{ ARV_GVSP_PAYLOAD_TYPE_JPEG,
+			  "ARV_GVSP_PAYLOAD_TYPE_JPEG",
+			  "jpeg" },
+			{ ARV_GVSP_PAYLOAD_TYPE_JPEG2000,
+			  "ARV_GVSP_PAYLOAD_TYPE_JPEG2000",
+			  "jpeg2000" },
+			{ ARV_GVSP_PAYLOAD_TYPE_H264,
+			  "ARV_GVSP_PAYLOAD_TYPE_H264",
+			  "h264" },
+			{ ARV_GVSP_PAYLOAD_TYPE_MULTIZONE_IMAGE,
+			  "ARV_GVSP_PAYLOAD_TYPE_MULTIZONE_IMAGE",
+			  "multizone-image" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvGvspPayloadType"),
 				values);
 	}
 	return the_type;

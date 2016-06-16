@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -43,6 +43,7 @@ typedef struct {
 extern ArvDebugCategory arv_debug_category_dom;
 extern ArvDebugCategory arv_debug_category_interface;
 extern ArvDebugCategory arv_debug_category_device;
+extern ArvDebugCategory arv_debug_category_chunk;
 extern ArvDebugCategory arv_debug_category_stream;
 extern ArvDebugCategory arv_debug_category_stream_thread;
 extern ArvDebugCategory arv_debug_category_gvcp;
@@ -62,6 +63,10 @@ extern ArvDebugCategory arv_debug_category_misc;
 #define arv_debug_device(...) 		arv_debug (&arv_debug_category_device, __VA_ARGS__)
 #define arv_log_device(...)		arv_log (&arv_debug_category_device, __VA_ARGS__)
 #define arv_warning_device(...)		arv_warning (&arv_debug_category_device, __VA_ARGS__)
+
+#define arv_debug_chunk(...) 		arv_debug (&arv_debug_category_chunk, __VA_ARGS__)
+#define arv_log_chunk(...)		arv_log (&arv_debug_category_chunk, __VA_ARGS__)
+#define arv_warning_chunk(...)		arv_warning (&arv_debug_category_chunk, __VA_ARGS__)
 
 #define arv_debug_stream(...) 		arv_debug (&arv_debug_category_stream, __VA_ARGS__)
 #define arv_log_stream(...)		arv_log (&arv_debug_category_stream, __VA_ARGS__)

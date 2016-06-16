@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -35,13 +35,13 @@ G_BEGIN_DECLS
 #define ARV_IS_GC_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), ARV_TYPE_GC))
 #define ARV_GC_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), ARV_TYPE_GC, ArvGcClass))
 
+typedef struct _ArvGcPrivate ArvGcPrivate;
 typedef struct _ArvGcClass ArvGcClass;
 
 struct _ArvGc {
 	ArvDomDocument base;
 
-	GHashTable *nodes;
-	ArvDevice *device;
+	ArvGcPrivate *priv;
 };
 
 struct _ArvGcClass {
@@ -55,6 +55,8 @@ void 			arv_gc_register_feature_node 	(ArvGc *genicam, ArvGcFeatureNode *node);
 void 			arv_gc_set_default_node_data 	(ArvGc *genicam, const char *node_name, const char *node_data);
 ArvGcNode *		arv_gc_get_node			(ArvGc *genicam, const char *name);
 ArvDevice *		arv_gc_get_device		(ArvGc *genicam);
+void			arv_gc_set_buffer		(ArvGc *genicam, ArvBuffer *buffer);
+ArvBuffer *		arv_gc_get_buffer		(ArvGc *genicam);
 
 G_END_DECLS
 

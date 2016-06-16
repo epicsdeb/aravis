@@ -1,3 +1,106 @@
+Release 0.3.8
+=============
+
+  * genicam: add bigendian support (Emmanuel)
+  * camera: RICOH camera support (Anil)
+  * build fixes (Emmanuel)
+  * dox fixes (Jarek, Emmanuel)
+  * translation updates (Jordi, Jiri, Anders, Μύρων, Pedro, Cédric, Samir, Necdet)
+
+Release 0.3.7
+=============
+
+  * genicam: fix accuracy of division of integers (Emmanuel)
+  * new arv_make_high_priority and arv_make_realtime API (Emmanuel)
+  * viewer: make stream thread realtime if possible (Emmanuel)
+  * camera: add GigEVision specific API for packet delay, packet size and stream selection (Emmanuel)
+  * gst_pugins: add a number of buffers property (Patrick)
+  * build fixes (Patrick)
+  * translation updates (Tiago, Muhammet)
+
+Release 0.3.6
+=============
+
+  * build: add missing test commands in configure.ac (Adrian)
+  * camera: new abort_acquisition function (Davide)
+  * gv_stream: missing frame detection fix (Davide)
+  * buffer: user_data and frame_id accessors
+  * chunk_parser: bug fixes
+  * viewer: prevent use of broken coglsink from autovideosink
+  * translations: updates (Matej, Balázs, Andika, Daniel, Rafael)
+
+Release 0.3.5
+=============
+
+  * chunk_parser: new API for chunk data support
+  * buffer: make internal data private and add accessors
+
+Release 0.3.4
+=============
+
+  * viewer: add an appdata file
+  * misc: compilation warning fixes
+
+Release 0.3.3
+=============
+
+  * genicam: improve loading of genicam data from local files (Peter)
+  * build: dependency check improvements
+  * build: miscellaneous compilation fixes (Patrick)
+  * gst_pugins_1.0: bayer format fix (Steve)
+
+Release 0.3.2
+=============
+
+  * gst_plugin: new plugin based on gstreamer 1.0, in addition to the existing 0.10 version.
+  * gst_plugin: add packet-resend property.
+  * viewer: port to gstreamer 1.0, and drop support for gtk+ 2.0.
+  * viewer: fix video output for camera with buggy time stamping.
+  * camera: fix frame rate setting for Point Grey devices.
+
+Release 0.3.1
+=============
+
+  * gv_interface: fix device discovery by using 255.255.255.255 as broadcast address (Csaba).
+  * gv_interface: don't crash if there is no INET interface (Toby).
+  * camera: make ArvCamera introspection friendly (John).
+  * evaluator: fix comparison when one of the operand is a double.
+  * python: don't crash on access to buffer data.
+  * build: zlib check.
+  * build: make configure pass even if gobject introspection is not available.
+  * updated translations (Yuri).
+
+Release 0.3.0
+=============
+
+  * updated translations (Marek, Matej, Martin, Daniel, Joe, Kenneth, Rūdolfs, Andika, Balázs, Piotr, Christian, Мирослав)
+  * make framerate work for The Imaging Source cameras (Edgar)
+  * fix exposure setting on Point Grey Blackfly cameras
+  * added frame rate support for The Imaging Source(TIS) cameras (Edgar)
+  * gv_interface: strip control character from device id (Csaba)
+  * gst_plugin: make the plugin more useful for a use inside an application (Edgar)
+  * gst_plugin: honor do-timestamp property (Csaba)
+  * arv-tool: fix IntReg display and don't display min/max if they are no specified
+  * gv_device: don't send packet resend requests when this feature is not available
+  * gv_device: implement register workaround for schema < 1.1.0
+  * python: crash fixes (Olivier)
+  * viewer: fix an issue when aravis buffer row stride is not a multiple of 4
+  * viewer: improve framerate entry
+  * viewer: translation update
+  * compilation warning suppression
+  * suppress glib deprecation warnings
+  * add a define for BAYER_GR_12_PACKED pixel format
+
+Release 0.2.0
+=============
+
+Stable release.
+
+  * camera: add support for BAYER_GB_8 images used by ImageingSource DFK 23G445 cameras (Matthias)
+  * camera: fix consistency of order of pixel format display names (Jure)
+  * GV: fix parsing of hexadecimal address/length with 0x prefix in Genicam file URL
+  * build: fix parallel compilation (make -j)
+  
 Release 0.1.15
 ==============
 

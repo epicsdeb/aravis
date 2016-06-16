@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -169,9 +169,10 @@ arv_get_device_id (unsigned int index)
 /**
  * arv_open_device:
  * @device_id: (allow-none): a device identifier string
- * Return value: (transfer full): a new #ArvDevice instance
  *
  * Open a device corresponding to the given identifier. A null string makes this function return the first available device.
+ *
+ * Return value: (transfer full): a new #ArvDevice instance
  */
 
 ArvDevice *

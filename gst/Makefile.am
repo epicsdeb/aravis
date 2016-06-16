@@ -1,17 +1,13 @@
 include $(top_srcdir)/Makefile.decl
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-I$(top_srcdir)/src/ \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" $(ARAVIS_GST_PLUGIN_CFLAGS) \
 	-DG_LOG_DOMAIN=\"Aravis\"
 
-AM_CFLAGS =\
-	 -Wall\
-	 -Werror \
-	 -g \
-	 -O0
+AM_CFLAGS = -Wall
 
 gstplugin_LTLIBRARIES = libgstaravis-@ARAVIS_API_VERSION@.la
 

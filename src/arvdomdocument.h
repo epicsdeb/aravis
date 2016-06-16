@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author:
  * 	Emmanuel Pacaud <emmanuel@gnome.org>
@@ -41,9 +41,6 @@ typedef struct _ArvDomDocumentClass ArvDomDocumentClass;
 struct _ArvDomDocument {
 	ArvDomNode node;
 
-	GHashTable *	ids;
-	GHashTable *	elements;
-
 	char *		url;
 
 };
@@ -61,9 +58,6 @@ GType arv_dom_document_get_type (void);
 ArvDomElement* 	arv_dom_document_get_document_element 	(ArvDomDocument* self);
 ArvDomElement* 	arv_dom_document_create_element 	(ArvDomDocument* self, const char *tag_name);
 ArvDomText* 	arv_dom_document_create_text_node 	(ArvDomDocument* self, const char *data);
-ArvDomElement *	arv_dom_document_get_element_by_id 	(ArvDomDocument *self, const char *id);
-
-void 		arv_dom_document_register_element 	(ArvDomDocument *self, ArvDomElement *element, const char *id);
 
 const char * 	arv_dom_document_get_url 		(ArvDomDocument *self);
 void		arv_dom_document_set_url		(ArvDomDocument *self, const char *url);

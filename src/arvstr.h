@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author:
  * 	Emmanuel Pacaud <emmanuel@gnome.org>
@@ -27,6 +27,8 @@
 #include <arvtypes.h>
 
 G_BEGIN_DECLS
+
+char * 		arv_str_strip 		(char *str, const char *illegal_chars, char replacement_char);
 
 gboolean 	arv_str_is_uri 		(const char *str);
 char *   	arv_str_to_uri 		(const char *str);

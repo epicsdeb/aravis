@@ -14,13 +14,16 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
 
 #include <arv.h>
+#include <arvbufferprivate.h>
+#include <arvgvcp.h>
+#include <arvgvsp.h>
 #include <stdlib.h>
 #include <string.h>
 #include <net/if.h>
@@ -135,12 +138,12 @@ arv_fake_gv_camera_thread (void *user_data)
 			block_id = 0;
 
 			packet_size = ARV_FAKE_GV_CAMERA_BUFFER_SIZE;
-			arv_gvsp_packet_new_data_leader (image_buffer->frame_id,
+			arv_gvsp_packet_new_data_leader (image_buffer->priv->frame_id,
 							 block_id,
-							 image_buffer->timestamp_ns,
-							 image_buffer->pixel_format,
-							 image_buffer->width, image_buffer->height,
-							 image_buffer->x_offset, image_buffer->y_offset,
+							 image_buffer->priv->timestamp_ns,
+							 image_buffer->priv->pixel_format,
+							 image_buffer->priv->width, image_buffer->priv->height,
+							 image_buffer->priv->x_offset, image_buffer->priv->y_offset,
 							 packet_buffer, &packet_size);
 
 			g_socket_send_to (gv_camera->gvsp_socket, stream_address,
@@ -162,8 +165,8 @@ arv_fake_gv_camera_thread (void *user_data)
 						 payload - offset);
 
 				packet_size = ARV_FAKE_GV_CAMERA_BUFFER_SIZE;
-				arv_gvsp_packet_new_data_block (image_buffer->frame_id, block_id,
-								data_size, image_buffer->data + offset,
+				arv_gvsp_packet_new_data_block (image_buffer->priv->frame_id, block_id,
+								data_size, ((char *) image_buffer->priv->data) + offset,
 								packet_buffer, &packet_size);
 
 				g_socket_send_to (gv_camera->gvsp_socket, stream_address,
@@ -174,7 +177,7 @@ arv_fake_gv_camera_thread (void *user_data)
 			}
 
 			packet_size = ARV_FAKE_GV_CAMERA_BUFFER_SIZE;
-			arv_gvsp_packet_new_data_trailer (image_buffer->frame_id, block_id,
+			arv_gvsp_packet_new_data_trailer (image_buffer->priv->frame_id, block_id,
 							  packet_buffer, &packet_size);
 
 			g_socket_send_to (gv_camera->gvsp_socket, stream_address,
@@ -250,9 +253,7 @@ arv_fake_gv_camera_new (const char *interface_name)
 
 			g_object_unref (socket_address);
 
-			socket_address = g_socket_address_new_from_native (ifap_iter->ifa_broadaddr,
-									   sizeof (struct sockaddr));
-			inet_address = g_inet_socket_address_get_address (G_INET_SOCKET_ADDRESS (socket_address));
+			inet_address = g_inet_address_new_from_string ("255.255.255.255");
 			discovery_address_string = g_inet_address_to_string (inet_address);
 			arv_debug_device ("[FakeGvCamera::new] Discovery address = %s", discovery_address_string);
 			inet_socket_address = g_inet_socket_address_new (inet_address, ARV_GVCP_PORT);
@@ -267,7 +268,6 @@ arv_fake_gv_camera_new (const char *interface_name)
 				g_socket_set_blocking (gv_camera->discovery_socket, FALSE);
 			}
 			g_object_unref (inet_socket_address);
-			g_object_unref (socket_address);
 
 			g_free (gvcp_address_string);
 			g_free (discovery_address_string);
@@ -296,8 +296,7 @@ arv_fake_gv_camera_new (const char *interface_name)
 		goto INTERFACE_ERROR;
 
 	gv_camera->cancel = FALSE;
-	gv_camera->gvsp_thread = g_thread_create (arv_fake_gv_camera_thread,
-						  gv_camera, TRUE, NULL);
+	gv_camera->gvsp_thread = arv_g_thread_new ("arv_fake_gv_camera", arv_fake_gv_camera_thread, gv_camera);
 
 	return gv_camera;
 
@@ -466,8 +465,8 @@ main (int argc, char **argv)
 	GOptionContext *context;
 	GError *error = NULL;
 
-	g_thread_init (NULL);
-	g_type_init ();
+	arv_g_thread_init (NULL);
+	arv_g_type_init ();
 
 	context = g_option_context_new (NULL);
 	g_option_context_set_summary (context, "Fake GigEVision camera.");

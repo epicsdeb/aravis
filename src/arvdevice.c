@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -49,6 +49,11 @@ static guint arv_device_signals[ARV_DEVICE_SIGNAL_LAST] = {0};
 
 static GObjectClass *parent_class = NULL;
 
+struct  _ArvDevicePrivate {
+	ArvDeviceStatus status;
+	char *status_message;
+};
+
 GQuark
 arv_device_error_quark (void)
 {
@@ -59,11 +64,14 @@ arv_device_error_quark (void)
  * arv_device_create_stream:
  * @device: a #ArvDevice
  * @callback: (scope call): a frame processing callback
- * @user_data: (closure) user data for @callback
- * Return value: (transfer full): a new #ArvStream.
+ * @user_data: (allow-none) (closure): user data for @callback
  *
  * Creates a new #ArvStream for video stream handling. See
  * @ArvStreamCallback for details regarding the callback function.
+ *
+ * Return value: (transfer full): a new #ArvStream.
+ *
+ * Since: 0.2.0
  */
 
 ArvStream *
@@ -73,6 +81,21 @@ arv_device_create_stream (ArvDevice *device, ArvStreamCallback callback, void *u
 
 	return ARV_DEVICE_GET_CLASS (device)->create_stream (device, callback, user_data);
 }
+
+/**
+ * arv_device_read_memory:
+ * @device: a #ArvDevice
+ * @address: memory address
+ * @size: number of bytes to read
+ * @buffer: a buffer for the storage of the read data
+ * @error: (out) (allow-none): a #GError placeholder
+ *
+ * Reads @size bytes from the device memory.
+ *
+ * Return value: (skip): TRUE on success.
+ *
+ * Since: 0.2.0
+ **/
 
 gboolean
 arv_device_read_memory (ArvDevice *device, guint32 address, guint32 size, void *buffer, GError **error)
@@ -85,6 +108,21 @@ arv_device_read_memory (ArvDevice *device, guint32 address, guint32 size, void *
 	return ARV_DEVICE_GET_CLASS (device)->read_memory (device, address, size, buffer, error);
 }
 
+/**
+ * arv_device_write_memory:
+ * @device: a #ArvDevice
+ * @address: memory address
+ * @size: size of the returned buffer
+ * @buffer: (transfer full): the buffer read from memory
+ * @error: (out) (allow-none): a #GError placeholder
+ *
+ * Writes @size bytes to the device memory.
+ *
+ * Return value: (skip): TRUE on success.
+ *
+ * Since: 0.2.0
+ **/
+
 gboolean
 arv_device_write_memory (ArvDevice *device, guint32 address, guint32 size, void *buffer, GError **error)
 {
@@ -96,6 +134,20 @@ arv_device_write_memory (ArvDevice *device, guint32 address, guint32 size, void 
 	return ARV_DEVICE_GET_CLASS (device)->write_memory (device, address, size, buffer, error);
 }
 
+/**
+ * arv_device_read_register:
+ * @device: a #ArvDevice
+ * @address: register address
+ * @value: (out): a placeholder for the read value
+ * @error: (out) (allow-none): a #GError placeholder
+ *
+ * Reads the value of a device register.
+ *
+ * Return value: (skip): TRUE on success.
+ *
+ * Since: 0.2.0
+ **/
+
 gboolean
 arv_device_read_register (ArvDevice *device, guint32 address, guint32 *value, GError **error)
 {
@@ -105,6 +157,20 @@ arv_device_read_register (ArvDevice *device, guint32 address, guint32 *value, GE
 
 	return ARV_DEVICE_GET_CLASS (device)->read_register (device, address, value, error);
 }
+
+/**
+ * arv_device_write_register:
+ * @device: a #ArvDevice
+ * @address: the register address
+ * @value: value to write
+ * @error: (out) (allow-none): a #GError placeholder
+ *
+ * Writes @value to a device register.
+ *
+ * Return value: (skip): TRUE on success.
+ *
+ * Since: 0.2.0
+ **/
 
 gboolean
 arv_device_write_register (ArvDevice *device, guint32 address, guint32 value, GError **error)
@@ -117,10 +183,13 @@ arv_device_write_register (ArvDevice *device, guint32 address, guint32 value, GE
 
 /**
  * arv_device_get_genicam: 
- * @device: a device object 
- * Return value: (transfer none): the genicam interface.
+ * @device: a #ArvDevice
  *
  * Retrieves the genicam interface of the given device.
+ *
+ * Return value: (transfer none): the genicam interface.
+ *
+ * Since: 0.2.0
  */
 
 ArvGc *
@@ -140,12 +209,15 @@ _get_genicam_xml (ArvDevice *device, size_t *size)
 }
 
 /**
- * arv_device_get_xml:
+ * arv_device_get_genicam_xml:
  * @device: a #ArvDevice
- * @size: placeholder for the returned data size (bytes)
- * Return value: a pointer to the Genicam XML data, owned by the device.
+ * @size: (out) (allow-none): placeholder for the returned data size (bytes) // BUG: (skip) seems ignored
  *
  * Gets the Genicam XML data stored in the device memory.
+ *
+ * Returns: (transfer none): a pointer to the Genicam XML data, owned by the device.
+ *
+ * Since: 0.2.0
  **/
 
 const char *
@@ -158,11 +230,37 @@ arv_device_get_genicam_xml (ArvDevice *device, size_t *size)
 }
 
 /**
+ * arv_device_create_chunk_parser:
+ * @device: a #ArvDevice
+ *
+ * Create a #ArvChunkParser object, to be used for chunk data extraction from #ArvBuffer.
+ *
+ * Returns: (transfer full): a new #ArvChunkParser object, NULL on error.
+ *
+ * Since: 0.4.0
+ **/
+
+ArvChunkParser *
+arv_device_create_chunk_parser (ArvDevice *device)
+{
+	const char *xml = NULL;
+	gsize size = 0;
+
+	g_return_val_if_fail (ARV_IS_DEVICE (device), NULL);
+
+	xml = arv_device_get_genicam_xml (device, &size);
+
+	return arv_chunk_parser_new (xml, size);
+}
+
+/**
  * arv_device_get_feature:
  * @device: a #ArvDevice
  * @feature: feature name
  *
  * Return value: (transfer none): the genicam node corresponding to the feature name, NULL if not found.
+ *
+ * Since: 0.2.0
  */
 
 ArvGcNode *
@@ -179,14 +277,14 @@ arv_device_get_feature (ArvDevice *device, const char *feature)
 static void
 _set_status (ArvDevice *device, ArvDeviceStatus status, const char *message)
 {
-	if (device->status == ARV_DEVICE_STATUS_SUCCESS)
+	if (device->priv->status == ARV_DEVICE_STATUS_SUCCESS)
 		return;
 
 	arv_warning_device ("[ArvDevice::set_status] Status changed ('%s')", message);
 
-	g_free (device->status_message);
-	device->status = status;
-	device->status_message = g_strdup (message);
+	g_free (device->priv->status_message);
+	device->priv->status = status;
+	device->priv->status_message = g_strdup (message);
 }
 
 /**
@@ -195,6 +293,8 @@ _set_status (ArvDevice *device, ArvDeviceStatus status, const char *message)
  * @feature: feature name
  *
  * Execute a genicam command. If an error occur, this function change the device status.
+ *
+ * Since: 0.2.0
  */
 
 void
@@ -496,6 +596,8 @@ arv_device_get_available_enumeration_feature_values (ArvDevice *device, const ch
  * Get all the available values of @feature, as strings.
  *
  * Returns: (array length=n_values) (transfer container): a newly created array of const strings, which must freed after use using g_free.
+ *
+ * Since: 0.2.0
  */
 
 const char **
@@ -535,11 +637,11 @@ arv_device_get_status (ArvDevice *device)
 	
 	g_return_val_if_fail (ARV_IS_DEVICE (device), ARV_DEVICE_STATUS_UNKNOWN);
 
-	status = device->status;
+	status = device->priv->status;
 	
-	g_free (device->status_message);
-	device->status = ARV_DEVICE_STATUS_SUCCESS;
-	device->status_message = NULL;
+	g_free (device->priv->status_message);
+	device->priv->status = ARV_DEVICE_STATUS_SUCCESS;
+	device->priv->status_message = NULL;
 
 	return status;
 }
@@ -555,8 +657,10 @@ arv_device_emit_control_lost_signal (ArvDevice *device)
 static void
 arv_device_init (ArvDevice *device)
 {
-	device->status = ARV_DEVICE_STATUS_SUCCESS;
-	device->status_message = NULL;
+	device->priv = G_TYPE_INSTANCE_GET_PRIVATE (device, ARV_TYPE_DEVICE, ArvDevicePrivate);
+
+	device->priv->status = ARV_DEVICE_STATUS_SUCCESS;
+	device->priv->status_message = NULL;
 }
 
 static void
@@ -564,7 +668,7 @@ arv_device_finalize (GObject *object)
 {
 	ArvDevice *device = ARV_DEVICE (object);
 
-	g_free (device->status_message);
+	g_free (device->priv->status_message);
 
 	parent_class->finalize (object);
 }
@@ -573,6 +677,8 @@ static void
 arv_device_class_init (ArvDeviceClass *device_class)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (device_class);
+
+	g_type_class_add_private (device_class, sizeof (ArvDevicePrivate));
 
 	parent_class = g_type_class_peek_parent (device_class);
 
@@ -588,6 +694,8 @@ arv_device_class_init (ArvDeviceClass *device_class)
 	 *
 	 * This signal may be emited from a thread different than the main one,
 	 * so please take care to shared data access from the callback.
+	 *
+	 * Since: 0.2.0
 	 */
 
 	arv_device_signals[ARV_DEVICE_SIGNAL_CONTROL_LOST] =

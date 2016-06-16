@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -209,13 +209,13 @@ arv_gc_float_node_get_min (ArvGcFloat *gc_float, GError **error)
 	double value;
 
 	if (gc_float_node->minimum == NULL)
-		return -G_MAXFLOAT;
+		return -G_MAXDOUBLE;
 
 	value = arv_gc_property_node_get_double (ARV_GC_PROPERTY_NODE (gc_float_node->minimum), &local_error);
 
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
-		return -G_MAXFLOAT;
+		return -G_MAXDOUBLE;
 	}
 
 	return value;
@@ -229,13 +229,13 @@ arv_gc_float_node_get_max (ArvGcFloat *gc_float, GError **error)
 	double value;
 
 	if (gc_float_node->maximum == NULL)
-		return G_MAXFLOAT;
+		return G_MAXDOUBLE;
 
 	value = arv_gc_property_node_get_double (ARV_GC_PROPERTY_NODE (gc_float_node->maximum), &local_error);
 
 	if (local_error != NULL) {
 		g_propagate_error (error, local_error);
-		return G_MAXFLOAT;
+		return G_MAXDOUBLE;
 	}
 
 	return value;

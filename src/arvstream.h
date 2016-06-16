@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -88,9 +88,6 @@ void		arv_stream_get_statistics		(ArvStream *stream,
 
 void 		arv_stream_set_emit_signals 		(ArvStream *stream, gboolean emit_signals);
 gboolean 	arv_stream_get_emit_signals 		(ArvStream *stream);
-
-ArvBuffer *	arv_stream_pop_input_buffer		(ArvStream *stream);
-void		arv_stream_push_output_buffer		(ArvStream *stream, ArvBuffer *buffer);
 
 G_END_DECLS
 

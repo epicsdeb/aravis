@@ -27,11 +27,13 @@ arv_camera_get_available_pixel_formats_as_display_names
 arv_camera_get_available_pixel_formats_as_strings
 arv_camera_start_acquisition
 arv_camera_stop_acquisition
+arv_camera_abort_acquisition
 arv_camera_set_acquisition_mode
 arv_camera_get_acquisition_mode
 arv_camera_is_frame_rate_available
 arv_camera_set_frame_rate
 arv_camera_get_frame_rate
+arv_camera_get_frame_rate_bounds
 arv_camera_set_trigger
 arv_camera_set_trigger_source
 arv_camera_get_trigger_source
@@ -51,6 +53,20 @@ arv_camera_get_gain_bounds
 arv_camera_set_gain_auto
 arv_camera_get_gain_auto
 arv_camera_get_payload
+arv_camera_is_gv_device
+arv_camera_gv_get_n_stream_channels
+arv_camera_gv_select_stream_channel
+arv_camera_gv_get_current_stream_channel
+arv_camera_gv_get_packet_delay
+arv_camera_gv_set_packet_delay
+arv_camera_gv_get_packet_size
+arv_camera_gv_set_packet_size
+arv_camera_get_chunk_mode
+arv_camera_get_chunk_state
+arv_camera_set_chunk_mode
+arv_camera_set_chunk_state
+arv_camera_set_chunks
+arv_camera_create_chunk_parser
 ArvAcquisitionMode
 arv_acquisition_mode_to_string
 arv_acquisition_mode_from_string
@@ -68,11 +84,35 @@ ArvCameraClass
 </SECTION>
 
 <SECTION>
-<FILE>arvpixelformat</FILE>
-<TITLE>ArvPixelFormat</TITLE>
+<FILE>arvbuffer</FILE>
+<TITLE>ArvBuffer</TITLE>
+ArvFrameCallback
+ArvBufferStatus
+ArvBuffer
+ArvBufferPayloadType
 ArvPixelFormat
+arv_buffer_new
+arv_buffer_new_full
+arv_buffer_new_allocate
+arv_buffer_get_user_data
+arv_buffer_get_data
+arv_buffer_get_chunk_data
+arv_buffer_get_timestamp
+arv_buffer_get_frame_id
+arv_buffer_get_payload_type
+arv_buffer_get_status
+arv_buffer_get_image_height
+arv_buffer_get_image_pixel_format
+arv_buffer_get_image_region
+arv_buffer_get_image_width
+arv_buffer_get_image_x
+arv_buffer_get_image_y
+ARV_PIXEL_FORMAT_BIT_PER_PIXEL
 ARV_PIXEL_FORMAT_BAYER_BG_10
 ARV_PIXEL_FORMAT_BAYER_BG_12
+ARV_PIXEL_FORMAT_BAYER_GR_12_PACKED
+ARV_PIXEL_FORMAT_BAYER_GB_12_PACKED
+ARV_PIXEL_FORMAT_BAYER_RG_12_PACKED
 ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED
 ARV_PIXEL_FORMAT_BAYER_BG_8
 ARV_PIXEL_FORMAT_BAYER_GB_10
@@ -84,6 +124,10 @@ ARV_PIXEL_FORMAT_BAYER_GR_8
 ARV_PIXEL_FORMAT_BAYER_RG_10
 ARV_PIXEL_FORMAT_BAYER_RG_12
 ARV_PIXEL_FORMAT_BAYER_RG_8
+ARV_PIXEL_FORMAT_BAYER_BG_16
+ARV_PIXEL_FORMAT_BAYER_GB_16
+ARV_PIXEL_FORMAT_BAYER_GR_16
+ARV_PIXEL_FORMAT_BAYER_RG_16
 ARV_PIXEL_FORMAT_BGRA_8_PACKED
 ARV_PIXEL_FORMAT_BGR_10_PACKED
 ARV_PIXEL_FORMAT_BGR_12_PACKED
@@ -117,16 +161,6 @@ ARV_PIXEL_FORMAT_YUV_411_PACKED
 ARV_PIXEL_FORMAT_YUV_422_PACKED
 ARV_PIXEL_FORMAT_YUV_422_YUYV_PACKED
 ARV_PIXEL_FORMAT_YUV_444_PACKED
-</SECTION>
-
-<SECTION>
-<FILE>arvbuffer</FILE>
-<TITLE>ArvBuffer</TITLE>
-ArvFrameCallback
-ArvBufferStatus
-ArvBuffer
-arv_buffer_new
-arv_buffer_new_full
 <SUBSECTION Standard>
 ARV_BUFFER
 ARV_IS_BUFFER
@@ -137,6 +171,7 @@ ARV_IS_BUFFER_CLASS
 ARV_BUFFER_GET_CLASS
 <SUBSECTION Private>
 ArvBufferClass
+ArvBufferPrivate
 </SECTION>
 
 <SECTION>
@@ -210,17 +245,17 @@ ARV_GC_PORT_CLASS
 ARV_IS_GC_PORT_CLASS
 ARV_GC_PORT_GET_CLASS
 <SUBSECTION Private>
+ArvGcPortPrivate
 ArvGcPortClass
 </SECTION>
 
 <SECTION>
 <FILE>arvdevice</FILE>
 <TITLE>ArvDevice</TITLE>
-ARV_DEVICE_ERROR
 ArvDevice
 ArvDeviceStatus
-arv_device_error_quark
 arv_device_create_stream
+arv_device_create_chunk_parser
 arv_device_read_memory
 arv_device_write_memory
 arv_device_read_register
@@ -228,7 +263,6 @@ arv_device_write_register
 arv_device_get_genicam_xml
 arv_device_get_genicam
 arv_device_get_feature
-arv_device_emit_control_lost_signal
 arv_device_get_status
 arv_device_execute_command
 arv_device_set_string_feature_value
@@ -251,6 +285,31 @@ ARV_IS_DEVICE_CLASS
 ARV_DEVICE_GET_CLASS
 <SUBSECTION Private>
 ArvDeviceClass
+ArvDevicePrivate
+ARV_DEVICE_NAME_ILLEGAL_CHARACTERS
+ARV_DEVICE_NAME_REPLACEMENT_CHARACTER
+</SECTION>
+
+<SECTION>
+<FILE>arvchunkparser</FILE>
+<TITLE>ArvChunkParser</TITLE>
+ArvChunkParser
+arv_chunk_parser_new
+arv_chunk_parser_get_float_value
+arv_chunk_parser_get_integer_value
+arv_chunk_parser_get_string_value
+<SUBSECTION Standard>
+arv_chunk_parser_get_type
+ARV_CHUNK_PARSER
+ARV_CHUNK_PARSER_CLASS
+ARV_CHUNK_PARSER_GET_CLASS
+ARV_IS_CHUNK_PARSER
+ARV_IS_CHUNK_PARSER_CLASS
+ARV_TYPE_CHUNK_PARSER
+<SUBSECTION Private>
+ArvChunkParserStatus
+ArvChunkParserPrivate
+ARV_CHUNK_PARSER_ERROR
 </SECTION>
 
 <SECTION>
@@ -296,6 +355,7 @@ arv_gc_property_node_new_minimum
 arv_gc_property_node_new_msb
 arv_gc_property_node_new_off_value
 arv_gc_property_node_new_on_value
+arv_gc_property_node_new_chunk_id
 arv_gc_property_node_new_p_address
 arv_gc_property_node_new_p_command_value
 arv_gc_property_node_new_p_feature
@@ -431,10 +491,12 @@ ARV_TYPE_GC_GROUP_NODE
 <SECTION>
 <FILE>arvgcregisterdescriptionnode</FILE>
 <TITLE>ArvGcRegisterDescriptionNode</TITLE>
-arv_gc_register_description_node_get_type
+ArvGcRegisterDescriptionNode
 arv_gc_register_description_node_new
+arv_gc_register_description_node_check_schema_version
 arv_gc_register_feature_node
 <SUBSECTION Standard>
+arv_gc_register_description_node_get_type
 ARV_GC_REGISTER_DESCRIPTION_NODE
 ARV_GC_REGISTER_DESCRIPTION_NODE_CLASS
 ARV_GC_REGISTER_DESCRIPTION_NODE_GET_CLASS
@@ -581,7 +643,8 @@ arv_stream_get_n_buffers
 arv_stream_get_statistics
 arv_stream_get_emit_signals
 arv_stream_set_emit_signals
-arv_g_string_append_hex_dump
+arv_make_thread_realtime
+arv_make_thread_high_priority
 <SUBSECTION Standard>
 ARV_STREAM
 ARV_IS_STREAM
@@ -622,6 +685,8 @@ ArvGc
 arv_gc_new
 arv_gc_get_node
 arv_gc_get_device
+arv_gc_get_buffer
+arv_gc_set_buffer
 <SUBSECTION Standard>
 ARV_GC
 ARV_IS_GC
@@ -631,6 +696,7 @@ ARV_GC_CLASS
 ARV_IS_GC_CLASS
 ARV_GC_GET_CLASS
 <SUBSECTION Private>
+ArvGcPrivate
 ArvGcClass
 ArvGcNameSpace
 ArvGcAccessMode
@@ -952,6 +1018,7 @@ ARV_IS_GV_STREAM_CLASS
 ARV_GV_STREAM_GET_CLASS
 <SUBSECTION Private>
 ArvGvStreamClass
+ArvGvStreamPrivate
 </SECTION>
 
 <SECTION>
@@ -999,6 +1066,12 @@ arv_statistic_reset
 arv_statistic_fill
 arv_statistic_set_name
 arv_statistic_to_string
+</SECTION>
+
+<SECTION>
+<FILE>arvstr</FILE>
+<TITLE>ArvStr</TITLE>
+arv_str_strip
 arv_str_is_uri
 arv_str_to_uri
 arv_str_parse_double
@@ -1032,6 +1105,12 @@ arv_decompress
 G_DEFINE_INTERFACE
 G_DEFINE_INTERFACE_WITH_CODE
 G_IMPLEMENT_INTERFACE
+arv_g_type_init
+ARV_DEFINE_STATIC_MUTEX
+arv_g_mutex_lock
+arv_g_mutex_unlock
+arv_g_thread_init
+arv_g_thread_new
 </SECTION>
 
 <SECTION>
@@ -1039,6 +1118,8 @@ G_IMPLEMENT_INTERFACE
 <TITLE>ArvGst</TITLE>
 arv_pixel_format_to_gst_caps_string
 arv_pixel_format_from_gst_caps
+arv_pixel_format_to_gst_0_10_caps_string
+arv_pixel_format_from_gst_0_10_caps
 </SECTION>
 
 <SECTION>
@@ -1101,6 +1182,17 @@ ARV_GVBS_GVCP_CAPABILITY_OFFSET
 ARV_GVBS_GVCP_CAPABILITY_PACKET_RESEND
 ARV_GVBS_GVCP_CAPABILITY_SERIAL_NUMBER
 ARV_GVBS_GVCP_CAPABILITY_WRITE_MEMORY
+ARV_GVBS_GVCP_CAPABILITY_ACTION
+ARV_GVBS_GVCP_CAPABILITY_CCP_APPLICATION_SOCKET
+ARV_GVBS_GVCP_CAPABILITY_DISCOVERY_ACK_DELAY
+ARV_GVBS_GVCP_CAPABILITY_DISCOVERY_ACK_DELAY_WRITABLE
+ARV_GVBS_GVCP_CAPABILITY_EXTENDED_STATUS_CODES
+ARV_GVBS_GVCP_CAPABILITY_HEARTBEAT_DISABLE
+ARV_GVBS_GVCP_CAPABILITY_LINK_SPEED
+ARV_GVBS_GVCP_CAPABILITY_MANIFEST_TABLE
+ARV_GVBS_GVCP_CAPABILITY_PENDING_ACK
+ARV_GVBS_GVCP_CAPABILITY_PRIMARY_APPLICATION_SWITCHOVER
+ARV_GVBS_GVCP_CAPABILITY_TEST_DATA
 ARV_GVBS_HEARTBEAT_TIMEOUT_OFFSET
 ARV_GVBS_IP_CONFIGURATION_DHCP
 ARV_GVBS_IP_CONFIGURATION_LLA
@@ -1278,8 +1370,6 @@ arv_dom_document_save_to_url
 arv_dom_document_get_document_element
 arv_dom_document_create_element
 arv_dom_document_create_text_node
-arv_dom_document_get_element_by_id
-arv_dom_document_register_element
 arv_dom_document_get_url
 arv_dom_document_set_url
 arv_dom_document_set_path
@@ -1401,11 +1491,17 @@ arv_warning_interface
 arv_warning_misc
 arv_warning_stream
 arv_warning_stream_thread
+arv_g_string_append_hex_dump
+arv_debug_category_chunk
+arv_debug_chunk
+arv_log_chunk
+arv_warning_chunk
 </SECTION>
 
 <SECTION>
 <FILE>arvgvsp</FILE>
 <TITLE>ArvGvsp</TITLE>
+ArvGvspPayloadType
 ArvGvspPacketType
 ArvGvspContentType
 ArvGvspDataLeader
@@ -1419,6 +1515,7 @@ arv_gvsp_packet_get_height
 arv_gvsp_packet_get_packet_id
 arv_gvsp_packet_get_packet_type
 arv_gvsp_packet_get_content_type
+arv_gvsp_packet_get_payload_type
 arv_gvsp_packet_get_pixel_format
 arv_gvsp_packet_get_timestamp
 arv_gvsp_packet_get_width

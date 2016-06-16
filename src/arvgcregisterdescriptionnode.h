@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -41,14 +41,21 @@ struct _ArvGcRegisterDescriptionNode {
 	ArvGcFeatureNode	node;
 
 	char *model_name;
+	guint major_version;
+	guint minor_version;
+	guint subminor_version;
 };
 
 struct _ArvGcRegisterDescriptionNodeClass {
 	ArvGcFeatureNodeClass parent_class;
 };
 
-GType 		arv_gc_register_description_node_get_type 	(void);
-ArvGcNode * 	arv_gc_register_description_node_new 		(void);
+GType 		arv_gc_register_description_node_get_type 		(void);
+ArvGcNode * 	arv_gc_register_description_node_new 			(void);
+gboolean	arv_gc_register_description_node_check_schema_version	(ArvGcRegisterDescriptionNode *node,
+									 guint required_major,
+									 guint required_minor, 
+									 guint required_subminor);
 
 G_END_DECLS
 

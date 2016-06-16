@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -45,9 +45,10 @@ static GObjectClass *parent_class = NULL;
 /**
  * arv_gc_node_get_genicam:
  * @gc_node: a #ArvGcNode
- * Return value: (transfer none): the parent #ArvGc
  *
  * Retrieves the parent genicam document of @gc_node.
+ *
+ * Return value: (transfer none): the parent #ArvGc
  */
 
 ArvGc *

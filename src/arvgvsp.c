@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -74,7 +74,7 @@ arv_gvsp_packet_new_data_leader	(guint16 frame_id, guint32 packet_id,
 		ArvGvspDataLeader *leader;
 
 		leader = (ArvGvspDataLeader *) &packet->data;
-		leader->data0 = 0;
+		leader->payload_type = g_htonl (0x00000001); /* ID for image data */
 		leader->timestamp_high = g_htonl (((guint64) timestamp >> 32));
 		leader->timestamp_low  = g_htonl ((guint64) timestamp & 0xffffffff);
 		leader->pixel_format = g_htonl (pixel_format);
@@ -169,8 +169,8 @@ arv_gvsp_packet_to_string (const ArvGvspPacket *packet, size_t packet_size)
 	packet_type = arv_gvsp_packet_get_packet_type (packet);
 	content_type = arv_gvsp_packet_get_content_type (packet);
 
-	g_string_append_printf (string, "packet_type  = %s\n", arv_gvsp_packet_type_to_string (packet_type));
-	g_string_append_printf (string, "content_type = %s\n", arv_gvsp_content_type_to_string (content_type));
+	g_string_append_printf (string, "packet_type  = %s (%04x)\n", arv_gvsp_packet_type_to_string (packet_type), packet_type);
+	g_string_append_printf (string, "content_type = %s (%04x)\n", arv_gvsp_content_type_to_string (content_type), content_type);
 
 	switch (content_type) {
 		case ARV_GVSP_CONTENT_TYPE_DATA_LEADER:

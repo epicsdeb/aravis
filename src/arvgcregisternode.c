@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -620,7 +620,7 @@ arv_gc_register_node_get (ArvGcRegister *gc_register, void *buffer, guint64 leng
 
 	if (length > gc_register_node->cache_size) {
 		memcpy (buffer, gc_register_node->cache, gc_register_node->cache_size);
-		memset (buffer + gc_register_node->cache_size, 0, length - gc_register_node->cache_size);
+		memset (((char *) buffer) + gc_register_node->cache_size, 0, length - gc_register_node->cache_size);
 	} else
 		memcpy (buffer, gc_register_node->cache, length);
 
@@ -635,7 +635,7 @@ arv_gc_register_node_set (ArvGcRegister *gc_register, void *buffer, guint64 leng
 
 	if (gc_register_node->cache_size > length) {
 		memcpy (gc_register_node->cache, buffer, length);
-		memset (gc_register_node->cache + length, 0, gc_register_node->cache_size - length);
+		memset (((char *) gc_register_node->cache) + length, 0, gc_register_node->cache_size - length);
 	} else
 		memcpy (gc_register_node->cache, buffer, gc_register_node->cache_size);
 
@@ -706,7 +706,7 @@ _get_integer_value (ArvGcRegisterNode *gc_register_node, guint register_lsb, gui
 	    gc_register_node->type == ARV_GC_REGISTER_NODE_TYPE_STRUCT_REGISTER) {
 		guint64 mask;
 
-		if (endianess == G_BYTE_ORDER) {
+		if (endianess == G_LITTLE_ENDIAN) {
 			msb = register_msb;
 			lsb = register_lsb;
 		} else {
@@ -714,16 +714,18 @@ _get_integer_value (ArvGcRegisterNode *gc_register_node, guint register_lsb, gui
 			msb = 8 * gc_register_node->cache_size - register_msb - 1;
 		}
 
-#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+		arv_log_genicam ("[GcRegisterNode::_get_integer_value] reglsb = %d, regmsb, %d, lsb = %d, msb = %d",
+				 register_lsb, register_msb, lsb, msb);
+		arv_log_genicam ("[GcRegisterNode::_get_integer_value] value = 0x%08Lx", value);
+
 		if (msb - lsb < 63)
 			mask = ((((guint64) 1) << (msb - lsb + 1)) - 1) << lsb;
 		else
 			mask = G_MAXUINT64;
 
 		value = (value & mask) >> lsb;
-#else
-		g_assert_not_reached ();
-#endif
+
+		arv_log_genicam ("[GcRegisterNode::_get_integer_value] mask  = 0x%08Lx", mask);
 	}
 
 	arv_log_genicam ("[GcRegisterNode::_get_integer_value] address = 0x%Lx, value = 0x%Lx",
@@ -795,7 +797,7 @@ _set_integer_value (ArvGcRegisterNode *gc_register_node, guint register_lsb, gui
 		arv_copy_memory_with_endianess (&current_value, sizeof (current_value), G_BYTE_ORDER,
 						gc_register_node->cache, gc_register_node->cache_size, endianess);
 
-		if (endianess == G_BYTE_ORDER) {
+		if (endianess == G_LITTLE_ENDIAN) {
 			msb = register_msb;
 			lsb = register_lsb;
 		} else {
@@ -803,16 +805,18 @@ _set_integer_value (ArvGcRegisterNode *gc_register_node, guint register_lsb, gui
 			msb = 8 * gc_register_node->cache_size - register_msb - 1;
 		}
 
-#if G_BYTE_ORDER == G_LITTLE_ENDIAN
+		arv_log_genicam ("[GcRegisterNode::_get_integer_value] reglsb = %d, regmsb, %d, lsb = %d, msb = %d",
+				 register_lsb, register_msb, lsb, msb);
+		arv_log_genicam ("[GcRegisterNode::_get_integer_value] value = 0x%08Lx", value);
+
 		if (msb - lsb < 63)
 			mask = ((((guint64) 1) << (msb - lsb + 1)) - 1) << lsb;
 		else
 			mask = G_MAXUINT64;
 
 		value = ((value << lsb) & mask) | (current_value & ~mask);
-#else
-		g_assert_not_reached ();
-#endif
+
+		arv_log_genicam ("[GcRegisterNode::_get_integer_value] mask  = 0x%08Lx", mask);
 	}
 
 	arv_log_genicam ("[GcRegisterNode::_set_integer_value] address = 0x%Lx, value = 0x%Lx",

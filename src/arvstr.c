@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author:
  * 	Emmanuel Pacaud <emmanuel@gnome.org>
@@ -27,10 +27,74 @@
 #include <string.h>
 #include <math.h>
 
+/**
+ * SECTION: arvstr
+ * @short_description: String utilities
+ */
+
+/**
+ * arv_str_strip:
+ * @str: (allow-none): a string
+ * @illegal_chars: illegal characters
+ * @replacement_char: replacement character
+ *
+ * Remove any @illegal_chars from @str, and replace them by @replacement_char if they are not at the end or at the beginning of @str.
+ * Several consecutive @illegal_chars are replaced by only one @replacement_char. @illegal_chars at the beginnig or at the end of @str
+ * are simply removed.
+ *
+ * If @replacement_char is '\0', all @illegal_chars are simply removed.
+ *
+ * Returns: @str
+ *
+ * Since: 0.4.0
+ */
+
+char *
+arv_str_strip (char *str, const char *illegal_chars, char replacement_char)
+{
+	char *last_char = NULL;
+	char *ptr = str;
+	char *out = str;
+	unsigned int n_illegal_chars;
+	unsigned int i;
+	
+	if (str == NULL || illegal_chars == NULL)
+		return str;
+
+	n_illegal_chars = strlen (illegal_chars);
+	if (n_illegal_chars == 0)
+		return str;
+
+	while (*ptr != '\0') {
+		gboolean found = FALSE;
+		for (i = 0; i < n_illegal_chars && !found; i++)
+			found = illegal_chars[i] == *ptr;
+		
+		if (found) {
+			if (last_char == out && replacement_char != '\0') {
+				*out = replacement_char;
+				out++;
+			}
+		} else {
+			*out = *ptr;
+			out++;
+			last_char = out;
+		}
+		ptr++;
+	}
+
+	if (last_char != NULL)
+		*last_char = '\0';
+	else
+		*str = '\0';
+
+	return str;
+}
+
 /* http://www.ietf.org/rfc/rfc2396.txt - Implementation comes from librsvg (rsvg-base.c). */
 
 gboolean
-arv_str_is_uri  (const char *str)
+arv_str_is_uri (const char *str)
 {
 	char const *p;
 

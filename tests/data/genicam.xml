@@ -22,6 +22,9 @@
 		<pFeature>RWBoolean</pFeature>
 		<pFeature>RWInteger</pFeature>
 		<pFeature>Enumeration</pFeature>
+		<pFeature>ChunkInt</pFeature>
+		<pFeature>ChunkFloat</pFeature>
+		<pFeature>ChunkString</pFeature>
 	</Category>
 
 	<Float Name="RWFloat">
@@ -152,8 +155,31 @@
 		<Formula>(0x12345678 &amp; 0x10305070)</Formula>
 	</IntSwissKnife>
 
+	<IntSwissKnife Name="IntSwissKnifeTestEntity2">
+		<Formula>(0 &amp;&amp; 1)?2:3</Formula>
+	</IntSwissKnife>
+
 	<IntSwissKnife Name="IntSwissKnifeTest">
 		<Formula>0x1234</Formula>
+	</IntSwissKnife>
+
+	<Integer Name="Bug699228_T">
+		<Value>10</Value>
+	</Integer>
+
+	<Integer Name="Bug699228_L">
+		<Value>20</Value>
+	</Integer>
+
+	<Integer Name="Bug699228_FILTER">
+		<Value>5</Value>
+	</Integer>
+
+	<IntSwissKnife Name="IntSwissKnifeBug699228">
+		<pVariable Name="T">Bug699228_T</pVariable>
+		<pVariable Name="L">Bug699228_L</pVariable>
+		<pVariable Name="FILTER">Bug699228_FILTER</pVariable>
+		<Formula>((((L%2) = 0) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 0))?0:( (((L%2) = 0) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 1))?0:( (((L%2) = 1) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 2))?0:( (((L%2) = 1) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 3))?0:( (((L%2) = 0) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 1))?1:( (((L%2) = 0) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 0))?1:( (((L%2) = 1) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 3))?1:( (((L%2) = 1) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 2))?1:( (((L%2) = 0) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 2))?2:( (((L%2) = 0) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 3))?2:( (((L%2) = 1) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 0))?2:( (((L%2) = 1) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 1))?2:( (((L%2) = 0) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 3))?3:( (((L%2) = 0) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 2))?3:( (((L%2) = 1) &amp;&amp;((T%2) = 0) &amp;&amp; (FILTER = 1))?3:( (((L%2) = 1) &amp;&amp;((T%2) = 1) &amp;&amp; (FILTER = 0))?3:( 4 ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ))</Formula>
 	</IntSwissKnife>
 
 	<Integer Name="TLParamsLocked">
@@ -163,5 +189,37 @@
 		<Min>0</Min>
 		<Max>1</Max>
 	</Integer>
+
+	<StringReg Name="DeviceUserID">
+		<Address>0xe8</Address>
+		<Length>16</Length>
+		<AccessMode>RW</AccessMode>
+		<pPort>Device</pPort>
+	</StringReg>
+
+	<IntReg Name="ChunkInt">
+		<Address>0x00</Address>
+		<Length>4</Length>
+		<AccessMode>R</AccessMode>
+		<pPort>IntPort</pPort>
+		<Cachable>NoCache</Cachable>
+		<Sign>Unsigned</Sign>
+		<Endianess>BigEndian</Endianess>
+	</IntReg>
+
+	<Port Name="IntPort">
+		<ChunkID>12345678</ChunkID>
+	</Port>
+
+	<StringReg Name="ChunkString">
+		<Address>0x00</Address>
+		<Length>64</Length>
+		<AccessMode>R</AccessMode>
+		<pPort>StringPort</pPort>
+	</StringReg>
+
+	<Port Name="StringPort">
+		<ChunkID>87654321</ChunkID>
+	</Port>
 
 </RegisterDescription>

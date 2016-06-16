@@ -2,28 +2,28 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>GVCP packets</title>
-<meta name="generator" content="DocBook XSL Stylesheets V1.76.1">
+<title>GVCP packets: Aravis Reference Manual</title>
+<meta name="generator" content="DocBook XSL Stylesheets V1.78.1">
 <link rel="home" href="index.html" title="Aravis Reference Manual">
 <link rel="up" href="aravis-gv.html" title="Part III. Ethernet protocol (GV)">
 <link rel="prev" href="aravis-gv-introduction.html" title="Introduction">
 <link rel="next" href="aravis-gvsp.html" title="GVSP packets">
-<meta name="generator" content="GTK-Doc V1.18 (XML mode)">
+<meta name="generator" content="GTK-Doc V1.24 (XML mode)">
 <link rel="stylesheet" href="style.css" type="text/css">
 </head>
 <body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
-<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="2"><tr valign="middle">
-<td><a accesskey="p" href="aravis-gv-introduction.html"><img src="left.png" width="24" height="24" border="0" alt="Prev"></a></td>
-<td><a accesskey="u" href="aravis-gv.html"><img src="up.png" width="24" height="24" border="0" alt="Up"></a></td>
-<td><a accesskey="h" href="index.html"><img src="home.png" width="24" height="24" border="0" alt="Home"></a></td>
-<th width="100%" align="center">Aravis Reference Manual</th>
-<td><a accesskey="n" href="aravis-gvsp.html"><img src="right.png" width="24" height="24" border="0" alt="Next"></a></td>
+<table class="navigation" id="top" width="100%" summary="Navigation header" cellpadding="2" cellspacing="5"><tr valign="middle">
+<td width="100%" align="left" class="shortcuts"></td>
+<td><a accesskey="h" href="index.html"><img src="home.png" width="16" height="16" border="0" alt="Home"></a></td>
+<td><a accesskey="u" href="aravis-gv.html"><img src="up.png" width="16" height="16" border="0" alt="Up"></a></td>
+<td><a accesskey="p" href="aravis-gv-introduction.html"><img src="left.png" width="16" height="16" border="0" alt="Prev"></a></td>
+<td><a accesskey="n" href="aravis-gvsp.html"><img src="right.png" width="16" height="16" border="0" alt="Next"></a></td>
 </tr></table>
 <div class="chapter">
 <div class="titlepage"><div><div><h2 class="title">
 <a name="aravis-gvcp"></a>GVCP packets</h2></div></div></div>
 <p>
-			Devices are waiting for GVCP packets listening to the GVCP port (3946). When the client sends a command GVCP packet to the device, the device sends back an acknowledge packets in return. Each command/acknowledge pair is identified by a 16 bit value, which allows to check if an acknowledge packet corresponds to the previsoulsy sent command. 0 is an error value for this identifier. If an acknowledge is not received after a given timeout period, another command packet is sent, until a maximum number of retries is reached.
+			Devices are waiting for GVCP packets listening to the GVCP port (3956). When the client sends a command GVCP packet to the device, the device sends back an acknowledge packets in return. Each command/acknowledge pair is identified by a 16 bit value, which allows to check if an acknowledge packet corresponds to the previsoulsy sent command. 0 is an error value for this identifier. If an acknowledge is not received after a given timeout period, another command packet is sent, until a maximum number of retries is reached.
 		</p>
 <p>
 			The <a class="link" href="aravis-ArvGvcp.html" title="ArvGvcp">ArvGvcp</a> API offers a set of function for handling of GVCP packets.
@@ -32,7 +32,7 @@
 			The content of a GVCP packet is composed by a 64 bit headers, followed or not by a data byte array, depending on the GVCP packet type. Multibyte values are in big endian encoding.
 		</p>
 <div class="table">
-<a name="id627429"></a><p class="title"><b>Table 1. GVCP packet</b></p>
+<a name="id-1.4.3.5"></a><p class="title"><b>Table 1. GVCP packet</b></p>
 <div class="table-contents"><table summary="GVCP packet" border="1">
 <colgroup>
 <col align="left" class="B0">
@@ -68,7 +68,7 @@
 </div>
 <br class="table-break"><div class="sect2">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="id626524"></a>Discovery</h3></div></div></div>
+<a name="id-1.4.3.6"></a>Discovery</h3></div></div></div>
 <p>
 				A device discovery mechanism is implemented using a discovery GVCP packet, broadcasted by the client to the GVCP port. Each available device responds to this discovery packet with an acknowledge packet, containing a description of the device (device name, model name, manufacturer name, MAC Address...).
 			</p>
@@ -76,7 +76,7 @@
 				In the discovery command packet, data size is set to 0 and packet id is equal to 0xffff.
 			</p>
 <div class="table">
-<a name="id626721"></a><p class="title"><b>Table 2. Discovery acknowledge packet</b></p>
+<a name="id-1.4.3.6.4"></a><p class="title"><b>Table 2. Discovery acknowledge packet</b></p>
 <div class="table-contents"><table summary="Discovery acknowledge packet" border="1">
 <colgroup>
 <col align="left" class="Address">
@@ -241,7 +241,7 @@
 </div>
 <div class="sect2">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="id625891"></a>Read and write register</h3></div></div></div>
+<a name="id-1.4.3.7"></a>Read and write register</h3></div></div></div>
 <p>
 				These packets are used for the read and write of 32 bit registers, accessed using 32 bit adresses. For the read command, a list of addresses is sent ot the client, which returns a list of 32 bit values. For the write command, a list of address/value pairs is sent to the client, which returns a list of 32 bit values.
 			</p>
@@ -251,7 +251,7 @@
 </div>
 <div class="sect2">
 <div class="titlepage"><div><div><h3 class="title">
-<a name="id601723"></a>Read and write memory</h3></div></div></div>
+<a name="id-1.4.3.8"></a>Read and write memory</h3></div></div></div>
 <p>
 				Write memory packet data area consists in a 32 bit address, followed by the data to write. Client returns an acknowledge packet with the target address.
 			</p>
@@ -261,7 +261,6 @@
 </div>
 </div>
 <div class="footer">
-<hr>
-          Generated by GTK-Doc V1.18</div>
+<hr>Generated by GTK-Doc V1.24</div>
 </body>
 </html>

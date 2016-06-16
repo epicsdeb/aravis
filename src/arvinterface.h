@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -27,6 +27,10 @@
 #include <arvdevice.h>
 
 G_BEGIN_DECLS
+
+#define ARV_DEVICE_NAME_ILLEGAL_CHARACTERS 	"\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0a\x0b\x0c\x0d\x0e\x0f" \
+						"\x11\x12\x13\x14\x15\x16\x17\x18\x19\x1a\x1b\x1c\x1d\x1e\x1f"
+#define ARV_DEVICE_NAME_REPLACEMENT_CHARACTER	'\0'
 
 typedef struct {
 	char *device;
@@ -63,7 +67,7 @@ void 			arv_interface_update_device_list 	(ArvInterface *interface);
 unsigned int 		arv_interface_get_n_devices 		(ArvInterface *interface);
 const char * 		arv_interface_get_device_id 		(ArvInterface *interface, unsigned int index);
 const char * 		arv_interface_get_device_physical_id 	(ArvInterface *interface, unsigned int index);
-const char * 		arv_interface_get_device_address		(ArvInterface *interface, unsigned int index);
+const char * 		arv_interface_get_device_address	(ArvInterface *interface, unsigned int index);
 ArvDevice * 		arv_interface_open_device 		(ArvInterface *interface, const char *device_id);
 
 G_END_DECLS
