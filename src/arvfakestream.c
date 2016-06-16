@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -26,8 +26,10 @@
  */
 
 #include <arvfakestream.h>
-#include <arvbuffer.h>
+#include <arvstreamprivate.h>
+#include <arvbufferprivate.h>
 #include <arvdebug.h>
+#include <arvmisc.h>
 
 static GObjectClass *parent_class = NULL;
 
@@ -72,7 +74,7 @@ arv_fake_stream_thread (void *data)
 		buffer = arv_stream_pop_input_buffer (thread_data->stream);
 		if (buffer != NULL) {
 			arv_fake_camera_fill_buffer (thread_data->camera, buffer, NULL);
-			if (buffer->status == ARV_BUFFER_STATUS_SUCCESS)
+			if (buffer->priv->status == ARV_BUFFER_STATUS_SUCCESS)
 				thread_data->n_completed_buffers++;
 			else
 				thread_data->n_failures++;
@@ -100,6 +102,7 @@ arv_fake_stream_thread (void *data)
  * @camera: a #ArvFakeCamera
  * @callback: (scope call): image processing callback
  * @user_data: (closure): user data for @callback
+ *
  * Return Value: (transfer full): a new #ArvStream.
  */
 
@@ -131,8 +134,7 @@ arv_fake_stream_new (ArvFakeCamera *camera, ArvStreamCallback callback, void *us
 
 	fake_stream->priv->camera = camera;
 	fake_stream->priv->thread_data = thread_data;
-	fake_stream->priv->thread = g_thread_create (arv_fake_stream_thread,
-						     fake_stream->priv->thread_data, TRUE, NULL);
+	fake_stream->priv->thread = arv_g_thread_new ("arv_fake_stream", arv_fake_stream_thread, fake_stream->priv->thread_data);
 
 	return ARV_STREAM (fake_stream);
 }

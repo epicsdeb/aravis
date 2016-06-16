@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -540,7 +540,7 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 						      arv_value_get_int64 (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_EQUAL:
-				if (arv_value_holds_int64 (&stack[index-1]) ||
+				if (arv_value_holds_int64 (&stack[index-1]) &&
 				    arv_value_holds_int64 (&stack[index]))
 					arv_value_set_int64 (&stack[index-1],
 							      arv_value_get_int64 (&stack[index-1]) ==
@@ -551,7 +551,7 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 							      arv_value_get_double (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_NOT_EQUAL:
-				if (arv_value_holds_int64 (&stack[index-1]) ||
+				if (arv_value_holds_int64 (&stack[index-1]) &&
 				    arv_value_holds_int64 (&stack[index]))
 					arv_value_set_int64 (&stack[index-1],
 							      arv_value_get_int64 (&stack[index-1]) !=
@@ -562,7 +562,7 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 							      arv_value_get_double (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_LESS_OR_EQUAL:
-				if (arv_value_holds_int64 (&stack[index-1]) ||
+				if (arv_value_holds_int64 (&stack[index-1]) &&
 				    arv_value_holds_int64 (&stack[index]))
 					arv_value_set_int64 (&stack[index-1],
 							      arv_value_get_int64 (&stack[index-1]) <=
@@ -573,7 +573,7 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 							      arv_value_get_double (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_GREATER_OR_EQUAL:
-				if (arv_value_holds_int64 (&stack[index-1]) ||
+				if (arv_value_holds_int64 (&stack[index-1]) &&
 				    arv_value_holds_int64 (&stack[index]))
 					arv_value_set_int64 (&stack[index-1],
 							      arv_value_get_int64 (&stack[index-1]) >=
@@ -584,7 +584,7 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 							      arv_value_get_double (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_LESS:
-				if (arv_value_holds_int64 (&stack[index-1]) ||
+				if (arv_value_holds_int64 (&stack[index-1]) &&
 				    arv_value_holds_int64 (&stack[index]))
 					arv_value_set_int64 (&stack[index-1],
 							      arv_value_get_int64 (&stack[index-1]) <
@@ -595,7 +595,7 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 							      arv_value_get_double (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_GREATER:
-				if (arv_value_holds_int64 (&stack[index-1]) ||
+				if (arv_value_holds_int64 (&stack[index-1]) &&
 				    arv_value_holds_int64 (&stack[index]))
 					arv_value_set_int64 (&stack[index-1],
 							      arv_value_get_int64 (&stack[index-1]) >
@@ -647,51 +647,37 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 						      arv_value_get_int64 (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_DIVISION:
-				if (arv_value_holds_double (&stack[index-1]) ||
-				    arv_value_holds_double (&stack[index]) ||
-				    /* Do float division if asked for a float value, even
-				     * with integer operands. */
-				    v_double != NULL) {
-					if (arv_value_get_double (&stack[index]) == 0.0) {
-						status = ARV_EVALUATOR_STATUS_DIVISION_BY_ZERO;
-						goto CLEANUP;
-					}
-					arv_value_set_double (&stack[index-1],
-							       arv_value_get_double (&stack[index-1]) /
-							       arv_value_get_double (&stack[index]));
-				} else {
-					if (arv_value_get_int64 (&stack[index]) == 0) {
-						status = ARV_EVALUATOR_STATUS_DIVISION_BY_ZERO;
-						goto CLEANUP;
-					}
-					arv_value_set_int64 (&stack[index-1],
-							      arv_value_get_int64 (&stack[index-1]) /
-							      arv_value_get_int64 (&stack[index]));
+				if (arv_value_get_double (&stack[index]) == 0.0) {
+					status = ARV_EVALUATOR_STATUS_DIVISION_BY_ZERO;
+					goto CLEANUP;
 				}
+				arv_value_set_double (&stack[index-1],
+						      arv_value_get_double (&stack[index-1]) /
+						      arv_value_get_double (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_MULTIPLICATION:
 				if (arv_value_holds_double (&stack[index-1]) ||
 				    arv_value_holds_double (&stack[index]))
 					arv_value_set_double (&stack[index-1],
-							       arv_value_get_double (&stack[index-1]) *
-							       arv_value_get_double (&stack[index]));
+							      arv_value_get_double (&stack[index-1]) *
+							      arv_value_get_double (&stack[index]));
 				else
 					arv_value_set_int64 (&stack[index-1],
-							      arv_value_get_int64 (&stack[index-1]) *
-							      arv_value_get_int64 (&stack[index]));
+							     arv_value_get_int64 (&stack[index-1]) *
+							     arv_value_get_int64 (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_POWER:
 				arv_value_set_double (&stack[index-1],
-						       pow (arv_value_get_double(&stack[index-1]),
-							    arv_value_get_double(&stack[index])));
+						      pow (arv_value_get_double(&stack[index-1]),
+							   arv_value_get_double(&stack[index])));
 				break;
 			case ARV_EVALUATOR_TOKEN_MINUS:
 				if (arv_value_holds_double (&stack[index]))
 					arv_value_set_double (&stack[index],
-							       -arv_value_get_double (&stack[index]));
+							      -arv_value_get_double (&stack[index]));
 				else
 					arv_value_set_int64 (&stack[index],
-							      -arv_value_get_int64 (&stack[index]));
+							     -arv_value_get_int64 (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_PLUS:
 				break;
@@ -723,10 +709,10 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 			case ARV_EVALUATOR_TOKEN_FUNCTION_NEG:
 				if (arv_value_holds_double (&stack[index]))
 					arv_value_set_double (&stack[index],
-							       -arv_value_get_double (&stack[index-1]));
+							      -arv_value_get_double (&stack[index-1]));
 				else
 					arv_value_set_int64 (&stack[index],
-							      -arv_value_get_int64 (&stack[index]));
+							     -arv_value_get_int64 (&stack[index]));
 				break;
 			case ARV_EVALUATOR_TOKEN_FUNCTION_ATAN:
 				arv_value_set_double (&stack[index], atan (arv_value_get_double (&stack[index])));
@@ -737,10 +723,10 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 			case ARV_EVALUATOR_TOKEN_FUNCTION_ABS:
 				if (arv_value_holds_double (&stack[index]))
 					arv_value_set_double (&stack[index],
-							       fabs (arv_value_get_double (&stack[index-1])));
+							      fabs (arv_value_get_double (&stack[index-1])));
 				else
 					arv_value_set_int64 (&stack[index],
-							      abs (arv_value_get_int64 (&stack[index])));
+							     abs (arv_value_get_int64 (&stack[index])));
 				break;
 			case ARV_EVALUATOR_TOKEN_FUNCTION_EXP:
 				arv_value_set_double (&stack[index], exp (arv_value_get_double (&stack[index])));
@@ -757,10 +743,10 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 			case ARV_EVALUATOR_TOKEN_FUNCTION_TRUNC:
 				if (arv_value_get_double (&stack[index]) > 0.0)
 					arv_value_set_double (&stack[index],
-							       floor (arv_value_get_double (&stack[index])));
+							      floor (arv_value_get_double (&stack[index])));
 				else
 					arv_value_set_double (&stack[index],
-							       ceil (arv_value_get_double (&stack[index])));
+							      ceil (arv_value_get_double (&stack[index])));
 				break;
 			case ARV_EVALUATOR_TOKEN_FUNCTION_FLOOR:
 				arv_value_set_double (&stack[index], floor (arv_value_get_double (&stack[index])));
@@ -1100,9 +1086,10 @@ arv_evaluator_set_int64_variable (ArvEvaluator *evaluator, const char *name, gin
 /** 
  * arv_evaluator_new:
  * @expression: (allow-none): an evaluator expression
- * Return value: a new #ArvEvaluator object.
  *
  * Creates a new #ArvEvaluator object. The syntax is described in the genicam standard specification.
+ *
+ * Return value: a new #ArvEvaluator object.
  */
 
 ArvEvaluator *

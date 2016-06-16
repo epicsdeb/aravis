@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -35,10 +35,13 @@ G_BEGIN_DECLS
 #define ARV_IS_GC_PORT_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), ARV_TYPE_GC_PORT))
 #define ARV_GC_PORT_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), ARV_TYPE_GC_PORT, ArvGcPortClass))
 
+typedef struct _ArvGcPortPrivate ArvGcPortPrivate;
 typedef struct _ArvGcPortClass ArvGcPortClass;
 
 struct _ArvGcPort {
 	ArvGcFeatureNode node;
+
+	ArvGcPortPrivate *priv;
 };
 
 struct _ArvGcPortClass {

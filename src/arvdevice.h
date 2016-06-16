@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -25,10 +25,9 @@
 
 #include <arvtypes.h>
 #include <arvstream.h>
+#include <arvchunkparser.h>
 
 G_BEGIN_DECLS
-
-#define ARV_DEVICE_ERROR arv_device_error_quark()
 
 /**
  * ArvDeviceStatus:
@@ -52,13 +51,13 @@ typedef enum {
 #define ARV_IS_DEVICE_CLASS(klass)  (G_TYPE_CHECK_CLASS_TYPE ((klass), ARV_TYPE_DEVICE))
 #define ARV_DEVICE_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS((obj), ARV_TYPE_DEVICE, ArvDeviceClass))
 
+typedef struct _ArvDevicePrivate ArvDevicePrivate;
 typedef struct _ArvDeviceClass ArvDeviceClass;
 
 struct _ArvDevice {
 	GObject	object;
 
-	ArvDeviceStatus status;
-	char *status_message;
+	ArvDevicePrivate *priv;
 };
 
 struct _ArvDeviceClass {
@@ -80,8 +79,6 @@ struct _ArvDeviceClass {
 
 GType arv_device_get_type (void);
 
-GQuark 		arv_device_error_quark 		(void);
-
 ArvStream *	arv_device_create_stream	(ArvDevice *device, ArvStreamCallback callback, void *user_data);
 
 gboolean	arv_device_read_memory 		(ArvDevice *device, guint32 address, guint32 size, void *buffer, GError **error);
@@ -92,9 +89,9 @@ gboolean	arv_device_write_register 	(ArvDevice *device, guint32 address, guint32
 const char * 	arv_device_get_genicam_xml 		(ArvDevice *device, size_t *size);
 ArvGc *		arv_device_get_genicam			(ArvDevice *device);
 
-void 		arv_device_emit_control_lost_signal 	(ArvDevice *device);
-
 ArvGcNode *	arv_device_get_feature			(ArvDevice *device, const char *feature);
+
+ArvChunkParser *arv_device_create_chunk_parser		(ArvDevice *device);
 
 /* This functions may change the device status */
 

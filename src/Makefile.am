@@ -2,7 +2,7 @@ EXTRA_DIST =
 
 include $(top_srcdir)/Makefile.decl
 
-INCLUDES = \
+AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" $(ARAVIS_CFLAGS) \
@@ -68,13 +68,15 @@ ARAVIS_SRCS =					\
 	arvdevice.c				\
 	arvstream.c				\
 	arvbuffer.c				\
+	arvchunkparser.c			\
 	arvgvinterface.c			\
 	arvgvdevice.c				\
 	arvgvstream.c				\
 	arvfakeinterface.c			\
 	arvfakedevice.c				\
 	arvfakestream.c				\
-	arvfakecamera.c
+	arvfakecamera.c				\
+	arvrealtime.c
 
 ARAVIS_SRCS_NO_INTRO =				\
 	arvmisc.c				\
@@ -130,13 +132,15 @@ ARAVIS_HDRS = 					\
 	arvdevice.h				\
 	arvstream.h				\
 	arvbuffer.h				\
+	arvchunkparser.h			\
 	arvgvinterface.h			\
 	arvgvdevice.h				\
 	arvgvstream.h				\
 	arvfakeinterface.h			\
 	arvfakedevice.h				\
 	arvfakestream.h				\
-	arvfakecamera.h
+	arvfakecamera.h				\
+	arvrealtime.h
 
 ARAVIS_HDRS_NO_INTRO =				\
 	arvmisc.h				\
@@ -144,6 +148,13 @@ ARAVIS_HDRS_NO_INTRO =				\
 	arvstr.h				\
 	arvgvcp.h				\
 	arvgvsp.h
+
+noinst_HEADERS =				\
+	arvbufferprivate.h			\
+	arvchunkparserprivate.h			\
+	arvdeviceprivate.h			\
+	arvstreamprivate.h			\
+	arvrealtimeprivate.h
 
 arv_fake_cameradir = $(aravis_datadir)
 arv_fake_camera_DATA = arv-fake-camera.xml
@@ -187,7 +198,7 @@ introspection_files = $(ARAVIS_SRCS) \
 		      arvenumtypes.c \
 		      arvenumtypes.h
 
-Aravis-@ARAVIS_API_VERSION@.gir: $(INTROSPECTION_SCANNER)
+Aravis-@ARAVIS_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libaravis-@ARAVIS_API_VERSION@.la Makefile
 
 Aravis_@ARAVIS_API_VERSION_U@_gir_INCLUDES = GObject-2.0 Gio-2.0
 Aravis_@ARAVIS_API_VERSION_U@_gir_SCANNERFLAGS = --identifier-prefix=Arv --warn-all

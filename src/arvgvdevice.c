@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -26,13 +26,16 @@
  */
 
 #include <arvgvdevice.h>
+#include <arvdeviceprivate.h>
 #include <arvgc.h>
+#include <arvgcregisterdescriptionnode.h>
 #include <arvdebug.h>
 #include <arvgvstream.h>
 #include <arvgvcp.h>
 #include <arvgvsp.h>
 #include <arvzip.h>
 #include <arvstr.h>
+#include <arvmisc.h>
 #include <string.h>
 #include <stdlib.h>
 
@@ -41,7 +44,11 @@ static GObjectClass *parent_class = NULL;
 /* Shared data (main thread - heartbeat) */
 
 typedef struct {
+#if GLIB_CHECK_VERSION(2,32,0)
+	GMutex mutex;
+#else
 	GMutex *mutex;
+#endif
 
 	guint16 packet_id;
 
@@ -69,6 +76,9 @@ struct _ArvGvDevicePrivate {
 
 	char *genicam_xml;
 	size_t genicam_xml_size;
+
+	gboolean is_packet_resend_supported;
+	gboolean is_write_memory_supported;
 };
 
 GRegex *
@@ -77,7 +87,7 @@ arv_gv_device_get_url_regex (void)
 static GRegex *arv_gv_device_url_regex = NULL;
 
 	if (arv_gv_device_url_regex == NULL)
-		arv_gv_device_url_regex = g_regex_new ("^(local:|file:|http:)(.+\\.[^;]+);?([0-9:a-f]*)?;?([0-9:a-f]*)?$",
+		arv_gv_device_url_regex = g_regex_new ("^(local:|file:|http:)(.+\\.[^;]+);?(?:0x)?([0-9:a-f]*)?;?(?:0x)?([0-9:a-f]*)?$",
 						       G_REGEX_CASELESS, 0, NULL);
 
 	return arv_gv_device_url_regex;
@@ -97,7 +107,11 @@ _read_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *b
 
 	g_return_val_if_fail (answer_size <= ARV_GV_DEVICE_BUFFER_SIZE, FALSE);
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_lock (&io_data->mutex);
+#else
 	g_mutex_lock (io_data->mutex);
+#endif
 
 	packet = arv_gvcp_packet_new_read_memory_cmd (address,
 						      ((size + sizeof (guint32) - 1)
@@ -145,7 +159,11 @@ _read_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *b
 
 	arv_gvcp_packet_free (packet);
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_unlock (&io_data->mutex);
+#else
 	g_mutex_unlock (io_data->mutex);
+#endif
 
 	if (!success) {
 		if (error != NULL && *error == NULL)
@@ -165,7 +183,11 @@ _write_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *
 	unsigned int n_retries = 0;
 	gboolean success = FALSE;
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_lock (&io_data->mutex);
+#else
 	g_mutex_lock (io_data->mutex);
+#endif
 
 	packet = arv_gvcp_packet_new_write_memory_cmd (address,
 						       ((size + sizeof (guint32) - 1) /
@@ -214,7 +236,11 @@ _write_memory (ArvGvDeviceIOData *io_data, guint32 address, guint32 size, void *
 
 	arv_gvcp_packet_free (packet);
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_unlock (&io_data->mutex);
+#else
 	g_mutex_unlock (io_data->mutex);
+#endif
 
 	if (!success) {
 		if (error != NULL && *error == NULL)
@@ -234,7 +260,11 @@ _read_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 *value_plac
 	unsigned int n_retries = 0;
 	gboolean success = FALSE;
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_lock (&io_data->mutex);
+#else
 	g_mutex_lock (io_data->mutex);
+#endif
 
 	packet = arv_gvcp_packet_new_read_register_cmd (address, 0, &packet_size);
 
@@ -279,7 +309,11 @@ _read_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 *value_plac
 
 	arv_gvcp_packet_free (packet);
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_unlock (&io_data->mutex);
+#else
 	g_mutex_unlock (io_data->mutex);
+#endif
 
 	if (!success) {
 		*value_placeholder = 0;
@@ -301,7 +335,11 @@ _write_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 value, GEr
 	unsigned int n_retries = 0;
 	gboolean success = FALSE;
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_lock (&io_data->mutex);
+#else
 	g_mutex_lock (io_data->mutex);
+#endif
 
 	packet = arv_gvcp_packet_new_write_register_cmd (address, value, io_data->packet_id, &packet_size);
 
@@ -346,7 +384,11 @@ _write_register (ArvGvDeviceIOData *io_data, guint32 address, guint32 value, GEr
 
 	arv_gvcp_packet_free (packet);
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_unlock (&io_data->mutex);
+#else
 	g_mutex_unlock (io_data->mutex);
+#endif
 
 	if (!success) {
 		if (error != NULL && *error == NULL)
@@ -509,10 +551,13 @@ _load_genicam (ArvGvDevice *gv_device, guint32 address, size_t  *size)
 
 	tokens = g_regex_split (arv_gv_device_get_url_regex (), filename, 0);
 
-	if (tokens[0] != NULL) {
-		if (g_strcmp0 (tokens[1], "File:") == 0)
-			g_file_get_contents (filename, &genicam, NULL, NULL);
-		else if (g_strcmp0 (tokens[1], "Local:") == 0 &&
+	if (tokens[0] != NULL && tokens[1] != NULL) {
+		if (g_ascii_strcasecmp (tokens[1], "file:") == 0) {
+			gsize len;
+			g_file_get_contents (tokens[2], &genicam, &len, NULL);
+			if (genicam)
+				*size = len;
+		} else if (g_ascii_strcasecmp (tokens[1], "local:") == 0 &&
 			 tokens[2] != NULL &&
 			 tokens[3] != NULL &&
 			 tokens[4] != NULL) {
@@ -574,6 +619,26 @@ _load_genicam (ArvGvDevice *gv_device, guint32 address, size_t  *size)
 					*size = 0;
 				}
 			}
+		} else if (g_ascii_strcasecmp (tokens[1], "http:") == 0) {
+			GFile *file;
+			GFileInputStream *stream;
+
+			file = g_file_new_for_uri (filename);
+			stream = g_file_read (file, NULL, NULL);
+			if(stream) {
+				GDataInputStream *data_stream;
+				gsize len;
+
+				data_stream = g_data_input_stream_new (G_INPUT_STREAM (stream));
+				genicam = g_data_input_stream_read_upto (data_stream, "", 0, &len, NULL, NULL);
+
+				if (genicam)
+					*size = len;
+
+				g_object_unref (data_stream);
+				g_object_unref (stream);
+			}
+			g_object_unref (file);
 		}
 	}
 
@@ -731,13 +796,16 @@ arv_gv_device_create_stream (ArvDevice *device, ArvStreamCallback callback, void
 	stream_port = arv_gv_stream_get_port (ARV_GV_STREAM (stream));
 
 	if (!arv_device_write_register (device, ARV_GVBS_STREAM_CHANNEL_0_IP_ADDRESS_OFFSET,
-				   g_htonl(*((guint32 *) address_bytes)), NULL) ||
+					g_htonl(*((guint32 *) address_bytes)), NULL) ||
 	    !arv_device_write_register (device, ARV_GVBS_STREAM_CHANNEL_0_PORT_OFFSET, stream_port, NULL)) {
 		arv_warning_device ("[GvDevice::create_stream] Stream configuration failed");
 
 		g_object_unref (stream);
 		return NULL;
 	}
+
+	if (!gv_device->priv->is_packet_resend_supported)
+		g_object_set (stream, "packet-resend", ARV_GV_STREAM_PACKET_RESEND_NEVER, NULL); 
 
 	arv_debug_device ("[GvDevice::create_stream] Stream port = %d", stream_port);
 
@@ -763,7 +831,7 @@ arv_gv_device_read_memory (ArvDevice *device, guint32 address, guint32 size, voi
 		block_size = MIN (ARV_GVCP_DATA_SIZE_MAX, size - i * ARV_GVCP_DATA_SIZE_MAX);
 		if (!_read_memory (gv_device->priv->io_data,
 				   address + i * ARV_GVCP_DATA_SIZE_MAX,
-				   block_size, buffer + i * ARV_GVCP_DATA_SIZE_MAX, error))
+				   block_size, ((char *) buffer) + i * ARV_GVCP_DATA_SIZE_MAX, error))
 			return FALSE;
 	}
 
@@ -781,7 +849,7 @@ arv_gv_device_write_memory (ArvDevice *device, guint32 address, guint32 size, vo
 		block_size = MIN (ARV_GVCP_DATA_SIZE_MAX, size - i * ARV_GVCP_DATA_SIZE_MAX);
 		if (!_write_memory (gv_device->priv->io_data,
 				    address + i * ARV_GVCP_DATA_SIZE_MAX,
-				    block_size, buffer + i * ARV_GVCP_DATA_SIZE_MAX, error))
+				    block_size, ((char *) buffer) + i * ARV_GVCP_DATA_SIZE_MAX, error))
 			return FALSE;
 	}
 
@@ -810,7 +878,10 @@ arv_gv_device_new (GInetAddress *interface_address, GInetAddress *device_address
 	ArvGvDevice *gv_device;
 	ArvGvDeviceIOData *io_data;
 	ArvGvDeviceHeartbeatData *heartbeat_data;
+	ArvGcRegisterDescriptionNode *register_description;
+	ArvDomDocument *document;
 	char *address_string;
+	guint32 capabilities;
 
 	g_return_val_if_fail (G_IS_INET_ADDRESS (interface_address), NULL);
 	g_return_val_if_fail (G_IS_INET_ADDRESS (device_address), NULL);
@@ -826,7 +897,11 @@ arv_gv_device_new (GInetAddress *interface_address, GInetAddress *device_address
 
 	io_data = g_new0 (ArvGvDeviceIOData, 1);
 
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_init (&io_data->mutex);
+#else
 	io_data->mutex = g_mutex_new ();
+#endif
 	io_data->packet_id = 65300; /* Start near the end of the circular counter */
 
 	io_data->interface_address = g_inet_socket_address_new (interface_address, 0);
@@ -847,6 +922,12 @@ arv_gv_device_new (GInetAddress *interface_address, GInetAddress *device_address
 
 	arv_gv_device_load_genicam (gv_device);
 
+	if (!ARV_IS_GC (gv_device->priv->genicam)) {
+		arv_warning_device ("[GvDevice::new] Failed to load genicam data");
+		g_object_unref (gv_device);
+		return NULL;
+	}
+
 	arv_gv_device_take_control (gv_device);
 
 	heartbeat_data = g_new (ArvGvDeviceHeartbeatData, 1);
@@ -857,9 +938,20 @@ arv_gv_device_new (GInetAddress *interface_address, GInetAddress *device_address
 
 	gv_device->priv->heartbeat_data = heartbeat_data;
 
-	gv_device->priv->heartbeat_thread = g_thread_create (arv_gv_device_heartbeat_thread,
-							     gv_device->priv->heartbeat_data,
-							     TRUE, NULL);
+	gv_device->priv->heartbeat_thread = arv_g_thread_new ("arv_gv_heartbeat", arv_gv_device_heartbeat_thread,
+							      gv_device->priv->heartbeat_data);
+
+	arv_device_read_register (ARV_DEVICE (gv_device), ARV_GVBS_GVCP_CAPABILITY_OFFSET, &capabilities, NULL);
+	gv_device->priv->is_packet_resend_supported = (capabilities & ARV_GVBS_GVCP_CAPABILITY_PACKET_RESEND) != 0;
+	gv_device->priv->is_write_memory_supported = (capabilities & ARV_GVBS_GVCP_CAPABILITY_WRITE_MEMORY) != 0;
+
+	arv_debug_device ("[GvDevice::new] Packet resend = %s", gv_device->priv->is_packet_resend_supported ? "yes" : "no");
+	arv_debug_device ("[GvDevice::new] Write memory = %s", gv_device->priv->is_write_memory_supported ? "yes" : "no");
+
+	document = ARV_DOM_DOCUMENT (gv_device->priv->genicam);
+	register_description = ARV_GC_REGISTER_DESCRIPTION_NODE (arv_dom_document_get_document_element (document));
+	if (!arv_gc_register_description_node_check_schema_version (register_description, 1, 1, 0))
+		arv_debug_device ("[GvDevice::new] Register workaround = yes");
 
 	return ARV_DEVICE (gv_device);
 }
@@ -900,7 +992,11 @@ arv_gv_device_finalize (GObject *object)
 	g_object_unref (io_data->interface_address);
 	g_object_unref (io_data->socket);
 	g_free (io_data->buffer);
+#if GLIB_CHECK_VERSION(2,32,0)
+	g_mutex_clear (&io_data->mutex);
+#else
 	g_mutex_free (io_data->mutex);
+#endif
 
 	g_free (gv_device->priv->io_data);
 
@@ -918,7 +1014,7 @@ arv_gv_device_finalize (GObject *object)
  *
  * Returns: (transfer none): the device host interface IP address.
  * 
- * since: 0.1.13
+ * Since: 0.2.0
  */
 
 GSocketAddress *arv_gv_device_get_interface_address(ArvGvDevice *device)
@@ -934,7 +1030,7 @@ GSocketAddress *arv_gv_device_get_interface_address(ArvGvDevice *device)
  *
  * Returns: (transfer none): the device IP address.
  *
- * since: 0.1.13
+ * since: 0.2.0
  */
 
 GSocketAddress *arv_gv_device_get_device_address(ArvGvDevice *device)

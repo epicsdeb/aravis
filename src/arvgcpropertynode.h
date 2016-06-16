@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -56,6 +56,7 @@ typedef enum {
 	ARV_GC_PROPERTY_NODE_TYPE_MSB,
 	ARV_GC_PROPERTY_NODE_TYPE_BIT,
 	ARV_GC_PROPERTY_NODE_TYPE_COMMAND_VALUE,
+	ARV_GC_PROPERTY_NODE_TYPE_CHUNK_ID,
 
 	ARV_GC_PROPERTY_NODE_TYPE_P_UNKNONW	= 1000,
 	ARV_GC_PROPERTY_NODE_TYPE_P_FEATURE,
@@ -138,6 +139,7 @@ ArvGcNode * 	arv_gc_property_node_new_msb			(void);
 ArvGcNode * 	arv_gc_property_node_new_bit			(void);
 ArvGcNode * 	arv_gc_property_node_new_command_value		(void);
 ArvGcNode * 	arv_gc_property_node_new_p_command_value	(void);
+ArvGcNode * 	arv_gc_property_node_new_chunk_id 		(void);
 
 const char * 		arv_gc_property_node_get_string 	(ArvGcPropertyNode *node, GError **error);
 void	 		arv_gc_property_node_set_string 	(ArvGcPropertyNode *node, const char *string, GError **error);

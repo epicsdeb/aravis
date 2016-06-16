@@ -4,7 +4,7 @@ include $(top_srcdir)/Makefile.decl
 
 ACLOCAL_AMFLAGS = -I m4
 
-DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc --enable-gst-plugin --enable-viewer --enable-cpp-test
+DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc --enable-gst-plugin --enable-gst-0.10-plugin --enable-viewer --enable-cpp-test --enable-appstream-util
 
 SUBDIRS = src
 
@@ -16,6 +16,10 @@ if ARAVIS_BUILD_GST_PLUGIN
 SUBDIRS += gst
 endif
 
+if ARAVIS_BUILD_GST_0_10_PLUGIN
+SUBDIRS += gst-0.10
+endif
+
 SUBDIRS += tests po docs
 
 aravisdocdir = ${prefix}/doc/aravis-@ARAVIS_API_VERSION@
@@ -24,10 +28,9 @@ aravisdoc_DATA = 	\
 	COPYING		\
 	ChangeLog 	\
 	AUTHORS		\
-	INSTALL		\
 	NEWS
 
-EXTRA_DIST += $(aravisdoc_DATA) m4/introspection.m4
+EXTRA_DIST += m4/introspection.m4
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:

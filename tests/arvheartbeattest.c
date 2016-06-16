@@ -55,8 +55,8 @@ int main(int argc, char *argv[])
     void (*old_sigint_handler)(int);
     int i, payload;
 
-    g_thread_init (NULL);
-    g_type_init ();
+    arv_g_thread_init (NULL);
+    arv_g_type_init ();
 
     context = g_option_context_new (NULL);
     g_option_context_set_summary (context, "Test of heartbeat robustness while continuously changing a feature.");
@@ -138,9 +138,9 @@ int main(int argc, char *argv[])
 
 	    arv_stream_get_statistics (stream, &n_completed_buffers, &n_failures, &n_underruns);
 
-	    g_printf ("\nCompleted buffers = %Lu\n", (unsigned long long) n_completed_buffers);
-	    g_printf ("Failures          = %Lu\n", (unsigned long long) n_failures);
-	    g_printf ("Underruns         = %Lu\n", (unsigned long long) n_underruns);
+	    printf ("\nCompleted buffers = %Lu\n", (unsigned long long) n_completed_buffers);
+	    printf ("Failures          = %Lu\n", (unsigned long long) n_failures);
+	    printf ("Underruns         = %Lu\n", (unsigned long long) n_underruns);
 
 	    arv_camera_stop_acquisition (camera);
     }

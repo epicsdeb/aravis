@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -437,18 +437,18 @@ arv_copy_memory_with_endianess (void *to, size_t to_size, guint to_endianess,
 	if (to_endianess == G_LITTLE_ENDIAN &&
 	    from_endianess == G_BIG_ENDIAN) {
 		to_ptr = to;
-		from_ptr = from + from_size - 1;
+		from_ptr = ((char *) from) + from_size - 1;
 		if (to_size <= from_size) {
 			for (i = 0; i < to_size; i++, to_ptr++, from_ptr--)
 				*to_ptr = *from_ptr;
 		} else {
 			for (i = 0; i < from_size; i++, to_ptr++, from_ptr--)
 				*to_ptr = *from_ptr;
-			memset (to + from_size, 0, to_size - from_size);
+			memset (((char *) to) + from_size, 0, to_size - from_size);
 		}
 	} else if (to_endianess == G_BIG_ENDIAN &&
 		   from_endianess == G_LITTLE_ENDIAN) {
-		to_ptr = to + to_size - 1;
+		to_ptr = ((char *) to) + to_size - 1;
 		from_ptr = from;
 		if (to_size <= from_size) {
 			for (i = 0; i < to_size; i++, to_ptr--, from_ptr++)
@@ -464,14 +464,14 @@ arv_copy_memory_with_endianess (void *to, size_t to_size, guint to_endianess,
 			memcpy (to, from, to_size);
 		else {
 			memcpy (to, from, from_size);
-			memset (to + from_size, 0, to_size - from_size);
+			memset (((char *) to) + from_size, 0, to_size - from_size);
 		}
 	} else if (to_endianess == G_BIG_ENDIAN &&
 		   from_endianess == G_BIG_ENDIAN) {
 		if (to_size <= from_size)
-			memcpy (to, from + from_size - to_size, to_size);
+			memcpy (to, ((char *) from) + from_size - to_size, to_size);
 		else {
-			memcpy (to + to_size - from_size, from, from_size);
+			memcpy (((char *) to) + to_size - from_size, from, from_size);
 			memset (to, 0, to_size - from_size);
 		}
 	} else
@@ -521,7 +521,7 @@ arv_decompress (void *input_buffer, size_t input_size, size_t *output_size)
 				stream.next_in, stream.avail_in, *stream.next_in);
 
 		input_size -= stream.avail_in;
-		input_buffer += stream.avail_in;
+		input_buffer = ((char *) input_buffer) + stream.avail_in;
 
 		/* run inflate() on input until output buffer not full */
 		do {
@@ -590,6 +590,9 @@ typedef struct {
 	ArvPixelFormat pixel_format;
 	const char *gst_caps_string;
 	const char *name;
+	const char *format;
+	const char *gst_0_10_caps_string;
+	const char *name_0_10;
 	int bpp;
 	int depth;
 	guint32 fourcc;
@@ -598,78 +601,90 @@ typedef struct {
 ArvGstCapsInfos arv_gst_caps_infos[] = {
 	{
 		ARV_PIXEL_FORMAT_MONO_8,
+		"video/x-raw, format=(string)GRAY8",
+		"video/x-raw", "GRAY8",
 		"video/x-raw-gray, bpp=(int)8, depth=(int)8",
-		"video/x-raw-gray", 	8,	8,	0
+		"video/x-raw-gray",	8,	8,	0
 	},
 	{
 		ARV_PIXEL_FORMAT_MONO_10,
+		"video/x-raw, format=(string)GRAY16_LE",
+		"video/x-raw", 	"GRAY16_LE",
 		"video/x-raw-gray, bpp=(int)16, depth=(int)10",
-		"video/x-raw-gray", 	16,	10,	0,
+		"video/x-raw-gray",	16,	10,	0
 	},
 	{
-	       ARV_PIXEL_FORMAT_MONO_12,
-	       "video/x-raw-gray, bpp=(int)16, depth=(int)12",
-	       "video/x-raw-gray",	16,	12,	0,
-	},
-	{
-		ARV_PIXEL_FORMAT_MONO_12_PACKED,
-		"video/x-raw-gray, bpp=(int)12, depth=(int)12",
-		"video/x-raw-gray",	12,	12,	0,
+		ARV_PIXEL_FORMAT_MONO_12,
+		"video/x-raw, format=(string)GRAY16_LE",
+		"video/x-raw",	"GRAY16_LE",
+		"video/x-raw-gray, bpp=(int)16, depth=(int)12",
+		"video/x-raw-gray",	16,	12,	0
 	},
 	{
 		ARV_PIXEL_FORMAT_MONO_16,
+		"video/x-raw, format=(string)GRAY16_LE",
+		"video/x-raw",	"GRAY16_LE",
 		"video/x-raw-gray, bpp=(int)16, depth=(int)16",
 		"video/x-raw-gray",	16,	16,	0
 	},
 	{
-	       ARV_PIXEL_FORMAT_BAYER_BG_8,
-	       "video/x-raw-bayer, bpp=(int)8, depth=(int)8",
-	       "video/x-raw-bayer",	8,	8,	0
-	},
-	{
 		ARV_PIXEL_FORMAT_BAYER_GR_8,
-		"video/x-raw-bayer, format=grbg, bpp=(int)8, depth=(int)8",
-		"video/x-raw-bayer",     8,      8,      0
+		"video/x-bayer, format=(string)grbg",
+		"video/x-bayer",	"grbg",
+		"video/x-raw-bayer, format=(string)grbg, bpp=(int)8, depth=(int)8",
+		"video/x-raw-bayer",	8,	8,	ARV_MAKE_FOURCC ('g','r','b','g')
 	},
 	{
-		ARV_PIXEL_FORMAT_BAYER_BG_12,
-		"video/x-raw-bayer, bpp=(int)16, depth=(int)12",
-		"video/x-raw-bayer",	16,	12,	0
+		ARV_PIXEL_FORMAT_BAYER_RG_8,
+		"video/x-bayer, format=(string)rggb",
+		"video/x-bayer",	"rggb",
+		"video/x-raw-bayer, format=(string)rggb, bpp=(int)8, depth=(int)8",
+		"video/x-raw-bayer",	8,	8,	ARV_MAKE_FOURCC ('r','g','g','b')
 	},
 	{
-		ARV_PIXEL_FORMAT_BAYER_GR_12,
-		"video/x-raw-bayer, format=grbg, bpp=(int)16, depth=(int)12",
-		"video/x-raw-bayer",     16,     12,     0
+		ARV_PIXEL_FORMAT_BAYER_GB_8,
+		"video/x-bayer, format=(string)gbrg",
+		"video/x-bayer",	"gbrg",
+		"video/x-raw-bayer, format=(string)gbrg, bpp=(int)8, depth=(int)8",
+		"video/x-raw-bayer",	8,	8,	ARV_MAKE_FOURCC ('g','b','r','g')
 	},
 	{
-		ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED,
-		"video/x-raw-bayer, bpp=(int)12, depth=(int)12",
-		"video/x-raw-bayer",	12,	12,	0
+		ARV_PIXEL_FORMAT_BAYER_BG_8,
+		"video/x-bayer, format=(string)bggr",
+		"video/x-bayer",	"bggr",
+		"video/x-raw-bayer, format=(string)bggr, bpp=(int)8, depth=(int)8",
+		"video/x-raw-bayer",	8,	8,	ARV_MAKE_FOURCC ('b','g','g','r')
 	},
+
+/* Non 8bit bayer formats are not supported by gstreamer bayer plugin.
+ * This feature is discussed in bug https://bugzilla.gnome.org/show_bug.cgi?id=693666 .*/
+
 	{
 		ARV_PIXEL_FORMAT_YUV_422_PACKED,
+		"video/x-raw, format=(string)UYVY",
+		"video/x-raw",	"UYVY",
 		"video/x-raw-yuv, format=(fourcc)UYVY",
 		"video/x-raw-yuv",	0,	0,	ARV_MAKE_FOURCC ('U','Y','V','Y')
 	},
 	{
 		ARV_PIXEL_FORMAT_YUV_422_YUYV_PACKED,
-		"video/x-raw-yuv, format=(fourcc)YUY2",
+		"video/x-raw, format=(string)YUY2",
+		"video/x-raw-yuv, format=(fourcc)YUYU2",
 		"video/x-raw-yuv",	0,	0,	ARV_MAKE_FOURCC ('Y','U','Y','2')
 	},
 	{
 		ARV_PIXEL_FORMAT_RGB_8_PACKED,
-		"video/x-raw-rgb, bpp=(int)24, depth=(int)24",
+		"video/x-raw, format=(string)RGB",
+		"video/x-raw",	"RGB",
+		"video/x-raw-rgb, format=(string)RGB, bpp=(int)24, depth=(int)24",
 		"video/x-raw-rgb",	24,	24,	0
 	},
 	{
 		ARV_PIXEL_FORMAT_CUSTOM_YUV_422_YUYV_PACKED,
-		"video/x-raw-yuv, format=(fourcc)YUY2",
+		"video/x-raw, format=(string)YUY2",
+		"video/x-raw",	"YUY2",
+		"video/x-raw-yuv, format=(fourcc)YUYU2",
 		"video/x-raw-yuv",	0,	0,	ARV_MAKE_FOURCC ('Y','U','Y','2')
-	},
-	{
-		ARV_PIXEL_FORMAT_CUSTOM_BAYER_BG_16,
-		"video/x-raw-bayer, bpp=(int)16, depth=(int)16",
-		"video/x-raw-bayer",	16,	16,	0
 	}
 };
 
@@ -700,7 +715,7 @@ arv_pixel_format_to_gst_caps_string (ArvPixelFormat pixel_format)
 }
 
 ArvPixelFormat
-arv_pixel_format_from_gst_caps (const char *name, int bpp, int depth, guint32 fourcc)
+arv_pixel_format_from_gst_caps (const char *name, const char *format)
 {
 	unsigned int i;
 
@@ -710,12 +725,56 @@ arv_pixel_format_from_gst_caps (const char *name, int bpp, int depth, guint32 fo
 		if (strcmp (name, arv_gst_caps_infos[i].name) != 0)
 			continue;
 
+		if (strcmp (name, "video/x-raw") == 0 &&
+		    strcmp (format, arv_gst_caps_infos[i].format) == 0)
+			return arv_gst_caps_infos[i].pixel_format;
+		
+		if (strcmp (name, "video/x-bayer") == 0 &&
+		    strcmp (format, arv_gst_caps_infos[i].format) == 0)
+			return arv_gst_caps_infos[i].pixel_format;		
+	}
+
+	return 0;
+}
+
+const char *
+arv_pixel_format_to_gst_0_10_caps_string (ArvPixelFormat pixel_format)
+{
+	int i;
+
+	for (i = 0; i < G_N_ELEMENTS (arv_gst_caps_infos); i++)
+		if (arv_gst_caps_infos[i].pixel_format == pixel_format)
+			break;
+
+	if (i == G_N_ELEMENTS (arv_gst_caps_infos)) {
+		arv_warning_misc ("[PixelFormat::to_gst_0_10_caps_string] 0x%08x not found", pixel_format);
+		return NULL;
+	}
+
+	arv_log_misc ("[PixelFormat::to_gst_0_10_caps_string] 0x%08x -> %s",
+		      pixel_format, arv_gst_caps_infos[i].gst_0_10_caps_string);
+
+	return arv_gst_caps_infos[i].gst_0_10_caps_string;
+}
+
+ArvPixelFormat
+arv_pixel_format_from_gst_0_10_caps (const char *name, int bpp, int depth, guint32 fourcc)
+{
+	unsigned int i;
+
+	g_return_val_if_fail (name != NULL, 0);
+
+	for (i = 0; i < G_N_ELEMENTS (arv_gst_caps_infos); i++) {
+		if (strcmp (name, arv_gst_caps_infos[i].name_0_10) != 0)
+			continue;
+
 		if (strcmp (name, "video/x-raw-yuv") == 0 &&
 		    fourcc == arv_gst_caps_infos[i].fourcc)
 			return arv_gst_caps_infos[i].pixel_format;
 
 		if (depth == arv_gst_caps_infos[i].depth &&
-		    bpp == arv_gst_caps_infos[i].bpp)
+		    bpp == arv_gst_caps_infos[i].bpp &&
+		    fourcc == arv_gst_caps_infos[i].fourcc)
 			return arv_gst_caps_infos[i].pixel_format;
 	}
 

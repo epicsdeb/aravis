@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -100,6 +100,12 @@ arv_gc_boolean_get_value_as_string (ArvGcFeatureNode *node, GError **error)
 	}
 
 	return string;
+}
+
+static GType
+arv_gc_boolean_get_value_type (ArvGcFeatureNode *node)
+{
+	return G_TYPE_BOOLEAN;
 }
 
 /* ArvGcBoolean implementation */
@@ -233,6 +239,7 @@ arv_gc_boolean_class_init (ArvGcBooleanClass *this_class)
 	dom_node_class->pre_remove_child = arv_gc_boolean_pre_remove_child;
 	gc_feature_node_class->set_value_from_string = arv_gc_boolean_set_value_from_string;
 	gc_feature_node_class->get_value_as_string = arv_gc_boolean_get_value_as_string;
+	gc_feature_node_class->get_value_type = arv_gc_boolean_get_value_type;
 }
 
 /* ArvGcInteger interface implementation */

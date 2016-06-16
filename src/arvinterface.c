@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -52,13 +52,26 @@ arv_interface_clear_device_ids (ArvInterface *interface)
 	g_array_set_size (interface->priv->device_ids, 0);
 }
 
+static gint
+_compare_device_ids (ArvInterfaceDeviceIds **a, ArvInterfaceDeviceIds **b)
+{
+	if (*a == NULL || (*a)->device == NULL)
+		return -1;
+	if (*b == NULL || (*b)->device == NULL)
+		return 1;
+
+	return g_ascii_strcasecmp ((*a)->device, (*b)->device);
+}
+
 /**
- * arv_interface_update_device_list
+ * arv_interface_update_device_list:
  * @interface: a #ArvInterface
  *
  * Updates the internal list of available devices. This may change the
  * connection between a list index and a device ID.
- **/
+ *
+ * Since: 0.2.0
+ */
 
 void
 arv_interface_update_device_list (ArvInterface *interface)
@@ -68,17 +81,22 @@ arv_interface_update_device_list (ArvInterface *interface)
 	arv_interface_clear_device_ids (interface);
 
 	ARV_INTERFACE_GET_CLASS (interface)->update_device_list (interface, interface->priv->device_ids);
+
+	g_array_sort (interface->priv->device_ids, (GCompareFunc) _compare_device_ids);
 }
 
 /**
- * arv_interface_get_n_devices
+ * arv_interface_get_n_devices:
  * @interface: a #ArvInterface
- * Return value: the number of available devices 
  *
  * Queries the number of available devices on this interface. Prior to this
  * call the @arv_interface_update_device_list function must be called. The list content will not
  * change until the next call of the update function.
- **/
+ *
+ * Returns: the number of available devices 
+ *
+ * Since: 0.2.0
+ */
 
 unsigned int
 arv_interface_get_n_devices (ArvInterface *interface)
@@ -90,14 +108,17 @@ arv_interface_get_n_devices (ArvInterface *interface)
 }
 
 /**
- * arv_interface_get_device_id
+ * arv_interface_get_device_id:
  * @interface: a #ArvInterface
  * @index: device index
- * Return value: a unique device id
  *
  * Queries the unique device id corresponding to index.  Prior to this
  * call the @arv_interface_update_device_list function must be called.
- **/
+ *
+ * Returns: a unique device id
+ *
+ * Since: 0.2.0
+ */
 
 const char *
 arv_interface_get_device_id (ArvInterface *interface, unsigned int index)
@@ -112,10 +133,9 @@ arv_interface_get_device_id (ArvInterface *interface, unsigned int index)
 }
 
 /**
- * arv_interface_get_device_physical_id
+ * arv_interface_get_device_physical_id:
  * @interface: a #ArvInterface
  * @index: device index
- * Return value: a physical device id
  *
  * Queries the physical device id corresponding to index such
  * as the MAC address for Ethernet based devices, bus id for PCI,
@@ -123,7 +143,11 @@ arv_interface_get_device_id (ArvInterface *interface, unsigned int index)
  *
  * Prior to this call the @arv_interface_update_device_list
  * function must be called.
- **/
+ *
+ * Returns: a physical device id
+ *
+ * Since: 0.2.0
+ */
 
 const char *
 arv_interface_get_device_physical_id (ArvInterface *interface, unsigned int index)
@@ -138,10 +162,9 @@ arv_interface_get_device_physical_id (ArvInterface *interface, unsigned int inde
 }
 
 /**
- * arv_interface_get_device_address
+ * arv_interface_get_device_address:
  * @interface: a #ArvInterface
  * @index: device index
- * Return value: (transfer none): the device address
  *
  * queries the device address (IP address in the case of an ethernet camera). Useful
  * for constructing manual connections to devices using @arv_gv_device_new
@@ -149,8 +172,10 @@ arv_interface_get_device_physical_id (ArvInterface *interface, unsigned int inde
  * Prior to this call the @arv_interface_update_device_list
  * function must be called.
  *
- * since: 0.1.14
- **/
+ * Returns: (transfer none): the device address
+ *
+ * Since: 0.2.0
+ */
 
 const char *
 arv_interface_get_device_address (ArvInterface *interface, unsigned int index)
@@ -165,13 +190,16 @@ arv_interface_get_device_address (ArvInterface *interface, unsigned int index)
 }
 
 /**
- * arv_interface_open_device
+ * arv_interface_open_device:
  * @interface: a #ArvInterface
  * @device_id: (allow-none): device unique id
- * Return value: (transfer full): a new #ArvDevice
  *
  * Creates a new #ArvDevice object corresponding to the given device id string. The first available device is returned if @device_id is null.
- **/
+ *
+ * Returns: (transfer full): a new #ArvDevice
+ *
+ * Since: 0.2.0
+ */
 
 ArvDevice *
 arv_interface_open_device (ArvInterface *interface, const char *device_id)

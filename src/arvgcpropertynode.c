@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -101,6 +101,8 @@ arv_gc_property_node_get_node_name (ArvDomNode *node)
 			return "Bit";
 		case ARV_GC_PROPERTY_NODE_TYPE_COMMAND_VALUE:
 			return "CommandValue";
+		case ARV_GC_PROPERTY_NODE_TYPE_CHUNK_ID:
+			return "ChunkID";
 
 		case ARV_GC_PROPERTY_NODE_TYPE_P_FEATURE:
 			return "pFeature";
@@ -185,7 +187,7 @@ _get_value_data (ArvGcPropertyNode *property_node)
 		for (iter = dom_node->first_child; iter != NULL; iter = iter->next_sibling)
 			g_string_append (string, arv_dom_character_data_get_data (ARV_DOM_CHARACTER_DATA (iter)));
 		g_free (property_node->value_data);
-		property_node->value_data = g_strdup (string->str);
+		property_node->value_data = string->str;
 		g_string_free (string, FALSE);
 		property_node->value_data_up_to_date = TRUE;
 	}
@@ -678,6 +680,12 @@ ArvGcNode *
 arv_gc_property_node_new_p_command_value (void)
 {
 	return arv_gc_property_node_new (ARV_GC_PROPERTY_NODE_TYPE_P_COMMAND_VALUE);
+}
+
+ArvGcNode *
+arv_gc_property_node_new_chunk_id (void)
+{
+	return arv_gc_property_node_new (ARV_GC_PROPERTY_NODE_TYPE_CHUNK_ID);
 }
 
 static void

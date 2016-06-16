@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -74,9 +74,11 @@ typedef enum {
 const char * 		arv_acquisition_mode_to_string 		(ArvAcquisitionMode value);
 ArvAcquisitionMode 	arv_acquisition_mode_from_string	(const char *string);
 
-/* Grey pixel formats */
-
 typedef guint32 ArvPixelFormat;
+
+#define ARV_PIXEL_FORMAT_BIT_PER_PIXEL(pixel_format) (((pixel_format) >> 16) & 0xff)
+
+/* Grey pixel formats */
 
 #define	ARV_PIXEL_FORMAT_MONO_8			0x01080001
 #define	ARV_PIXEL_FORMAT_MONO_8_SIGNED		0x01080002
@@ -106,9 +108,17 @@ typedef guint32 ArvPixelFormat;
 #define ARV_PIXEL_FORMAT_BAYER_GB_12		0x01100012
 #define ARV_PIXEL_FORMAT_BAYER_BG_12		0x01100013
 
+#define ARV_PIXEL_FORMAT_BAYER_GR_12_PACKED	0x010c002a
+#define ARV_PIXEL_FORMAT_BAYER_RG_12_PACKED	0x010c002b
+#define ARV_PIXEL_FORMAT_BAYER_GB_12_PACKED	0x010c002c
 #define ARV_PIXEL_FORMAT_BAYER_BG_12_PACKED	0x010c002d
 
-	/* Color pixel formats */
+#define ARV_PIXEL_FORMAT_BAYER_GR_16		0x0110002e
+#define ARV_PIXEL_FORMAT_BAYER_RG_16		0x0110002f
+#define ARV_PIXEL_FORMAT_BAYER_GB_16		0x01100030
+#define ARV_PIXEL_FORMAT_BAYER_BG_16		0x01100031
+
+/* Color pixel formats */
 
 #define ARV_PIXEL_FORMAT_RGB_8_PACKED		0x02180014
 #define ARV_PIXEL_FORMAT_BGR_8_PACKED		0x02180015
@@ -133,7 +143,7 @@ typedef guint32 ArvPixelFormat;
 
 #define ARV_PIXEL_FORMAT_YUV_422_YUYV_PACKED 	0x02100032
 
-	/* Custom */
+/* Custom */
 
 #define ARV_PIXEL_FORMAT_CUSTOM_BAYER_GR_12_PACKED  	0x810c0001
 #define ARV_PIXEL_FORMAT_CUSTOM_BAYER_RG_12_PACKED  	0x810c0002

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -30,7 +30,7 @@
  * objects.
  */
 
-#include <arvstream.h>
+#include <arvstreamprivate.h>
 #include <arvbuffer.h>
 #include <arvdebug.h>
 
@@ -63,6 +63,10 @@ struct _ArvStreamPrivate {
  *
  * Pushes a #ArvBuffer to the @stream thread. The @stream takes ownership of @buffer,
  * and will free all the buffers still in its queues when destroyed.
+ *
+ * This method is thread safe.
+ *
+ * Since: 0.2.0
  */
 
 void
@@ -77,13 +81,16 @@ arv_stream_push_buffer (ArvStream *stream, ArvBuffer *buffer)
 /**
  * arv_stream_pop_buffer:
  * @stream: a #ArvStream
- * Returns: (transfer full): a #ArvBuffer
  *
  * Pops a buffer from the output queue of @stream. The retrieved buffer
  * may contain an invalid image. Caller should check the buffer status before using it.
  * This function blocks until a buffer is available.
  *
- * since: 0.1.12
+ * This method is thread safe.
+ *
+ * Returns: (transfer full): a #ArvBuffer
+ *
+ * Since: 0.2.0
  */
 
 ArvBuffer *
@@ -97,13 +104,16 @@ arv_stream_pop_buffer (ArvStream *stream)
 /**
  * arv_stream_try_pop_buffer:
  * @stream: a #ArvStream
- * Returns: (transfer full): a #ArvBuffer, NULL if no buffer is available.
  *
  * Pops a buffer from the output queue of @stream. The retrieved buffer
  * may contain an invalid image. Caller should check the buffer status before using it.
  * This is the non blocking version of pop_buffer.
  *
- * since: 0.1.12
+ * This method is thread safe.
+ *
+ * Returns: (transfer full): a #ArvBuffer, NULL if no buffer is available.
+ *
+ * Since: 0.2.0
  */
 
 ArvBuffer *
@@ -118,10 +128,15 @@ arv_stream_try_pop_buffer (ArvStream *stream)
  * arv_stream_timeout_pop_buffer:
  * @stream: a #ArvStream
  * @timeout: timeout, in µs
- * Returns: (transfer full): a #ArvBuffer, NULL if no buffer is available until the timeout occurs.
  *
  * Pops a buffer from the output queue of @stream, waiting no more than @timeout. The retrieved buffer
  * may contain an invalid image. Caller should check the buffer status before using it.
+ *
+ * This method is thread safe.
+ *
+ * Returns: (transfer full): a #ArvBuffer, NULL if no buffer is available until the timeout occurs.
+ *
+ * Since: 0.2.0
  */
 
 ArvBuffer *
@@ -147,7 +162,9 @@ arv_stream_timeout_pop_buffer (ArvStream *stream, guint64 timeout)
  * arv_stream_pop_input_buffer: (skip)
  * @stream: (transfer full): a #ArvStream
  *
- * Pos a buffer from the input queue of @stream.
+ * Pops a buffer from the input queue of @stream.
+ *
+ * Since: 0.2.0
  */
 
 ArvBuffer *
@@ -177,6 +194,8 @@ arv_stream_push_output_buffer (ArvStream *stream, ArvBuffer *buffer)
  * @n_output_buffers: (out) (allow-none): output queue length
  *
  * An accessor to the stream buffer queue lengths.
+ *
+ * Since: 0.2.0
  */
 
 void
@@ -204,6 +223,8 @@ arv_stream_get_n_buffers (ArvStream *stream, gint *n_input_buffers, gint *n_outp
  * @n_underruns: (out) (allow-none): number of input buffer underruns
  *
  * An accessor to the stream statistics.
+ *
+ * Since: 0.2.0
  */
 
 void
@@ -238,11 +259,11 @@ arv_stream_get_statistics (ArvStream *stream,
  * @stream: a #ArvStream
  * @emit_signals: the new state
  *
- * Make stream emit signals. This option is
+ * Make @stream emit signals. This option is
  * by default disabled because signal emission is expensive and unneeded when
  * the application prefers to operate in pull mode.
  *
- * Since: 0.1.3
+ * Since: 0.2.0
  */
 
 void
@@ -259,9 +280,9 @@ arv_stream_set_emit_signals (ArvStream *stream, gboolean emit_signals)
  *
  * Check if stream will emit its signals.
  *
- * Returns: %TRUE if @appsink is emiting its signals.
+ * Returns: %TRUE if @stream is emiting its signals.
  *
- * Since: 0.1.3
+ * Since: 0.2.0
  */
 
 gboolean
@@ -370,6 +391,8 @@ arv_stream_class_init (ArvStreamClass *node_class)
 	 *
 	 * Note that this signal is only emited when the "emit-signals" property is
 	 * set to %TRUE, which it is not by default for performance reasons.
+	 *
+	 * Since: 0.2.0
 	 */
 
 	arv_stream_signals[ARV_STREAM_SIGNAL_NEW_BUFFER] =

@@ -14,8 +14,8 @@
  *
  * You should have received a copy of the GNU Lesser General
  * Public License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  *
  * Author: Emmanuel Pacaud <emmanuel@gnome.org>
  */
@@ -37,11 +37,13 @@ G_BEGIN_DECLS
 /**
  * ArvGvspPacketType:
  * @ARV_GVSP_PACKET_TYPE_OK: valid packet
+ * @ARV_GVSP_PACKET_TYPE_RESEND: resent packet (BlackFly PointGrey camera support)
  * @ARV_GVSP_PACKET_TYPE_ERROR: error packet, indicating invalid resend request
  */
 
 typedef enum {
 	ARV_GVSP_PACKET_TYPE_OK =		0x0000,
+	ARV_GVSP_PACKET_TYPE_RESEND =		0x0100,
 	ARV_GVSP_PACKET_TYPE_ERROR =		0x800c
 } ArvGvspPacketType;
 
@@ -57,6 +59,31 @@ typedef enum {
 	ARV_GVSP_CONTENT_TYPE_DATA_TRAILER = 	0x02,
 	ARV_GVSP_CONTENT_TYPE_DATA_BLOCK =	0x03
 } ArvGvspContentType;
+
+/**
+ * ArvGvspPayloadType:
+ * @ARV_GVSP_PAYLOAD_TYPE_IMAGE: image data
+ * @ARV_GVSP_PAYLOAD_TYPE_RAWDATA: raw data
+ * @ARV_GVSP_PAYLOAD_TYPE_FILE: file
+ * @ARV_GVSP_PAYLOAD_TYPE_CHUNK_DATA: chunk data
+ * @ARV_GVSP_PAYLOAD_TYPE_EXTENDED_CHUNK_DATA: extended chunk data
+ * @ARV_GVSP_PAYLOAD_TYPE_JPEG: JPEG data
+ * @ARV_GVSP_PAYLOAD_TYPE_JPEG2000: JPEG2000 data
+ * @ARV_GVSP_PAYLOAD_TYPE_H264: h264 data
+ * @ARV_GVSP_PAYLOAD_TYPE_MULTIZONE_IMAGE: multizone image
+*/
+
+typedef enum {
+	ARV_GVSP_PAYLOAD_TYPE_IMAGE =			0x0001,
+	ARV_GVSP_PAYLOAD_TYPE_RAWDATA = 		0x0002,
+	ARV_GVSP_PAYLOAD_TYPE_FILE = 			0x0003,
+	ARV_GVSP_PAYLOAD_TYPE_CHUNK_DATA = 		0x0004,
+	ARV_GVSP_PAYLOAD_TYPE_EXTENDED_CHUNK_DATA = 	0x0005, /* Deprecated */
+	ARV_GVSP_PAYLOAD_TYPE_JPEG = 			0x0006,
+	ARV_GVSP_PAYLOAD_TYPE_JPEG2000 = 		0x0007,
+	ARV_GVSP_PAYLOAD_TYPE_H264 = 			0x0008,
+	ARV_GVSP_PAYLOAD_TYPE_MULTIZONE_IMAGE = 	0x0009
+} ArvGvspPayloadType;
 
 #define ARAVIS_PACKED_STRUCTURE __attribute__((__packed__))
 
@@ -77,7 +104,7 @@ typedef struct ARAVIS_PACKED_STRUCTURE {
 
 /**
  * ArvGvspDataLeader:
- * @data0: unused
+ * @payload_type: ID of the payload type
  * @timestamp_high: most significant bits of frame timestamp
  * @timestamp_low: least significant bits of frame timestamp_low
  * @pixel_format: a #ArvPixelFormat identifier
@@ -90,7 +117,7 @@ typedef struct ARAVIS_PACKED_STRUCTURE {
  */
 
 typedef struct ARAVIS_PACKED_STRUCTURE {
-	guint32 data0;
+	guint32 payload_type;
 	guint32 timestamp_high;
 	guint32 timestamp_low;
 	guint32 pixel_format;
@@ -113,7 +140,6 @@ typedef struct ARAVIS_PACKED_STRUCTURE {
 	guint32 data1;
 } ArvGvspDataTrailer;
 
-#undef ARAVIS_PACKED_STRUCTURE
 
 /**
  * ArvGvspPacket:
@@ -123,10 +149,12 @@ typedef struct ARAVIS_PACKED_STRUCTURE {
  * GVSP packet structure.
  */
 
-typedef struct {
+typedef struct ARAVIS_PACKED_STRUCTURE {
 	ArvGvspHeader header;
 	guint8 data[];
 } ArvGvspPacket;
+
+#undef ARAVIS_PACKED_STRUCTURE
 
 ArvGvspPacket *		arv_gvsp_packet_new_data_leader		(guint16 frame_id, guint32 packet_id,
 								 guint64 timestamp, ArvPixelFormat pixel_format,
@@ -164,6 +192,15 @@ static inline guint16
 arv_gvsp_packet_get_frame_id (const ArvGvspPacket *packet)
 {
 	return g_ntohs (packet->header.frame_id);
+}
+
+static inline ArvGvspPayloadType
+arv_gvsp_packet_get_payload_type (const ArvGvspPacket *packet)
+{
+	ArvGvspDataLeader *leader;
+
+	leader = (ArvGvspDataLeader *) &packet->data;
+	return (ArvGvspPayloadType) g_ntohl (leader->payload_type);
 }
 
 static inline guint32

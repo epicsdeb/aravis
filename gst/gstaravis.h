@@ -16,8 +16,8 @@
  *
  * You should have received a copy of the GNU Library General Public
  * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
+ * Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ * Boston, MA 02110-1301, USA.
  */
 
 #ifndef ARV_GST_H
@@ -43,7 +43,7 @@ struct _GstAravis {
 
 	char *camera_name;
 
-	gint64 gain;
+	double gain;
 	gboolean gain_auto;
 	double exposure_time_us;
 	gboolean exposure_auto;
@@ -53,6 +53,8 @@ struct _GstAravis {
 
 	gint h_binning;
 	gint v_binning;
+        gboolean packet_resend;
+        gint num_buffers;
 
 	gint payload;
 
