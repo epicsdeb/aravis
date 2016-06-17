@@ -1,7 +1,10 @@
-aravis0.4 (0.3.8-1) unstable; urgency=medium
+aravis0.4 (0.3.8-1) UNRELEASED; urgency=medium
 
   * New upstream release 0.3.8
     SO name changes from 0.2 -> 0.4
+    Split arv-viewer from aravis-tools to new aravis-viewer package
+    to avoid gtk dep. for aravis-tools.
+    Package gstreamer plugin as gstreamer1.0-plugins-aravis.
     patch: Camera discovery via. unicast (on different sub-net)
            by setting environment variable ARV_IPS with colon
            separated list of IP addresses.
