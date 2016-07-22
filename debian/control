@@ -84,9 +84,12 @@ Description: vision library for genicam based cameras (tools)
 Package: aravis-viewer
 Multi-Arch: foreign
 Architecture: any
-Recommends: aravis-tools
+Recommends: aravis-tools,
 Depends: ${shlibs:Depends}, ${misc:Depends},
          libaravis0.4 (= ${binary:Version}),
+         gstreamer1.0-plugins-aravis (= ${binary:Version}),
+         gstreamer1.0-plugins-bad (= ${binary:Version}),
+Suggests: gstreamer1.0-tools,
 Replaces: aravis-tools (<< 0.3.8-1~),
 Breaks: aravis-tools (<< 0.3.8-1~),
 Description: vision library for genicam based cameras (tools)
