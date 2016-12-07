@@ -21,8 +21,12 @@
  */
 
 #include <arvsystem.h>
-#include <arvgvinterface.h>
-#include <arvfakeinterface.h>
+#include <arvgvinterfaceprivate.h>
+#include <arvconfig.h>
+#ifdef ARAVIS_BUILD_USB
+#include <arvuvinterfaceprivate.h>
+#endif
+#include <arvfakeinterfaceprivate.h>
 #include <arvdevice.h>
 #include <arvdebug.h>
 #include <string.h>
@@ -41,6 +45,13 @@ ArvInterfaceInfos interfaces[] = {
 		.get_interface_instance = arv_fake_interface_get_instance,
 		.destroy_interface_instance =  arv_fake_interface_destroy_instance
 	},
+#ifdef ARAVIS_BUILD_USB
+	{	.interface_id = "USB3Vision",
+		.is_available = TRUE,
+		.get_interface_instance = arv_uv_interface_get_instance,
+		.destroy_interface_instance = arv_uv_interface_destroy_instance
+	},
+#endif
 	{	.interface_id = "GigEVision",
 		.is_available = TRUE,
 		.get_interface_instance = arv_gv_interface_get_instance,
@@ -142,8 +153,8 @@ arv_get_n_devices (void)
 	return n_devices;
 }
 
-const char *
-arv_get_device_id (unsigned int index)
+static const char *
+arv_get_info (unsigned int index, const char *get_info (ArvInterface *, guint))
 {
 	unsigned int offset = 0;
 	unsigned int i;
@@ -157,13 +168,37 @@ arv_get_device_id (unsigned int index)
 			n_devices = arv_interface_get_n_devices (interface);
 
 			if (index - offset < n_devices)
-				return arv_interface_get_device_id (interface, index - offset);
+				return get_info (interface, index - offset);
 
 			offset += n_devices;
 		}
 	}
 
 	return NULL;
+}
+
+const char *
+arv_get_device_id (unsigned int index)
+{
+	return arv_get_info (index, arv_interface_get_device_id);
+}
+
+const char *
+arv_get_device_vendor	(unsigned int index)
+{
+	return arv_get_info (index, arv_interface_get_device_vendor);
+}
+
+const char *
+arv_get_device_model (unsigned int index)
+{
+	return arv_get_info (index, arv_interface_get_device_model);
+}
+
+const char *
+arv_get_device_serial_nbr (unsigned int index)
+{
+	return arv_get_info (index, arv_interface_get_device_serial_nbr);
 }
 
 /**

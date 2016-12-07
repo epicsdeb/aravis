@@ -31,7 +31,7 @@
  * arv_open_device().
  */
 
-#include <arvinterface.h>
+#include <arvinterfaceprivate.h>
 
 static GObjectClass *parent_class = NULL;
 
@@ -48,6 +48,9 @@ arv_interface_clear_device_ids (ArvInterface *interface)
 		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->device);
 		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->physical);
 		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->address);
+		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->vendor);
+		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->model);
+		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->serial_nbr);
 	}
 	g_array_set_size (interface->priv->device_ids, 0);
 }
@@ -93,7 +96,7 @@ arv_interface_update_device_list (ArvInterface *interface)
  * call the @arv_interface_update_device_list function must be called. The list content will not
  * change until the next call of the update function.
  *
- * Returns: the number of available devices 
+ * Returns: the number of available devices
  *
  * Since: 0.2.0
  */
@@ -190,6 +193,87 @@ arv_interface_get_device_address (ArvInterface *interface, unsigned int index)
 }
 
 /**
+ * arv_interface_get_device_vendor:
+ * @interface: a #ArvInterface
+ * @index: device index
+ *
+ * Queries the device vendor.
+ *
+ * Prior to this call the @arv_interface_update_device_list
+ * function must be called.
+ *
+ * Returns: (transfer none): the device vendor, NULL on error
+ *
+ * Since: 0.6.0
+ */
+
+const char *
+arv_interface_get_device_vendor (ArvInterface *interface, unsigned int index)
+{
+	g_return_val_if_fail (ARV_IS_INTERFACE (interface), 0);
+	g_return_val_if_fail (interface->priv->device_ids != NULL, 0);
+
+	if (index >= interface->priv->device_ids->len)
+		return NULL;
+
+	return g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, index)->vendor;
+}
+
+/**
+ * arv_interface_get_device_model:
+ * @interface: a #ArvInterface
+ * @index: device index
+ *
+ * Queries the device model.
+ *
+ * Prior to this call the @arv_interface_update_device_list
+ * function must be called.
+ *
+ * Returns: (transfer none): the device model, NULL on error
+ *
+ * Since: 0.6.0
+ */
+
+const char *
+arv_interface_get_device_model (ArvInterface *interface, unsigned int index)
+{
+	g_return_val_if_fail (ARV_IS_INTERFACE (interface), 0);
+	g_return_val_if_fail (interface->priv->device_ids != NULL, 0);
+
+	if (index >= interface->priv->device_ids->len)
+		return NULL;
+
+	return g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, index)->model;
+}
+
+/**
+ * arv_interface_get_device_serial_nbr:
+ * @interface: a #ArvInterface
+ * @index: device index
+ *
+ * Queries the device serial.
+ *
+ * Prior to this call the @arv_interface_update_device_list
+ * function must be called.
+ *
+ * Returns: (transfer none): the device serial, NULL on error
+ *
+ * Since: 0.6.0
+ */
+
+const char *
+arv_interface_get_device_serial_nbr (ArvInterface *interface, unsigned int index)
+{
+	g_return_val_if_fail (ARV_IS_INTERFACE (interface), 0);
+	g_return_val_if_fail (interface->priv->device_ids != NULL, 0);
+
+	if (index >= interface->priv->device_ids->len)
+		return NULL;
+
+	return g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, index)->serial_nbr;
+}
+
+/**
  * arv_interface_open_device:
  * @interface: a #ArvInterface
  * @device_id: (allow-none): device unique id
@@ -204,16 +288,7 @@ arv_interface_get_device_address (ArvInterface *interface, unsigned int index)
 ArvDevice *
 arv_interface_open_device (ArvInterface *interface, const char *device_id)
 {
-	ArvDevice *device;
-
 	g_return_val_if_fail (ARV_IS_INTERFACE (interface), NULL);
-
-	device = ARV_INTERFACE_GET_CLASS (interface)->open_device (interface, device_id);
-
-	if (device != NULL)
-		return device;
-
-	arv_interface_update_device_list (interface);
 
 	return ARV_INTERFACE_GET_CLASS (interface)->open_device (interface, device_id);
 }

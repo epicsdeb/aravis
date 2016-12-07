@@ -22,11 +22,12 @@
 
 /**
  * SECTION: arvgvinterface
- * @short_description: Gigabit ethernet camera interface
+ * @short_description: GigEVision interface
  */
 
-#include <arvgvinterface.h>
-#include <arvgvdevice.h>
+#include <arvgvinterfaceprivate.h>
+#include <arvinterfaceprivate.h>
+#include <arvgvdeviceprivate.h>
 #include <arvgvcp.h>
 #include <arvdebug.h>
 #include <arvmisc.h>
@@ -190,6 +191,7 @@ typedef struct {
 	char *name;
 	char *user_name;
 	char *manufacturer;
+	char *model;
 	char *serial_number;
 	char *mac_string;
 
@@ -217,8 +219,10 @@ arv_gv_interface_device_infos_new (GInetAddress *interface_address,
 
 	infos->manufacturer = g_strndup ((char *) &infos->discovery_data[ARV_GVBS_MANUFACTURER_NAME_OFFSET],
 					 ARV_GVBS_MANUFACTURER_NAME_SIZE);
+	infos->model = g_strndup ((char *) &infos->discovery_data[ARV_GVBS_MODEL_NAME_OFFSET],
+				  ARV_GVBS_MODEL_NAME_SIZE);
 	infos->serial_number = g_strndup ((char *) &infos->discovery_data[ARV_GVBS_SERIAL_NUMBER_OFFSET],
-				   ARV_GVBS_SERIAL_NUMBER_SIZE);
+					  ARV_GVBS_SERIAL_NUMBER_SIZE);
 	infos->user_name = g_strndup ((char *) &infos->discovery_data[ARV_GVBS_USER_DEFINED_NAME_OFFSET],
 				      ARV_GVBS_USER_DEFINED_NAME_SIZE);
 	infos->name = g_strdup_printf ("%s-%s", infos->manufacturer, infos->serial_number);
@@ -392,6 +396,9 @@ arv_gv_interface_update_device_list (ArvInterface *interface, GArray *device_ids
 			device_address = _device_infos_to_ginetaddress (infos);
 			ids->address = g_inet_address_to_string (device_address);
 			g_object_unref (device_address);
+			ids->vendor = g_strdup (infos->manufacturer);
+			ids->model = g_strdup (infos->model);
+			ids->serial_nbr = g_strdup (infos->serial_number);
 
 			g_array_append_val (device_ids, ids);
 		}
@@ -399,7 +406,7 @@ arv_gv_interface_update_device_list (ArvInterface *interface, GArray *device_ids
 }
 
 static ArvDevice *
-arv_gv_interface_open_device (ArvInterface *interface, const char *device_id)
+_open_device (ArvInterface *interface, const char *device_id)
 {
 	ArvGvInterface *gv_interface;
 	ArvDevice *device = NULL;
@@ -425,6 +432,20 @@ arv_gv_interface_open_device (ArvInterface *interface, const char *device_id)
 	g_object_unref (device_address);
 
 	return device;
+}
+
+static ArvDevice *
+arv_gv_interface_open_device (ArvInterface *interface, const char *device_id)
+{
+	ArvDevice *device;
+
+	device = _open_device (interface, device_id);
+	if (ARV_IS_DEVICE (device))
+		return device;
+
+	arv_gv_interface_discover (ARV_GV_INTERFACE (interface));
+
+	return _open_device (interface, device_id);
 }
 
 static ArvInterface *gv_interface = NULL;

@@ -23,10 +23,24 @@
 #ifndef ARV_GC_H
 #define ARV_GC_H
 
+#if !defined (ARV_H_INSIDE) && !defined (ARAVIS_COMPILATION)
+#error "Only <arv.h> can be included directly."
+#endif
+
 #include <arvtypes.h>
 #include <arvdomdocument.h>
 
 G_BEGIN_DECLS
+
+#define ARV_GC_ERROR arv_gc_error_quark()
+
+GQuark 		arv_gc_error_quark 		(void);
+
+typedef enum {
+	ARV_GC_ERROR_PROPERTY_NOT_DEFINED,
+	ARV_GC_ERROR_PVALUE_NOT_DEFINED,
+	ARV_GC_ERROR_INVALID_PVALUE
+} ArvGcError;
 
 #define ARV_TYPE_GC             (arv_gc_get_type ())
 #define ARV_GC(obj)             (G_TYPE_CHECK_INSTANCE_CAST ((obj), ARV_TYPE_GC, ArvGc))

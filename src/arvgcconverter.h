@@ -23,6 +23,10 @@
 #ifndef ARV_GC_CONVERTER_H
 #define ARV_GC_CONVERTER_H
 
+#if !defined (ARV_H_INSIDE) && !defined (ARAVIS_COMPILATION)
+#error "Only <arv.h> can be included directly."
+#endif
+
 #include <arvtypes.h>
 #include <arvgcfeaturenode.h>
 #include <arvgcpropertynode.h>
@@ -47,6 +51,7 @@ struct _ArvGcConverter {
 	ArvGcPropertyNode *value;
 	ArvGcPropertyNode *formula_to_node;
 	ArvGcPropertyNode *formula_from_node;
+	ArvGcPropertyNode *unit;
 
 	ArvEvaluator *formula_to;
 	ArvEvaluator *formula_from;

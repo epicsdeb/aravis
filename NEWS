@@ -1,3 +1,61 @@
+Release 0.5.6
+=============
+
+  * genicam: implement Expression and Constant nodes for [Int]SwissKnife
+  * API: add ARAVIS_CHECK_VERSION macro
+  * API: forbid direct inclusion of headers other than arv.h
+  * usb3vision: PENDING_ACK support
+
+Release 0.5.5
+=============
+
+  * build: fix library detection needed for packet socket support (Hubert)
+  * gigevision: new API for automatic stream packet size (Emmanuel)
+
+Release 0.5.4
+=============
+
+  * gigevision: support of packet socket in stream thread (Emmanuel)
+
+Release 0.5.3
+=============
+
+  * usb3vision: fix USB3 device scan (Emmanuel)
+
+Release 0.5.2
+=============
+
+  * viewer: only show compatbile pixel format in selector
+  * viewer: fix binning setting on some cameras
+  * viewer: add a fallback to autovideosink if gtk[gl]sink are not available
+  * viewer: fix video position issue
+  * usb3vision: avoid unnecessary memory during video data transfer
+  * usb3vision: better handling of device disconnection
+  * gigevision: compile time selection of fast heartbeat mode (Michele)
+  * camera: helper function for single image acquisition
+
+Release 0.5.1
+=============
+
+  * viewer: new design with support for region settings
+  * usb3vision improvements
+  * camera: improve Basler support for exposure and frame rate
+  * camera: add support for x/y_offset and binning bounds
+  * interface: add vendor, model and serial getters
+  * genicam: implement min/max support for Converter elements
+
+Release 0.5.0
+=============
+
+  * usb3vision initial support
+
+Release 0.4.0
+=============
+
+  * buffer: add a timestamp setter
+  * interface: don't touch device list on open device
+  * viewer: fix appdata file
+
 Release 0.3.8
 =============
 

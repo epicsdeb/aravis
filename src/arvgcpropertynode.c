@@ -165,11 +165,25 @@ _pre_remove_child (ArvDomNode *parent, ArvDomNode *child)
 static void
 arv_gc_property_node_set_attribute (ArvDomElement *self, const char *name, const char *value)
 {
+	ArvGcPropertyNode *gc_property_node = ARV_GC_PROPERTY_NODE (self);
+
+	if (strcmp (name, "Name") == 0) {
+		g_free (gc_property_node->name);
+		gc_property_node->name = g_strdup (value);
+	} else
+		arv_debug_dom ("[GcPropertyNode::set_attribute] Uknown attribute '%s'", name);
 }
 
 static const char *
 arv_gc_property_node_get_attribute (ArvDomElement *self, const char *name)
 {
+	ArvGcPropertyNode *gc_property_node = ARV_GC_PROPERTY_NODE (self);
+
+	if (strcmp (name, "Name") == 0)
+		return gc_property_node->name;
+
+	arv_debug_dom ("[GcPropertyNode::set_attribute] Uknown attribute '%s'", name);
+
 	return NULL;
 }
 
@@ -228,6 +242,23 @@ _get_pvalue_node (ArvGcPropertyNode *property_node)
 	pvalue_node = ARV_DOM_NODE (arv_gc_get_node (genicam, node_name));
 
 	return pvalue_node;
+}
+
+/**
+ * arv_gc_property_node_get_name:
+ * @node: a #ArvGcPropertyNode
+ *
+ * Returns: node Name property value.
+ *
+ * Since: 0.6.0
+ */
+
+const char *
+arv_gc_property_node_get_name (ArvGcPropertyNode *node)
+{
+	g_return_val_if_fail (ARV_IS_GC_PROPERTY_NODE (node), NULL);
+
+	return node->name;
 }
 
 const char *
@@ -593,6 +624,12 @@ arv_gc_property_node_new_p_port (void)
 }
 
 ArvGcNode *
+arv_gc_property_node_new_p_variable (void)
+{
+	return arv_gc_property_node_new (ARV_GC_PROPERTY_NODE_TYPE_P_VARIABLE);
+}
+
+ArvGcNode *
 arv_gc_property_node_new_formula (void)
 {
 	return arv_gc_property_node_new (ARV_GC_PROPERTY_NODE_TYPE_FORMULA);
@@ -704,6 +741,7 @@ arv_gc_property_node_finalize (GObject *object)
 	parent_class->finalize (object);
 
 	g_free (property_node->value_data);
+	g_free (property_node->name);
 }
 
 static void

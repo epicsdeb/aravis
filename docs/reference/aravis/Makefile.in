@@ -146,7 +146,17 @@ ARAVIS_GST_0_10_PLUGIN_CFLAGS = @ARAVIS_GST_0_10_PLUGIN_CFLAGS@
 ARAVIS_GST_0_10_PLUGIN_LIBS = @ARAVIS_GST_0_10_PLUGIN_LIBS@
 ARAVIS_GST_PLUGIN_CFLAGS = @ARAVIS_GST_PLUGIN_CFLAGS@
 ARAVIS_GST_PLUGIN_LIBS = @ARAVIS_GST_PLUGIN_LIBS@
+ARAVIS_HAS_PACKET_SOCKET = @ARAVIS_HAS_PACKET_SOCKET@
+ARAVIS_HAS_USB = @ARAVIS_HAS_USB@
 ARAVIS_LIBS = @ARAVIS_LIBS@
+ARAVIS_MAJOR_VERSION = @ARAVIS_MAJOR_VERSION@
+ARAVIS_MICRO_VERSION = @ARAVIS_MICRO_VERSION@
+ARAVIS_MINOR_VERSION = @ARAVIS_MINOR_VERSION@
+ARAVIS_PACKET_SOCKET_CFLAGS = @ARAVIS_PACKET_SOCKET_CFLAGS@
+ARAVIS_PACKET_SOCKET_LIBS = @ARAVIS_PACKET_SOCKET_LIBS@
+ARAVIS_USB_CFLAGS = @ARAVIS_USB_CFLAGS@
+ARAVIS_USB_LIBS = @ARAVIS_USB_LIBS@
+ARAVIS_VERSION = @ARAVIS_VERSION@
 ARAVIS_VIEWER_CFLAGS = @ARAVIS_VIEWER_CFLAGS@
 ARAVIS_VIEWER_LIBS = @ARAVIS_VIEWER_LIBS@
 AUTOCONF = @AUTOCONF@
@@ -387,8 +397,19 @@ IGNORE_HFILES = \
 	arvconfig.h			\
 	arvbufferprivate.h		\
 	arvchunkparserprivate.h		\
+	arvinterfaceprivate.h		\
 	arvdeviceprivate.h		\
 	arvstreamprivate.h		\
+	arvgvstreamprivate.h		\
+	arvgvinterfaceprivate.h		\
+	arvgvdeviceprivate.h		\
+	arvvvstreamprivate.h		\
+	arvuvinterfaceprivate.h		\
+	arvuvdeviceprivate.h		\
+	arvuvstreamprivate.h		\
+	arvfakeinterfaceprivate.h	\
+	arvfakedeviceprivate.h		\
+	arvfakestreamprivate.h		\
 	arvrealtimeprivate.h		\
 	arv.h
 
@@ -510,9 +531,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu docs/reference/aravis/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign docs/reference/aravis/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu docs/reference/aravis/Makefile
+	  $(AUTOMAKE) --foreign docs/reference/aravis/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -804,7 +825,7 @@ scan-build.stamp: setup-build.stamp $(HFILE_GLOB) $(CFILE_GLOB)
 $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt: scan-build.stamp
 	@true
 
-sgml-build.stamp: setup-build.stamp $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt $(expand_content_files)
+sgml-build.stamp: setup-build.stamp $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(HFILE_GLOB) $(CFILE_GLOB) $(DOC_MODULE)-sections.txt $(DOC_MODULE)-overrides.txt $(expand_content_files) xml/gtkdocentities.ent
 	$(GTK_DOC_V_XML)_source_dir='' ; \
 	for i in $(DOC_SOURCE_DIR) ; do \
 	    _source_dir="$${_source_dir} --source-dir=$$i" ; \
@@ -814,6 +835,17 @@ sgml-build.stamp: setup-build.stamp $(DOC_MODULE)-decl.txt $(SCANOBJ_FILES) $(DO
 
 sgml.stamp: sgml-build.stamp
 	@true
+
+xml/gtkdocentities.ent: Makefile
+	$(GTK_DOC_V_XML)$(MKDIR_P) $(@D) && ( \
+		echo "<!ENTITY package \"$(PACKAGE)\">"; \
+		echo "<!ENTITY package_bugreport \"$(PACKAGE_BUGREPORT)\">"; \
+		echo "<!ENTITY package_name \"$(PACKAGE_NAME)\">"; \
+		echo "<!ENTITY package_string \"$(PACKAGE_STRING)\">"; \
+		echo "<!ENTITY package_tarname \"$(PACKAGE_TARNAME)\">"; \
+		echo "<!ENTITY package_url \"$(PACKAGE_URL)\">"; \
+		echo "<!ENTITY package_version \"$(PACKAGE_VERSION)\">"; \
+	) > $@
 
 html-build.stamp: sgml.stamp $(DOC_MAIN_SGML_FILE) $(content_files) $(expand_content_files)
 	$(GTK_DOC_V_HTML)rm -rf html && mkdir html && \

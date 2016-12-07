@@ -3,18 +3,19 @@ EXTRA_DIST =
 include $(top_srcdir)/Makefile.decl
 
 AM_CPPFLAGS = \
-	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
-	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
-	-DPACKAGE_DATA_DIR=\""$(datadir)"\" $(ARAVIS_CFLAGS) \
-	-DARAVIS_DATA_DIR=\""$(aravis_datadir)"\" \
-	-DARAVIS_API_VERSION=\""$(ARAVIS_API_VERSION)"\" \
-	-DG_LOG_DOMAIN=\"Aravis\"
+	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" 	\
+	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" 				\
+	-DPACKAGE_DATA_DIR=\""$(datadir)"\" $(ARAVIS_CFLAGS) 		\
+	-DARAVIS_DATA_DIR=\""$(aravis_datadir)"\" 			\
+	-DARAVIS_API_VERSION=\""$(ARAVIS_API_VERSION)"\" 		\
+	-DG_LOG_DOMAIN=\"Aravis\"					\
+	-DARAVIS_COMPILATION
 
 AM_CFLAGS = -Wall
 
 lib_LTLIBRARIES = libaravis-@ARAVIS_API_VERSION@.la
 
-BUILT_SOURCES = arvenumtypes.h arvenumtypes.c
+BUILT_SOURCES = arvenumtypes.h arvenumtypes.c arvfeatures.h arvversion.h
 
 EXTRA_DIST += arvenumtypes.h.template \
 	      arvenumtypes.c.template
@@ -43,7 +44,6 @@ ARAVIS_SRCS =					\
 	arvgcnode.c				\
 	arvgcpropertynode.c			\
 	arvgcindexnode.c			\
-	arvgcvariablenode.c			\
 	arvgcinvalidatornode.c			\
 	arvgcfeaturenode.c			\
 	arvgcregisterdescriptionnode.c		\
@@ -107,7 +107,6 @@ ARAVIS_HDRS = 					\
 	arvgcnode.h				\
 	arvgcpropertynode.h			\
 	arvgcindexnode.h			\
-	arvgcvariablenode.h			\
 	arvgcinvalidatornode.h			\
 	arvgcfeaturenode.h			\
 	arvgcregisterdescriptionnode.h		\
@@ -152,9 +151,39 @@ ARAVIS_HDRS_NO_INTRO =				\
 noinst_HEADERS =				\
 	arvbufferprivate.h			\
 	arvchunkparserprivate.h			\
+	arvinterfaceprivate.h			\
 	arvdeviceprivate.h			\
 	arvstreamprivate.h			\
+	arvgvinterfaceprivate.h			\
+	arvgvdeviceprivate.h			\
+	arvgvstreamprivate.h			\
+	arvuvinterfaceprivate.h			\
+	arvuvdeviceprivate.h			\
+	arvuvstreamprivate.h			\
+	arvfakeinterfaceprivate.h		\
+	arvfakedeviceprivate.h			\
+	arvfakestreamprivate.h			\
 	arvrealtimeprivate.h
+
+if ARAVIS_BUILD_USB
+ARAVIS_SRCS +=					\
+	arvuvinterface.c			\
+	arvuvdevice.c				\
+	arvuvstream.c
+
+ARAVIS_SRCS_NO_INTRO +=				\
+	arvuvcp.c				\
+	arvuvsp.c
+
+ARAVIS_HDRS +=					\
+	arvuvinterface.h			\
+	arvuvdevice.h				\
+	arvuvstream.h
+
+ARAVIS_HDRS_NO_INTRO +=				\
+	arvuvcp.h				\
+	arvuvsp.h
+endif
 
 arv_fake_cameradir = $(aravis_datadir)
 arv_fake_camera_DATA = arv-fake-camera.xml
@@ -166,6 +195,8 @@ libaravis_@ARAVIS_API_VERSION@_la_SOURCES = $(ARAVIS_SRCS) $(ARAVIS_SRCS_NO_INTR
 libaravis_@ARAVIS_API_VERSION@_ladir = $(includedir)/aravis-@ARAVIS_API_VERSION@
 libaravis_@ARAVIS_API_VERSION@_la_HEADERS = $(ARAVIS_HDRS) $(ARAVIS_HDRS_NO_INTRO)
 libaravis_@ARAVIS_API_VERSION@_la_HEADERS += arvenumtypes.h
+
+nodist_libaravis_@ARAVIS_API_VERSION@_la_HEADERS = arvfeatures.h arvversion.h
 
 arvenumtypes.h: arvenumtypes.h.template $(ARAVIS_HDRS) $(ARAVIS_HDRS_NO_INTRO) $(GLIB_MKENUMS)
 	$(AM_V_GEN) (cd $(srcdir) && $(GLIB_MKENUMS) --template arvenumtypes.h.template $(libaravis_@ARAVIS_API_VERSION@_la_HEADERS)) > $@
@@ -202,7 +233,7 @@ Aravis-@ARAVIS_API_VERSION@.gir: $(INTROSPECTION_SCANNER) libaravis-@ARAVIS_API_
 
 Aravis_@ARAVIS_API_VERSION_U@_gir_INCLUDES = GObject-2.0 Gio-2.0
 Aravis_@ARAVIS_API_VERSION_U@_gir_SCANNERFLAGS = --identifier-prefix=Arv --warn-all
-Aravis_@ARAVIS_API_VERSION_U@_gir_CFLAGS = $(INCLUDES) -I$(top_srcdir)/src
+Aravis_@ARAVIS_API_VERSION_U@_gir_CFLAGS = $(INCLUDES) -I$(top_srcdir)/src -DARAVIS_COMPILATION
 Aravis_@ARAVIS_API_VERSION_U@_gir_LIBS = libaravis-@ARAVIS_API_VERSION@.la
 Aravis_@ARAVIS_API_VERSION_U@_gir_FILES = $(addprefix $(srcdir)/,$(introspection_files))
 

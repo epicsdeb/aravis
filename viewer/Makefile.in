@@ -17,6 +17,7 @@
 # GLIB - Library of useful C routines
 
 
+
 VPATH = @srcdir@
 am__is_gnu_make = { \
   if test -z '$(MAKELEVEL)'; then \
@@ -104,16 +105,18 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 DIST_COMMON = $(srcdir)/Makefile.am $(dist_appsicon22_DATA) \
 	$(dist_appsicon256_DATA) $(dist_appsicon32_DATA) \
-	$(dist_appsicon48_DATA) $(am__DIST_COMMON)
+	$(dist_appsicon48_DATA) $(arv_viewer_HEADERS) \
+	$(am__DIST_COMMON)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/src/arvconfig.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(arv_viewerdir)" \
 	"$(DESTDIR)$(appsicon22dir)" "$(DESTDIR)$(appsicon256dir)" \
-	"$(DESTDIR)$(appsicon32dir)" "$(DESTDIR)$(appsicon48dir)"
+	"$(DESTDIR)$(appsicon32dir)" "$(DESTDIR)$(appsicon48dir)" \
+	"$(DESTDIR)$(arv_viewerdir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_arv_viewer_OBJECTS = arvviewer.$(OBJEXT)
+am_arv_viewer_OBJECTS = main.$(OBJEXT) arvviewer.$(OBJEXT)
 arv_viewer_OBJECTS = $(am_arv_viewer_OBJECTS)
 am__DEPENDENCIES_1 =
 arv_viewer_DEPENDENCIES = $(am__DEPENDENCIES_1) \
@@ -201,6 +204,7 @@ am__uninstall_files_from_dir = { \
 DATA = $(arv_viewer_DATA) $(dist_appsicon22_DATA) \
 	$(dist_appsicon256_DATA) $(dist_appsicon32_DATA) \
 	$(dist_appsicon48_DATA)
+HEADERS = $(arv_viewer_HEADERS)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 am__recursive_targets = \
@@ -270,7 +274,17 @@ ARAVIS_GST_0_10_PLUGIN_CFLAGS = @ARAVIS_GST_0_10_PLUGIN_CFLAGS@
 ARAVIS_GST_0_10_PLUGIN_LIBS = @ARAVIS_GST_0_10_PLUGIN_LIBS@
 ARAVIS_GST_PLUGIN_CFLAGS = @ARAVIS_GST_PLUGIN_CFLAGS@
 ARAVIS_GST_PLUGIN_LIBS = @ARAVIS_GST_PLUGIN_LIBS@
+ARAVIS_HAS_PACKET_SOCKET = @ARAVIS_HAS_PACKET_SOCKET@
+ARAVIS_HAS_USB = @ARAVIS_HAS_USB@
 ARAVIS_LIBS = @ARAVIS_LIBS@
+ARAVIS_MAJOR_VERSION = @ARAVIS_MAJOR_VERSION@
+ARAVIS_MICRO_VERSION = @ARAVIS_MICRO_VERSION@
+ARAVIS_MINOR_VERSION = @ARAVIS_MINOR_VERSION@
+ARAVIS_PACKET_SOCKET_CFLAGS = @ARAVIS_PACKET_SOCKET_CFLAGS@
+ARAVIS_PACKET_SOCKET_LIBS = @ARAVIS_PACKET_SOCKET_LIBS@
+ARAVIS_USB_CFLAGS = @ARAVIS_USB_CFLAGS@
+ARAVIS_USB_LIBS = @ARAVIS_USB_LIBS@
+ARAVIS_VERSION = @ARAVIS_VERSION@
 ARAVIS_VIEWER_CFLAGS = @ARAVIS_VIEWER_CFLAGS@
 ARAVIS_VIEWER_LIBS = @ARAVIS_VIEWER_LIBS@
 AUTOCONF = @AUTOCONF@
@@ -459,7 +473,14 @@ AM_CPPFLAGS = \
 	-DG_LOG_DOMAIN=\"Aravis\"
 
 AM_CFLAGS = -Wall
-arv_viewer_SOURCES = arvviewer.c
+arv_viewer_SOURCES = \
+	main.c				\
+	arvviewer.c
+
+arv_viewer_HEADERS = \
+	arvviewertypes.h		\
+	arvviewer.h
+
 arv_viewer_LDADD = $(ARAVIS_VIEWER_LIBS) $(top_builddir)/src/libaravis-@ARAVIS_API_VERSION@.la
 arv_viewerdir = $(aravis_datadir)
 arv_viewer_DATA = arv-viewer.ui
@@ -487,9 +508,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu viewer/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign viewer/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu viewer/Makefile
+	  $(AUTOMAKE) --foreign viewer/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -569,6 +590,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arvviewer.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -701,6 +723,27 @@ uninstall-dist_appsicon48DATA:
 	@list='$(dist_appsicon48_DATA)'; test -n "$(appsicon48dir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	dir='$(DESTDIR)$(appsicon48dir)'; $(am__uninstall_files_from_dir)
+install-arv_viewerHEADERS: $(arv_viewer_HEADERS)
+	@$(NORMAL_INSTALL)
+	@list='$(arv_viewer_HEADERS)'; test -n "$(arv_viewerdir)" || list=; \
+	if test -n "$$list"; then \
+	  echo " $(MKDIR_P) '$(DESTDIR)$(arv_viewerdir)'"; \
+	  $(MKDIR_P) "$(DESTDIR)$(arv_viewerdir)" || exit 1; \
+	fi; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_HEADER) $$files '$(DESTDIR)$(arv_viewerdir)'"; \
+	  $(INSTALL_HEADER) $$files "$(DESTDIR)$(arv_viewerdir)" || exit $$?; \
+	done
+
+uninstall-arv_viewerHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(arv_viewer_HEADERS)'; test -n "$(arv_viewerdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	dir='$(DESTDIR)$(arv_viewerdir)'; $(am__uninstall_files_from_dir)
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run 'make' without going through this Makefile.
@@ -859,10 +902,10 @@ distdir: $(DISTFILES)
 check-am: all-am
 	$(MAKE) $(AM_MAKEFLAGS) check-local
 check: check-recursive
-all-am: Makefile $(PROGRAMS) $(DATA)
+all-am: Makefile $(PROGRAMS) $(DATA) $(HEADERS)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(arv_viewerdir)" "$(DESTDIR)$(appsicon22dir)" "$(DESTDIR)$(appsicon256dir)" "$(DESTDIR)$(appsicon32dir)" "$(DESTDIR)$(appsicon48dir)"; do \
+	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(arv_viewerdir)" "$(DESTDIR)$(appsicon22dir)" "$(DESTDIR)$(appsicon256dir)" "$(DESTDIR)$(appsicon32dir)" "$(DESTDIR)$(appsicon48dir)" "$(DESTDIR)$(arv_viewerdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -917,9 +960,9 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-arv_viewerDATA install-dist_appsicon22DATA \
-	install-dist_appsicon256DATA install-dist_appsicon32DATA \
-	install-dist_appsicon48DATA
+install-data-am: install-arv_viewerDATA install-arv_viewerHEADERS \
+	install-dist_appsicon22DATA install-dist_appsicon256DATA \
+	install-dist_appsicon32DATA install-dist_appsicon48DATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
 install-dvi: install-dvi-recursive
@@ -966,9 +1009,10 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-arv_viewerDATA uninstall-binPROGRAMS \
-	uninstall-dist_appsicon22DATA uninstall-dist_appsicon256DATA \
-	uninstall-dist_appsicon32DATA uninstall-dist_appsicon48DATA
+uninstall-am: uninstall-arv_viewerDATA uninstall-arv_viewerHEADERS \
+	uninstall-binPROGRAMS uninstall-dist_appsicon22DATA \
+	uninstall-dist_appsicon256DATA uninstall-dist_appsicon32DATA \
+	uninstall-dist_appsicon48DATA
 	@$(NORMAL_INSTALL)
 	$(MAKE) $(AM_MAKEFLAGS) uninstall-hook
 .MAKE: $(am__recursive_targets) check-am install-am install-data-am \
@@ -979,18 +1023,19 @@ uninstall-am: uninstall-arv_viewerDATA uninstall-binPROGRAMS \
 	clean-libtool cscopelist-am ctags ctags-am distclean \
 	distclean-compile distclean-generic distclean-libtool \
 	distclean-tags distdir dvi dvi-am html html-am info info-am \
-	install install-am install-arv_viewerDATA install-binPROGRAMS \
-	install-data install-data-am install-data-hook \
-	install-dist_appsicon22DATA install-dist_appsicon256DATA \
-	install-dist_appsicon32DATA install-dist_appsicon48DATA \
-	install-dvi install-dvi-am install-exec install-exec-am \
-	install-html install-html-am install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags tags-am uninstall uninstall-am uninstall-arv_viewerDATA \
+	install install-am install-arv_viewerDATA \
+	install-arv_viewerHEADERS install-binPROGRAMS install-data \
+	install-data-am install-data-hook install-dist_appsicon22DATA \
+	install-dist_appsicon256DATA install-dist_appsicon32DATA \
+	install-dist_appsicon48DATA install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-man install-pdf \
+	install-pdf-am install-ps install-ps-am install-strip \
+	installcheck installcheck-am installdirs installdirs-am \
+	maintainer-clean maintainer-clean-generic mostlyclean \
+	mostlyclean-compile mostlyclean-generic mostlyclean-libtool \
+	pdf pdf-am ps ps-am tags tags-am uninstall uninstall-am \
+	uninstall-arv_viewerDATA uninstall-arv_viewerHEADERS \
 	uninstall-binPROGRAMS uninstall-dist_appsicon22DATA \
 	uninstall-dist_appsicon256DATA uninstall-dist_appsicon32DATA \
 	uninstall-dist_appsicon48DATA uninstall-hook

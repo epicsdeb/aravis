@@ -198,9 +198,9 @@ CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = src viewer gst gst-0.10 tests po docs
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/aravis.pc.in \
-	$(top_srcdir)/Makefile.decl AUTHORS COPYING ChangeLog INSTALL \
-	NEWS README TODO compile config.guess config.sub install-sh \
-	ltmain.sh missing
+	$(top_srcdir)/Makefile.decl AUTHORS COPYING ChangeLog NEWS \
+	TODO compile config.guess config.sub install-sh ltmain.sh \
+	missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -256,7 +256,17 @@ ARAVIS_GST_0_10_PLUGIN_CFLAGS = @ARAVIS_GST_0_10_PLUGIN_CFLAGS@
 ARAVIS_GST_0_10_PLUGIN_LIBS = @ARAVIS_GST_0_10_PLUGIN_LIBS@
 ARAVIS_GST_PLUGIN_CFLAGS = @ARAVIS_GST_PLUGIN_CFLAGS@
 ARAVIS_GST_PLUGIN_LIBS = @ARAVIS_GST_PLUGIN_LIBS@
+ARAVIS_HAS_PACKET_SOCKET = @ARAVIS_HAS_PACKET_SOCKET@
+ARAVIS_HAS_USB = @ARAVIS_HAS_USB@
 ARAVIS_LIBS = @ARAVIS_LIBS@
+ARAVIS_MAJOR_VERSION = @ARAVIS_MAJOR_VERSION@
+ARAVIS_MICRO_VERSION = @ARAVIS_MICRO_VERSION@
+ARAVIS_MINOR_VERSION = @ARAVIS_MINOR_VERSION@
+ARAVIS_PACKET_SOCKET_CFLAGS = @ARAVIS_PACKET_SOCKET_CFLAGS@
+ARAVIS_PACKET_SOCKET_LIBS = @ARAVIS_PACKET_SOCKET_LIBS@
+ARAVIS_USB_CFLAGS = @ARAVIS_USB_CFLAGS@
+ARAVIS_USB_LIBS = @ARAVIS_USB_LIBS@
+ARAVIS_VERSION = @ARAVIS_VERSION@
 ARAVIS_VIEWER_CFLAGS = @ARAVIS_VIEWER_CFLAGS@
 ARAVIS_VIEWER_LIBS = @ARAVIS_VIEWER_LIBS@
 AUTOCONF = @AUTOCONF@
@@ -429,7 +439,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = m4/introspection.m4
+EXTRA_DIST = m4/introspection.m4 README.md
 GTESTER = gtester
 GTESTER_REPORT = gtester-report
 
@@ -439,9 +449,9 @@ ACLOCAL_AMFLAGS = -I m4
 DISTCHECK_CONFIGURE_FLAGS = --enable-introspection --enable-gtk-doc --enable-gst-plugin --enable-gst-0.10-plugin --enable-viewer --enable-cpp-test --enable-appstream-util
 SUBDIRS = src $(am__append_1) $(am__append_2) $(am__append_3) tests po \
 	docs
-aravisdocdir = ${prefix}/doc/aravis-@ARAVIS_API_VERSION@
+aravisdocdir = ${docdir}/aravis-@ARAVIS_API_VERSION@
 aravisdoc_DATA = \
-	README		\
+	README.md	\
 	COPYING		\
 	ChangeLog 	\
 	AUTHORS		\
@@ -459,15 +469,15 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
 	    *$$dep*) \
-	      echo ' cd $(srcdir) && $(AUTOMAKE) --gnu'; \
-	      $(am__cd) $(srcdir) && $(AUTOMAKE) --gnu \
+	      echo ' cd $(srcdir) && $(AUTOMAKE) --foreign'; \
+	      $(am__cd) $(srcdir) && $(AUTOMAKE) --foreign \
 		&& exit 0; \
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu Makefile
+	  $(AUTOMAKE) --foreign Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -715,7 +725,7 @@ distdir: $(DISTFILES)
 	  ! -type d ! -perm -444 -exec $(install_sh) -c -m a+r {} {} \; \
 	|| chmod -R a+r "$(distdir)"
 dist-gzip: distdir
-	tardir=$(distdir) && $(am__tar) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).tar.gz
+	tardir=$(distdir) && $(am__tar) | eval GZIP= gzip $(GZIP_ENV) -c >$(distdir).tar.gz
 	$(am__post_remove_distdir)
 dist-bzip2: distdir
 	tardir=$(distdir) && $(am__tar) | BZIP2=$${BZIP2--9} bzip2 -c >$(distdir).tar.bz2
@@ -739,7 +749,7 @@ dist-shar: distdir
 	@echo WARNING: "Support for shar distribution archives is" \
 	               "deprecated." >&2
 	@echo WARNING: "It will be removed altogether in Automake 2.0" >&2
-	shar $(distdir) | GZIP=$(GZIP_ENV) gzip -c >$(distdir).shar.gz
+	shar $(distdir) | eval GZIP= gzip $(GZIP_ENV) -c >$(distdir).shar.gz
 	$(am__post_remove_distdir)
 
 dist-zip: distdir
@@ -757,7 +767,7 @@ dist dist-all:
 distcheck: dist
 	case '$(DIST_ARCHIVES)' in \
 	*.tar.gz*) \
-	  GZIP=$(GZIP_ENV) gzip -dc $(distdir).tar.gz | $(am__untar) ;;\
+	  eval GZIP= gzip $(GZIP_ENV) -dc $(distdir).tar.gz | $(am__untar) ;;\
 	*.tar.bz2*) \
 	  bzip2 -dc $(distdir).tar.bz2 | $(am__untar) ;;\
 	*.tar.lz*) \
@@ -767,7 +777,7 @@ distcheck: dist
 	*.tar.Z*) \
 	  uncompress -c $(distdir).tar.Z | $(am__untar) ;;\
 	*.shar.gz*) \
-	  GZIP=$(GZIP_ENV) gzip -dc $(distdir).shar.gz | unshar ;;\
+	  eval GZIP= gzip $(GZIP_ENV) -dc $(distdir).shar.gz | unshar ;;\
 	*.zip*) \
 	  unzip $(distdir).zip ;;\
 	esac

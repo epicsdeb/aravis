@@ -1,6 +1,12 @@
 <SECTION>
 <FILE>arvcamera</FILE>
 <TITLE>ArvCamera</TITLE>
+ARAVIS_CHECK_VERSION
+ARAVIS_MAJOR_VERSION
+ARAVIS_MICRO_VERSION
+ARAVIS_MINOR_VERSION
+ARAVIS_HAS_PACKET_SOCKET
+ARAVIS_HAS_USB
 ArvAuto
 arv_auto_from_string
 arv_auto_to_string
@@ -14,10 +20,15 @@ arv_camera_get_device_id
 arv_camera_get_sensor_size
 arv_camera_set_region
 arv_camera_get_region
+arv_camera_get_x_offset_bounds
+arv_camera_get_y_offset_bounds
 arv_camera_get_height_bounds
 arv_camera_get_width_bounds
 arv_camera_set_binning
 arv_camera_get_binning
+arv_camera_get_x_binning_bounds
+arv_camera_get_y_binning_bounds
+arv_camera_is_binning_available
 arv_camera_set_pixel_format
 arv_camera_get_pixel_format
 arv_camera_get_pixel_format_as_string
@@ -28,6 +39,7 @@ arv_camera_get_available_pixel_formats_as_strings
 arv_camera_start_acquisition
 arv_camera_stop_acquisition
 arv_camera_abort_acquisition
+arv_camera_acquisition
 arv_camera_set_acquisition_mode
 arv_camera_get_acquisition_mode
 arv_camera_is_frame_rate_available
@@ -61,6 +73,8 @@ arv_camera_gv_get_packet_delay
 arv_camera_gv_set_packet_delay
 arv_camera_gv_get_packet_size
 arv_camera_gv_set_packet_size
+arv_camera_gv_auto_packet_size
+arv_camera_gv_set_stream_options
 arv_camera_get_chunk_mode
 arv_camera_get_chunk_state
 arv_camera_set_chunk_mode
@@ -98,6 +112,7 @@ arv_buffer_get_user_data
 arv_buffer_get_data
 arv_buffer_get_chunk_data
 arv_buffer_get_timestamp
+arv_buffer_set_timestamp
 arv_buffer_get_frame_id
 arv_buffer_get_payload_type
 arv_buffer_get_status
@@ -180,6 +195,9 @@ ArvBufferPrivate
 ArvInterface
 arv_get_device_id
 arv_get_interface_id
+arv_get_device_model
+arv_get_device_serial_nbr
+arv_get_device_vendor
 arv_disable_interface
 arv_enable_interface
 arv_get_n_devices
@@ -191,6 +209,9 @@ arv_interface_update_device_list
 arv_interface_get_device_id
 arv_interface_get_device_physical_id
 arv_interface_get_device_address
+arv_interface_get_device_model
+arv_interface_get_device_serial_nbr
+arv_interface_get_device_vendor
 arv_interface_get_n_devices
 arv_interface_open_device
 <SUBSECTION Standard>
@@ -211,8 +232,6 @@ ArvInterfacePrivate
 <FILE>arvfakeinterface</FILE>
 <TITLE>ArvFakeInterface</TITLE>
 ArvFakeInterface
-arv_fake_interface_get_instance
-arv_fake_interface_destroy_instance
 <SUBSECTION Standard>
 ARV_FAKE_INTERFACE
 ARV_IS_FAKE_INTERFACE
@@ -224,8 +243,66 @@ ARV_FAKE_INTERFACE_GET_CLASS
 <SUBSECTION Private>
 ArvFakeInterfacePrivate
 ArvFakeInterfaceClass
+arv_fake_interface_get_instance
+arv_fake_interface_destroy_instance
 ARV_FAKE_INTERFACE_DISCOVERY_TIMEOUT_MS
 ARV_FAKE_INTERFACE_SOCKET_BUFFER_SIZE
+</SECTION>
+
+<SECTION>
+<FILE>arvuvinterface</FILE>
+<TITLE>ArvUvInterface</TITLE>
+<SUBSECTION Standard>
+ArvUvInterface
+ARV_IS_UV_INTERFACE
+ARV_IS_UV_INTERFACE_CLASS
+ARV_TYPE_UV_INTERFACE
+ARV_UV_INTERFACE
+ARV_UV_INTERFACE_CLASS
+ARV_UV_INTERFACE_GET_CLASS
+ArvUvInterfaceClass
+ArvUvInterfacePrivate
+arv_uv_interface_get_type
+<SUBSECTION Private>
+arv_uv_interface_destroy_instance
+arv_uv_interface_get_instance
+</SECTION>
+
+<SECTION>
+<FILE>arvuvdevice</FILE>
+<TITLE>ArvUvDevice</TITLE>
+<SUBSECTION Standard>
+ArvUvDevice
+ARV_IS_UV_DEVICE
+ARV_IS_UV_DEVICE_CLASS
+ARV_TYPE_UV_DEVICE
+ARV_UV_DEVICE
+ARV_UV_DEVICE_CLASS
+ARV_UV_DEVICE_GET_CLASS
+ArvUvDeviceClass
+ArvUvDevicePrivate
+arv_uv_device_get_type
+<SUBSECTION Private>
+arv_uv_device_new
+arv_uv_device_bulk_transfer
+</SECTION>
+
+<SECTION>
+<FILE>arvuvstream</FILE>
+<TITLE>ArvUvStream</TITLE>
+<SUBSECTION Standard>
+ArvUvStream
+ARV_IS_UV_STREAM
+ARV_IS_UV_STREAM_CLASS
+ARV_TYPE_UV_STREAM
+ARV_UV_STREAM
+ARV_UV_STREAM_CLASS
+ARV_UV_STREAM_GET_CLASS
+ArvUvStreamClass
+ArvUvStreamPrivate
+arv_uv_stream_get_type
+<SUBSECTION Private>
+arv_uv_stream_new
 </SECTION>
 
 <SECTION>
@@ -265,6 +342,8 @@ arv_device_get_genicam
 arv_device_get_feature
 arv_device_get_status
 arv_device_execute_command
+arv_device_get_boolean_feature_value
+arv_device_set_boolean_feature_value
 arv_device_set_string_feature_value
 arv_device_get_string_feature_value
 arv_device_set_integer_feature_value
@@ -328,6 +407,9 @@ ARV_GC_NODE_GET_CLASS
 <SUBSECTION Private>
 ArvGcNodePrivate
 ArvGcNodeClass
+ARV_GC_ERROR
+ArvGcError
+arv_gc_error_quark
 </SECTION>
 
 <SECTION>
@@ -368,11 +450,13 @@ arv_gc_property_node_new_p_maximum
 arv_gc_property_node_new_p_minimum
 arv_gc_property_node_new_p_port
 arv_gc_property_node_new_p_value
+arv_gc_property_node_new_p_variable
 arv_gc_property_node_new_polling_time
 arv_gc_property_node_new_sign
 arv_gc_property_node_new_tooltip
 arv_gc_property_node_new_unit
 arv_gc_property_node_new_value
+arv_gc_property_node_get_name
 arv_gc_property_node_get_node_type
 arv_gc_property_node_get_linked_node
 arv_gc_property_node_get_double
@@ -425,22 +509,6 @@ ARV_GC_INVALIDATOR_NODE_GET_CLASS
 ARV_IS_GC_INVALIDATOR_NODE
 ARV_IS_GC_INVALIDATOR_NODE_CLASS
 ARV_TYPE_GC_INVALIDATOR_NODE
-</SECTION>
-
-<SECTION>
-<FILE>arvgcvariablenode</FILE>
-<TITLE>ArvGcVariableNode</TITLE>
-ArvGcVariableNode
-arv_gc_variable_node_get_name
-arv_gc_variable_node_new
-<SUBSECTION Standard>
-arv_gc_variable_node_get_type
-ARV_GC_VARIABLE_NODE
-ARV_GC_VARIABLE_NODE_CLASS
-ARV_GC_VARIABLE_NODE_GET_CLASS
-ARV_IS_GC_VARIABLE_NODE
-ARV_IS_GC_VARIABLE_NODE_CLASS
-ARV_TYPE_GC_VARIABLE_NODE
 </SECTION>
 
 <SECTION>
@@ -553,6 +621,10 @@ ArvEvaluator
 arv_evaluator_new
 arv_evaluator_set_expression
 arv_evaluator_get_expression
+arv_evaluator_get_constant
+arv_evaluator_get_sub_expression
+arv_evaluator_set_constant
+arv_evaluator_set_sub_expression
 arv_evaluator_evaluate_as_double
 arv_evaluator_evaluate_as_int64
 arv_evaluator_set_double_variable
@@ -711,8 +783,6 @@ arv_gc_set_double_to_value
 <FILE>arvgvinterface</FILE>
 <TITLE>ArvGvInterface</TITLE>
 ArvGvInterface
-arv_gv_interface_get_instance
-arv_gv_interface_destroy_instance
 <SUBSECTION Standard>
 ARV_GV_INTERFACE
 ARV_IS_GV_INTERFACE
@@ -724,6 +794,8 @@ ARV_GV_INTERFACE_GET_CLASS
 <SUBSECTION Private>
 ARV_GV_INTERFACE_DISCOVERY_TIMEOUT_MS
 ARV_GV_INTERFACE_SOCKET_BUFFER_SIZE
+arv_gv_interface_get_instance
+arv_gv_interface_destroy_instance
 ArvGvInterfacePrivate
 ArvGvInterfaceClass
 </SECTION>
@@ -738,6 +810,9 @@ arv_gv_device_get_device_address
 arv_gv_device_get_interface_address
 arv_gv_device_get_packet_size
 arv_gv_device_set_packet_size
+arv_gv_device_get_stream_options
+arv_gv_device_set_stream_options
+arv_gv_device_auto_packet_size
 <SUBSECTION Standard>
 ARV_GV_DEVICE
 ARV_IS_GV_DEVICE
@@ -781,7 +856,6 @@ ArvGcEnumEntryClass
 <FILE>arvfakestream</FILE>
 <TITLE>ArvFakeStream</TITLE>
 ArvFakeStream
-arv_fake_stream_new
 <SUBSECTION Standard>
 ARV_FAKE_STREAM
 ARV_IS_FAKE_STREAM
@@ -793,6 +867,7 @@ ARV_FAKE_STREAM_GET_CLASS
 <SUBSECTION Private>
 ArvFakeStreamPrivate
 ArvFakeStreamClass
+arv_fake_stream_new
 </SECTION>
 
 <SECTION>
@@ -1002,10 +1077,10 @@ ArvGcStringInterface
 <SECTION>
 <FILE>arvgvstream</FILE>
 <TITLE>ArvGvStream</TITLE>
+ArvGvStreamOption
 ArvGvStreamSocketBuffer
 ArvGvStreamPacketResend
 ArvGvStream
-arv_gv_stream_new
 arv_gv_stream_get_port
 arv_gv_stream_get_statistics
 <SUBSECTION Standard>
@@ -1019,6 +1094,7 @@ ARV_GV_STREAM_GET_CLASS
 <SUBSECTION Private>
 ArvGvStreamClass
 ArvGvStreamPrivate
+arv_gv_stream_new
 </SECTION>
 
 <SECTION>
@@ -1263,6 +1339,93 @@ ARAVIS_PACKED_STRUCTURE
 </SECTION>
 
 <SECTION>
+<FILE>arvuvcp</FILE>
+<TITLE>ArvUvcp</TITLE>
+ArvUvcpCommand
+ArvUvcpPacket
+ArvUvcpPacketType
+arv_uvcp_next_packet_id
+arv_uvcp_packet_debug
+arv_uvcp_packet_free
+arv_uvcp_packet_get_command
+arv_uvcp_packet_get_packet_id
+arv_uvcp_packet_get_packet_type
+arv_uvcp_packet_get_read_memory_ack_data
+arv_uvcp_packet_get_read_memory_ack_size
+arv_uvcp_packet_get_write_memory_ack_size
+arv_uvcp_packet_get_write_memory_cmd_data
+arv_uvcp_packet_get_pending_ack_timeout
+arv_uvcp_packet_new_read_memory_cmd
+arv_uvcp_packet_new_write_memory_cmd
+arv_uvcp_packet_set_packet_id
+arv_uvcp_packet_to_string
+arv_uvcp_command_to_string
+arv_uvcp_packet_type_to_string
+<SUBSECTION Standard>
+<SUBSECTION Private>
+ARV_UVCP_MAGIC
+ARV_UVCP_DEFAULT_RESPONSE_TIME_MS
+ArvUvcpHeader
+ArvUvcpManifestEntry
+ArvUvcpReadMemoryCmd
+ArvUvcpReadMemoryCmdInfos
+ArvUvcpWriteMemoryAck
+ArvUvcpWriteMemoryAckInfos
+ArvUvcpWriteMemoryCmd
+ArvUvcpWriteMemoryCmdInfos
+ArvUvcpPendingAck
+ArvUvcpPendingAckInfos
+ARV_ABRM_ACCESS_PRIVILEGE
+ARV_ABRM_DEVICE_CAPABILITY
+ARV_ABRM_DEVICE_CONFIGURATION
+ARV_ABRM_DEVICE_VERSION
+ARV_ABRM_FAMILY_NAME
+ARV_ABRM_GENCP_VERSION
+ARV_ABRM_HEARTBEAT_TIMEOUT
+ARV_ABRM_IMPLEMENTATION_ENDIANESS
+ARV_ABRM_MANIFEST_TABLE_ADDRESS
+ARV_ABRM_MANUFACTURER_INFO
+ARV_ABRM_MANUFACTURER_NAME
+ARV_ABRM_MAX_DEVICE_RESPONSE_TIME
+ARV_ABRM_MESSAGE_CHANNEL_ID
+ARV_ABRM_MODEL_NAME
+ARV_ABRM_PROTOCOL_ENDIANESS
+ARV_ABRM_RESERVED
+ARV_ABRM_SBRM_ADDRESS
+ARV_ABRM_SERIAL_NUMBER
+ARV_ABRM_TIMESTAMP
+ARV_ABRM_TIMESTAMP_INCREMENT
+ARV_ABRM_TIMESTAMP_LATCH
+ARV_ABRM_USER_DEFINED_NAME
+ARV_SBRM_CURRENT_SPEED
+ARV_SBRM_EIRM_ADDRESS
+ARV_SBRM_EIRM_LENGTH
+ARV_SBRM_IIDC2_ADDRESS
+ARV_SBRM_MAX_ACK_TRANSFER
+ARV_SBRM_MAX_CMD_TRANSFER
+ARV_SBRM_NUM_STREAM_CHANNELS
+ARV_SBRM_RESERVED
+ARV_SBRM_SIRM_ADDRESS
+ARV_SBRM_SIRM_LENGTH
+ARV_SBRM_U3VCP_CAPABILITY
+ARV_SBRM_U3VCP_CONFIGURATION
+ARV_SBRM_U3V_VERSION
+ARV_SI_CONTROL
+ARV_SI_INFO
+ARV_SI_INFO_ALIGNMENT_MASK
+ARV_SI_INFO_ALIGNMENT_SHIFT
+ARV_SI_MAX_LEADER_SIZE
+ARV_SI_MAX_TRAILER_SIZE
+ARV_SI_PAYLOAD_COUNT
+ARV_SI_PAYLOAD_SIZE
+ARV_SI_REQ_LEADER_SIZE
+ARV_SI_REQ_PAYLOAD_SIZE
+ARV_SI_REQ_TRAILER_SIZE
+ARV_SI_TRANSFER1_SIZE
+ARV_SI_TRANSFER2_SIZE
+</SECTION>
+
+<SECTION>
 <FILE>arvdomtext</FILE>
 <TITLE>ArvDomText</TITLE>
 arv_dom_text_new
@@ -1453,8 +1616,8 @@ arv_debug_category_device
 arv_debug_category_dom
 arv_debug_category_evaluator
 arv_debug_category_genicam
-arv_debug_category_gvcp
-arv_debug_category_gvsp
+arv_debug_category_cp
+arv_debug_category_sp
 arv_debug_category_interface
 arv_debug_category_misc
 arv_debug_category_stream
@@ -1463,8 +1626,8 @@ arv_debug_device
 arv_debug_dom
 arv_debug_evaluator
 arv_debug_genicam
-arv_debug_gvcp
-arv_debug_gvsp
+arv_debug_cp
+arv_debug_sp
 arv_debug_interface
 arv_debug_misc
 arv_debug_stream
@@ -1474,8 +1637,8 @@ arv_log_device
 arv_log_dom
 arv_log_evaluator
 arv_log_genicam
-arv_log_gvcp
-arv_log_gvsp
+arv_log_cp
+arv_log_sp
 arv_log_interface
 arv_log_misc
 arv_log_stream
@@ -1485,8 +1648,8 @@ arv_warning_device
 arv_warning_dom
 arv_warning_evaluator
 arv_warning_genicam
-arv_warning_gvcp
-arv_warning_gvsp
+arv_warning_cp
+arv_warning_sp
 arv_warning_interface
 arv_warning_misc
 arv_warning_stream
@@ -1530,6 +1693,28 @@ ARV_GVSP_PACKET_INFOS_ID_MASK
 ARV_GVSP_PACKET_INFOS_CONTENT_TYPE_MASK
 ARV_GVSP_PACKET_INFOS_CONTENT_TYPE_POS
 ARV_GVSP_PACKET_PROTOCOL_OVERHEAD
+</SECTION>
+
+<SECTION>
+<FILE>arvuvsp</FILE>
+<TITLE>ArvUvsp</TITLE>
+arv_uvsp_packet_get_frame_id
+arv_uvsp_packet_get_packet_type
+arv_uvsp_packet_get_region
+arv_uvsp_packet_get_timestamp
+arv_uvsp_packet_debug
+arv_uvsp_packet_to_string
+<SUBSECTION Private>
+ARV_UVSP_LEADER_MAGIC
+ARV_UVSP_TRAILER_MAGIC
+ArvUvspHeader
+ArvUvspLeader
+ArvUvspLeaderInfos
+ArvUvspPacket
+ArvUvspPacketType
+ArvUvspPayloadType
+ArvUvspTrailer
+ArvUvspTrailerInfos
 </SECTION>
 
 <SECTION>

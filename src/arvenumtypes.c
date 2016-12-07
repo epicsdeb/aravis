@@ -217,6 +217,34 @@ arv_dom_node_type_get_type (void)
 	return the_type;
 }
 
+#include "arvgc.h"
+
+GType
+arv_gc_error_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_GC_ERROR_PROPERTY_NOT_DEFINED,
+			  "ARV_GC_ERROR_PROPERTY_NOT_DEFINED",
+			  "property-not-defined" },
+			{ ARV_GC_ERROR_PVALUE_NOT_DEFINED,
+			  "ARV_GC_ERROR_PVALUE_NOT_DEFINED",
+			  "pvalue-not-defined" },
+			{ ARV_GC_ERROR_INVALID_PVALUE,
+			  "ARV_GC_ERROR_INVALID_PVALUE",
+			  "invalid-pvalue" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvGcError"),
+				values);
+	}
+	return the_type;
+}
+
 #include "arvgcpropertynode.h"
 
 GType
@@ -450,6 +478,12 @@ arv_device_status_get_type (void)
 			{ ARV_DEVICE_STATUS_WRITE_ERROR,
 			  "ARV_DEVICE_STATUS_WRITE_ERROR",
 			  "write-error" },
+			{ ARV_DEVICE_STATUS_TRANSFER_ERROR,
+			  "ARV_DEVICE_STATUS_TRANSFER_ERROR",
+			  "transfer-error" },
+			{ ARV_DEVICE_STATUS_NOT_CONNECTED,
+			  "ARV_DEVICE_STATUS_NOT_CONNECTED",
+			  "not-connected" },
 			{ 0, NULL, NULL }
 		};
 		the_type = g_enum_register_static (
@@ -618,6 +652,29 @@ arv_chunk_parser_status_get_type (void)
 }
 
 #include "arvgvstream.h"
+
+GType
+arv_gv_stream_option_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_GV_STREAM_OPTION_NONE,
+			  "ARV_GV_STREAM_OPTION_NONE",
+			  "none" },
+			{ ARV_GV_STREAM_OPTION_PACKET_SOCKET_DISABLED,
+			  "ARV_GV_STREAM_OPTION_PACKET_SOCKET_DISABLED",
+			  "packet-socket-disabled" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvGvStreamOption"),
+				values);
+	}
+	return the_type;
+}
 
 GType
 arv_gv_stream_socket_buffer_get_type (void)
@@ -851,6 +908,126 @@ arv_gvsp_payload_type_get_type (void)
 		};
 		the_type = g_enum_register_static (
 				g_intern_static_string ("ArvGvspPayloadType"),
+				values);
+	}
+	return the_type;
+}
+
+#include "arvuvcp.h"
+
+GType
+arv_uvcp_packet_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_UVCP_PACKET_TYPE_ERROR,
+			  "ARV_UVCP_PACKET_TYPE_ERROR",
+			  "error" },
+			{ ARV_UVCP_PACKET_TYPE_ACK,
+			  "ARV_UVCP_PACKET_TYPE_ACK",
+			  "ack" },
+			{ ARV_UVCP_PACKET_TYPE_CMD,
+			  "ARV_UVCP_PACKET_TYPE_CMD",
+			  "cmd" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvUvcpPacketType"),
+				values);
+	}
+	return the_type;
+}
+
+GType
+arv_uvcp_command_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_UVCP_COMMAND_READ_MEMORY_CMD,
+			  "ARV_UVCP_COMMAND_READ_MEMORY_CMD",
+			  "read-memory-cmd" },
+			{ ARV_UVCP_COMMAND_READ_MEMORY_ACK,
+			  "ARV_UVCP_COMMAND_READ_MEMORY_ACK",
+			  "read-memory-ack" },
+			{ ARV_UVCP_COMMAND_WRITE_MEMORY_CMD,
+			  "ARV_UVCP_COMMAND_WRITE_MEMORY_CMD",
+			  "write-memory-cmd" },
+			{ ARV_UVCP_COMMAND_WRITE_MEMORY_ACK,
+			  "ARV_UVCP_COMMAND_WRITE_MEMORY_ACK",
+			  "write-memory-ack" },
+			{ ARV_UVCP_COMMAND_PENDING_ACK,
+			  "ARV_UVCP_COMMAND_PENDING_ACK",
+			  "pending-ack" },
+			{ ARV_UVCP_COMMAND_EVENT_CMD,
+			  "ARV_UVCP_COMMAND_EVENT_CMD",
+			  "event-cmd" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvUvcpCommand"),
+				values);
+	}
+	return the_type;
+}
+
+#include "arvuvsp.h"
+
+GType
+arv_uvsp_packet_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_UVSP_PACKET_TYPE_UNKNOWN,
+			  "ARV_UVSP_PACKET_TYPE_UNKNOWN",
+			  "unknown" },
+			{ ARV_UVSP_PACKET_TYPE_LEADER,
+			  "ARV_UVSP_PACKET_TYPE_LEADER",
+			  "leader" },
+			{ ARV_UVSP_PACKET_TYPE_TRAILER,
+			  "ARV_UVSP_PACKET_TYPE_TRAILER",
+			  "trailer" },
+			{ ARV_UVSP_PACKET_TYPE_DATA,
+			  "ARV_UVSP_PACKET_TYPE_DATA",
+			  "data" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvUvspPacketType"),
+				values);
+	}
+	return the_type;
+}
+
+GType
+arv_uvsp_payload_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_UVSP_PAYLOAD_TYPE_IMAGE,
+			  "ARV_UVSP_PAYLOAD_TYPE_IMAGE",
+			  "image" },
+			{ ARV_UVSP_PAYLOAD_TYPE_CHUNK,
+			  "ARV_UVSP_PAYLOAD_TYPE_CHUNK",
+			  "chunk" },
+			{ ARV_UVSP_PAYLOAD_TYPE_EXTENDED_CHUNK,
+			  "ARV_UVSP_PAYLOAD_TYPE_EXTENDED_CHUNK",
+			  "extended-chunk" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvUvspPayloadType"),
 				values);
 	}
 	return the_type;

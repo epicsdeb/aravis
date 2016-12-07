@@ -93,7 +93,8 @@ host_triplet = @host@
 noinst_PROGRAMS = arv-test$(EXEEXT) arv-genicam-test$(EXEEXT) \
 	arv-evaluator-test$(EXEEXT) arv-zip-test$(EXEEXT) \
 	arv-camera-test$(EXEEXT) arv-chunk-parser-test$(EXEEXT) \
-	arv-heartbeat-test$(EXEEXT) arv-example$(EXEEXT) \
+	arv-heartbeat-test$(EXEEXT) arv-acquisition-test$(EXEEXT) \
+	arv-example$(EXEEXT) arv-auto-packet-size-test$(EXEEXT) \
 	time-test$(EXEEXT) realtime-test$(EXEEXT) \
 	load-http-test$(EXEEXT) $(am__EXEEXT_2)
 @ARAVIS_BUILD_CPP_TEST_TRUE@am__append_1 = cpp
@@ -116,17 +117,25 @@ CONFIG_CLEAN_VPATH_FILES =
 am__EXEEXT_2 = evaluator$(EXEEXT) buffer$(EXEEXT) misc$(EXEEXT) \
 	fake$(EXEEXT) genicam$(EXEEXT) $(am__EXEEXT_1)
 PROGRAMS = $(noinst_PROGRAMS)
-am_arv_camera_test_OBJECTS = arvcameratest.$(OBJEXT)
-arv_camera_test_OBJECTS = $(am_arv_camera_test_OBJECTS)
+am_arv_acquisition_test_OBJECTS = arvacquisitiontest.$(OBJEXT)
+arv_acquisition_test_OBJECTS = $(am_arv_acquisition_test_OBJECTS)
 am__DEPENDENCIES_1 =
 am__DEPENDENCIES_2 =  \
 	$(top_builddir)/src/libaravis-@ARAVIS_API_VERSION@.la \
 	$(am__DEPENDENCIES_1)
-arv_camera_test_DEPENDENCIES = $(am__DEPENDENCIES_2)
+arv_acquisition_test_DEPENDENCIES = $(am__DEPENDENCIES_2)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
+am_arv_auto_packet_size_test_OBJECTS =  \
+	arvautopacketsizetest.$(OBJEXT)
+arv_auto_packet_size_test_OBJECTS =  \
+	$(am_arv_auto_packet_size_test_OBJECTS)
+arv_auto_packet_size_test_DEPENDENCIES = $(am__DEPENDENCIES_2)
+am_arv_camera_test_OBJECTS = arvcameratest.$(OBJEXT)
+arv_camera_test_OBJECTS = $(am_arv_camera_test_OBJECTS)
+arv_camera_test_DEPENDENCIES = $(am__DEPENDENCIES_2)
 am_arv_chunk_parser_test_OBJECTS = arvchunkparsertest.$(OBJEXT)
 arv_chunk_parser_test_OBJECTS = $(am_arv_chunk_parser_test_OBJECTS)
 arv_chunk_parser_test_DEPENDENCIES = $(am__DEPENDENCIES_2)
@@ -233,20 +242,23 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
-SOURCES = $(arv_camera_test_SOURCES) $(arv_chunk_parser_test_SOURCES) \
+SOURCES = $(arv_acquisition_test_SOURCES) \
+	$(arv_auto_packet_size_test_SOURCES) \
+	$(arv_camera_test_SOURCES) $(arv_chunk_parser_test_SOURCES) \
 	$(arv_evaluator_test_SOURCES) $(arv_example_SOURCES) \
 	$(arv_genicam_test_SOURCES) $(arv_heartbeat_test_SOURCES) \
 	$(arv_test_SOURCES) $(arv_zip_test_SOURCES) $(buffer_SOURCES) \
 	$(cpp_SOURCES) $(evaluator_SOURCES) $(fake_SOURCES) \
 	$(genicam_SOURCES) $(load_http_test_SOURCES) $(misc_SOURCES) \
 	$(realtime_test_SOURCES) $(time_test_SOURCES)
-DIST_SOURCES = $(arv_camera_test_SOURCES) \
-	$(arv_chunk_parser_test_SOURCES) $(arv_evaluator_test_SOURCES) \
-	$(arv_example_SOURCES) $(arv_genicam_test_SOURCES) \
-	$(arv_heartbeat_test_SOURCES) $(arv_test_SOURCES) \
-	$(arv_zip_test_SOURCES) $(buffer_SOURCES) $(cpp_SOURCES) \
-	$(evaluator_SOURCES) $(fake_SOURCES) $(genicam_SOURCES) \
-	$(load_http_test_SOURCES) $(misc_SOURCES) \
+DIST_SOURCES = $(arv_acquisition_test_SOURCES) \
+	$(arv_auto_packet_size_test_SOURCES) \
+	$(arv_camera_test_SOURCES) $(arv_chunk_parser_test_SOURCES) \
+	$(arv_evaluator_test_SOURCES) $(arv_example_SOURCES) \
+	$(arv_genicam_test_SOURCES) $(arv_heartbeat_test_SOURCES) \
+	$(arv_test_SOURCES) $(arv_zip_test_SOURCES) $(buffer_SOURCES) \
+	$(cpp_SOURCES) $(evaluator_SOURCES) $(fake_SOURCES) \
+	$(genicam_SOURCES) $(load_http_test_SOURCES) $(misc_SOURCES) \
 	$(realtime_test_SOURCES) $(time_test_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
@@ -288,7 +300,17 @@ ARAVIS_GST_0_10_PLUGIN_CFLAGS = @ARAVIS_GST_0_10_PLUGIN_CFLAGS@
 ARAVIS_GST_0_10_PLUGIN_LIBS = @ARAVIS_GST_0_10_PLUGIN_LIBS@
 ARAVIS_GST_PLUGIN_CFLAGS = @ARAVIS_GST_PLUGIN_CFLAGS@
 ARAVIS_GST_PLUGIN_LIBS = @ARAVIS_GST_PLUGIN_LIBS@
+ARAVIS_HAS_PACKET_SOCKET = @ARAVIS_HAS_PACKET_SOCKET@
+ARAVIS_HAS_USB = @ARAVIS_HAS_USB@
 ARAVIS_LIBS = @ARAVIS_LIBS@
+ARAVIS_MAJOR_VERSION = @ARAVIS_MAJOR_VERSION@
+ARAVIS_MICRO_VERSION = @ARAVIS_MICRO_VERSION@
+ARAVIS_MINOR_VERSION = @ARAVIS_MINOR_VERSION@
+ARAVIS_PACKET_SOCKET_CFLAGS = @ARAVIS_PACKET_SOCKET_CFLAGS@
+ARAVIS_PACKET_SOCKET_LIBS = @ARAVIS_PACKET_SOCKET_LIBS@
+ARAVIS_USB_CFLAGS = @ARAVIS_USB_CFLAGS@
+ARAVIS_USB_LIBS = @ARAVIS_USB_LIBS@
+ARAVIS_VERSION = @ARAVIS_VERSION@
 ARAVIS_VIEWER_CFLAGS = @ARAVIS_VIEWER_CFLAGS@
 ARAVIS_VIEWER_LIBS = @ARAVIS_VIEWER_LIBS@
 AUTOCONF = @AUTOCONF@
@@ -486,6 +508,10 @@ arv_chunk_parser_test_SOURCES = arvchunkparsertest.c
 arv_chunk_parser_test_LDADD = $(test_progs_ldadd)
 arv_heartbeat_test_SOURCES = arvheartbeattest.c
 arv_heartbeat_test_LDADD = $(test_progs_ldadd)
+arv_acquisition_test_SOURCES = arvacquisitiontest.c
+arv_acquisition_test_LDADD = $(test_progs_ldadd)
+arv_auto_packet_size_test_SOURCES = arvautopacketsizetest.c
+arv_auto_packet_size_test_LDADD = $(test_progs_ldadd)
 arv_example_SOURCES = arvexample.c
 arv_example_LDADD = $(test_progs_ldadd)
 time_test_SOURCES = timetest.c
@@ -522,9 +548,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am $(top_srcdir
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu tests/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --foreign tests/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu tests/Makefile
+	  $(AUTOMAKE) --foreign tests/Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
 	  *config.status*) \
@@ -552,6 +578,14 @@ clean-noinstPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+
+arv-acquisition-test$(EXEEXT): $(arv_acquisition_test_OBJECTS) $(arv_acquisition_test_DEPENDENCIES) $(EXTRA_arv_acquisition_test_DEPENDENCIES) 
+	@rm -f arv-acquisition-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(arv_acquisition_test_OBJECTS) $(arv_acquisition_test_LDADD) $(LIBS)
+
+arv-auto-packet-size-test$(EXEEXT): $(arv_auto_packet_size_test_OBJECTS) $(arv_auto_packet_size_test_DEPENDENCIES) $(EXTRA_arv_auto_packet_size_test_DEPENDENCIES) 
+	@rm -f arv-auto-packet-size-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(arv_auto_packet_size_test_OBJECTS) $(arv_auto_packet_size_test_LDADD) $(LIBS)
 
 arv-camera-test$(EXEEXT): $(arv_camera_test_OBJECTS) $(arv_camera_test_DEPENDENCIES) $(EXTRA_arv_camera_test_DEPENDENCIES) 
 	@rm -f arv-camera-test$(EXEEXT)
@@ -627,6 +661,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arvacquisitiontest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arvautopacketsizetest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arvcameratest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arvchunkparsertest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/arvevaluatortest.Po@am__quote@

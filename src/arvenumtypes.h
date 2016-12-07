@@ -4,6 +4,10 @@
 #ifndef ARV_ENUM_TYPES_H
 #define ARV_ENUM_TYPES_H
 
+#if !defined (ARV_H_INSIDE) && !defined (ARAVIS_COMPILATION)
+#error "Only <arv.h> can be included directly."
+#endif
+
 #include <glib-object.h>
 
 G_BEGIN_DECLS
@@ -34,6 +38,11 @@ GType arv_debug_level_get_type	(void) G_GNUC_CONST;
 
 #define ARV_TYPE_DOM_NODE_TYPE	(arv_dom_node_type_get_type())
 GType arv_dom_node_type_get_type	(void) G_GNUC_CONST;
+
+/* Enumerations from "arvgc.h" */
+
+#define ARV_TYPE_GC_ERROR	(arv_gc_error_get_type())
+GType arv_gc_error_get_type	(void) G_GNUC_CONST;
 
 /* Enumerations from "arvgcpropertynode.h" */
 
@@ -73,6 +82,9 @@ GType arv_chunk_parser_status_get_type	(void) G_GNUC_CONST;
 
 /* Enumerations from "arvgvstream.h" */
 
+#define ARV_TYPE_GV_STREAM_OPTION	(arv_gv_stream_option_get_type())
+GType arv_gv_stream_option_get_type	(void) G_GNUC_CONST;
+
 #define ARV_TYPE_GV_STREAM_SOCKET_BUFFER	(arv_gv_stream_socket_buffer_get_type())
 GType arv_gv_stream_socket_buffer_get_type	(void) G_GNUC_CONST;
 
@@ -97,6 +109,22 @@ GType arv_gvsp_content_type_get_type	(void) G_GNUC_CONST;
 
 #define ARV_TYPE_GVSP_PAYLOAD_TYPE	(arv_gvsp_payload_type_get_type())
 GType arv_gvsp_payload_type_get_type	(void) G_GNUC_CONST;
+
+/* Enumerations from "arvuvcp.h" */
+
+#define ARV_TYPE_UVCP_PACKET_TYPE	(arv_uvcp_packet_type_get_type())
+GType arv_uvcp_packet_type_get_type	(void) G_GNUC_CONST;
+
+#define ARV_TYPE_UVCP_COMMAND	(arv_uvcp_command_get_type())
+GType arv_uvcp_command_get_type	(void) G_GNUC_CONST;
+
+/* Enumerations from "arvuvsp.h" */
+
+#define ARV_TYPE_UVSP_PACKET_TYPE	(arv_uvsp_packet_type_get_type())
+GType arv_uvsp_packet_type_get_type	(void) G_GNUC_CONST;
+
+#define ARV_TYPE_UVSP_PAYLOAD_TYPE	(arv_uvsp_payload_type_get_type())
+GType arv_uvsp_payload_type_get_type	(void) G_GNUC_CONST;
 
 G_END_DECLS
 
