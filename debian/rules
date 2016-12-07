@@ -10,12 +10,14 @@ include /usr/share/dpkg/architecture.mk
 	dh $@ --with autoreconf
 
 override_dh_auto_configure:
-	dh_auto_configure -- --enable-gtk3 --enable-gtk-doc --enable-viewer --enable-notify --enable-gst-plugin
+	dh_auto_configure -- --enable-gtk3 --enable-gtk-doc \
+ --enable-viewer --enable-notify --enable-gst-plugin \
+ --enable-usb
 
 override_dh_install:
-	rm -rf debian/tmp/usr/doc/aravis-*
-	rm -f debian/tmp/usr/lib/*/libaravis-*.la
-	rm -f debian/tmp/usr/lib/*/gstreamer-*/libgstaravis-*.la
+	rm debian/tmp/usr/share/aravis-*/arvviewer*.h
+	rm debian/tmp/usr/lib/*/libaravis-*.la
+	rm debian/tmp/usr/lib/*/gstreamer-*/libgstaravis-*.la
 	dh_install --fail-missing
 
 override_dh_installchangelogs:
