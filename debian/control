@@ -7,7 +7,8 @@ Build-Depends: debhelper (>= 9), dh-exec,
                dh-autoreconf, gtk-doc-tools,
                intltool, libglib2.0-dev (>= 2.26), libxml2-dev,
                libusb-1.0-0-dev, libcap-ng-dev, libnotify-dev,
-               libgtk2.0-dev, libgstreamer1.0-dev, libgstreamer-plugins-base1.0-dev,
+               libgtk2.0-dev, libgstreamer1.0-dev,
+               libgstreamer-plugins-base1.0-dev,
 Standards-Version: 3.9.5
 Homepage: http://live.gnome.org/Aravis
 Vcs-Browser: https://github.com/epicsdeb/aravis
@@ -19,7 +20,8 @@ Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
 Depends: ${shlibs:Depends}, ${misc:Depends},
-         libaravis0.6-common (>= ${source:Version}), libaravis0.6-common (<< ${source:Version}.1~),
+         libaravis0.6-common (>= ${source:Version}),
+         libaravis0.6-common (<< ${source:Version}.1~),
 Description: vision library for genicam based cameras (shared library)
  Aravis is a glib/gobject based library for video acquisition using
  Genicam cameras. It currently only implements an ethernet camera
@@ -89,7 +91,7 @@ Recommends: aravis-tools,
 Depends: ${shlibs:Depends}, ${misc:Depends},
          libaravis0.6 (= ${binary:Version}),
          gstreamer1.0-plugins-aravis (= ${binary:Version}),
-         gstreamer1.0-plugins-bad (= ${binary:Version}),
+         gstreamer1.0-plugins-bad,
 Suggests: gstreamer1.0-tools,
 Conflicts: libaravis0.4-common
 Replaces: aravis-tools (<< 0.3.8-1~),
