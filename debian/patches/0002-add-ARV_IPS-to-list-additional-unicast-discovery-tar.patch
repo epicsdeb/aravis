@@ -7,10 +7,10 @@ Subject: add $ARV_IPS to list additional unicast discovery targets
  1 file changed, 30 insertions(+)
 
 diff --git a/src/arvgvinterface.c b/src/arvgvinterface.c
-index 5e89cde..2061dd1 100644
+index a6cb6f6..e334bd3 100644
 --- a/src/arvgvinterface.c
 +++ b/src/arvgvinterface.c
-@@ -73,6 +73,7 @@ arv_gv_discover_socket_list_new (void)
+@@ -74,6 +74,7 @@ arv_gv_discover_socket_list_new (void)
  	ArvGvDiscoverSocketList *socket_list;
  	GInetAddress *broadcast_address;
  	GSList *iter;
@@ -18,7 +18,7 @@ index 5e89cde..2061dd1 100644
  	struct ifaddrs *ifap  = NULL;
  	struct ifaddrs *ifap_iter;
  	int i;
-@@ -119,6 +120,35 @@ arv_gv_discover_socket_list_new (void)
+@@ -120,6 +121,35 @@ arv_gv_discover_socket_list_new (void)
  	g_object_unref (broadcast_address);
  	freeifaddrs (ifap);
  
