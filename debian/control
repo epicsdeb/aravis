@@ -91,6 +91,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends},
          gstreamer1.0-plugins-aravis (= ${binary:Version}),
          gstreamer1.0-plugins-bad (= ${binary:Version}),
 Suggests: gstreamer1.0-tools,
+Conflicts: libaravis0.4-common
 Replaces: aravis-tools (<< 0.3.8-1~),
 Breaks: aravis-tools (<< 0.3.8-1~),
 Description: vision library for genicam based cameras (tools)
