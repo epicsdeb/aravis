@@ -1,0 +1,4 @@
+usr/bin/arv-fake-gv-camera-0.4
+usr/bin/arv-tool-0.4
+usr/share/aravis-0.4/*.ui
+usr/share/aravis-0.4/arv-fake-camera.xml
