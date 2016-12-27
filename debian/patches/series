@@ -1,2 +1,3 @@
 0001-include-target_address-in-ArvGvDiscoverSocket.patch
 0002-add-ARV_IPS-to-list-additional-unicast-discovery-tar.patch
+0003-fix-memory-leak-in-GC-feature-node.patch
