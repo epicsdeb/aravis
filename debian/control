@@ -29,6 +29,21 @@ Description: vision library for genicam based cameras (shared library)
  .
  This package contains libaravis-0.6.so.0
 
+Package: libaravis0.6-dbg
+Section: libs
+Architecture: any
+Multi-Arch: same
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends},
+         libaravis0.6 (= ${binary:Version}),
+Recommends: libxml2-dbg, libgtk2.0-0-dbg,
+Description: vision library for genicam based cameras (shared library)
+ Aravis is a glib/gobject based library for video acquisition using
+ Genicam cameras. It currently only implements an ethernet camera
+ protocol used for industrial cameras.
+ .
+ This package contains debug symbols for libaravis-0.6.so.0
+
 Package: libaravis0.6-common
 Section: libs
 Architecture: all
