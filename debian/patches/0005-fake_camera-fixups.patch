@@ -1,0 +1,85 @@
+From: Michael Davidsaver <mdavidsaver@gmail.com>
+Date: Thu, 16 Feb 2017 16:52:43 -0500
+Subject: fake_camera fixups
+
+fake_camera: ref should be unref before set NULL
+
+fake_camera: log when a write is rejected for lack of permission
+
+    Properly an error should be sent, but I can't see how to do this.
+    In the absence of this, clients will see lack of permission
+    as a timeout.
+    Log this so it isn't a complete mystery.
+
+fake_camera: handle explicit release of privilege
+
+    Clear controller_address if the controller has written
+    CPP=0.
+---
+ src/arvfakegvcamera.c | 26 ++++++++++++++++++++------
+ 1 file changed, 20 insertions(+), 6 deletions(-)
+
+diff --git a/src/arvfakegvcamera.c b/src/arvfakegvcamera.c
+index f6f7f40..984505f 100644
+--- a/src/arvfakegvcamera.c
++++ b/src/arvfakegvcamera.c
+@@ -358,7 +358,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
+ 			(time.tv_nsec - gv_camera->controller_time.tv_nsec) / 1000000;
+ 
+ 		if (elapsed_ms > arv_fake_camera_get_heartbeat_timeout (gv_camera->camera)) {
+-			g_object_ref (gv_camera->controller_address);
++            g_object_unref (gv_camera->controller_address);
+ 			gv_camera->controller_address = NULL;
+ 			write_access = TRUE;
+ 			arv_warning_device ("[FakeGvCamera::handle_control_packet] Heartbeat timeout");
+@@ -392,10 +392,13 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
+ 						     arv_gvcp_packet_get_read_memory_ack_data (ack_packet));
+ 			break;
+ 		case ARV_GVCP_COMMAND_WRITE_MEMORY_CMD:
+-			if (!write_access)
++            arv_gvcp_packet_get_write_memory_cmd_infos (packet, &block_address, &block_size);
++            if (!write_access) {
++                arv_warning_device("[FakeGvCamera::handle_control_packet] Ignore Write memory command %d (%d) not controller",
++                                   block_address, block_size);
+ 				break;
++            }
+ 
+-			arv_gvcp_packet_get_write_memory_cmd_infos (packet, &block_address, &block_size);
+ 			arv_debug_device ("[FakeGvCamera::handle_control_packet] Write memory command %d (%d)",
+ 					  block_address, block_size);
+ 			arv_fake_camera_write_memory (gv_camera->camera, block_address, block_size,
+@@ -416,10 +419,13 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
+ 
+ 			break;
+ 		case ARV_GVCP_COMMAND_WRITE_REGISTER_CMD:
+-			if (!write_access)
+-				break;
++            arv_gvcp_packet_get_write_register_cmd_infos (packet, &register_address, &register_value);
++            if (!write_access) {
++                arv_warning_device("[FakeGvCamera::handle_control_packet] Ignore Write register command %d (%d) not controller",
++                                   register_address, register_value);
++                break;
++            }
+ 
+-			arv_gvcp_packet_get_write_register_cmd_infos (packet, &register_address, &register_value);
+ 			arv_fake_camera_write_register (gv_camera->camera, register_address, register_value);
+ 			arv_debug_device ("[FakeGvCamera::handle_control_packet] Write register command %d -> %d",
+ 				   register_address, register_value);
+@@ -439,9 +445,17 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
+ 	if (gv_camera->controller_address == NULL &&
+ 	    arv_fake_camera_get_control_channel_privilege (gv_camera->camera) != 0) {
+ 		g_object_ref (remote_address);
++        arv_debug_device("[FakeGvCamera::handle_control_packet] New controller");
+ 		gv_camera->controller_address = remote_address;
+ 		clock_gettime (CLOCK_MONOTONIC, &gv_camera->controller_time);
+ 	}
++    else if (gv_camera->controller_address != NULL &&
++        arv_fake_camera_get_control_channel_privilege (gv_camera->camera) == 0) {
++        g_object_unref (gv_camera->controller_address);
++        gv_camera->controller_address = NULL;
++        arv_debug_device("[FakeGvCamera::handle_control_packet] Controller releases");
++        clock_gettime (CLOCK_MONOTONIC, &gv_camera->controller_time);
++    }
+ }
+ 
+ static char *arv_option_interface_name = "lo";
