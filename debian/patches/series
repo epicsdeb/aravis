@@ -1,2 +1,7 @@
 0001-include-target_address-in-ArvGvDiscoverSocket.patch
 0002-add-ARV_IPS-to-list-additional-unicast-discovery-tar.patch
+0003-interface-plug-memory-leaks.patch
+0004-gvinterface-fix-memory-leak.patch
+0005-stream-self-joining-stream-thread-fix.patch
+0006-all-inhibit-new-buffer-signal-before-stream-unref.patch
+0007-all-use-atomic-ops-for-cancel-boolean.patch

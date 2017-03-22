@@ -1,0 +1,35 @@
+From: Emmanuel Pacaud <emmanuel@gnome.org>
+Date: Thu, 16 Feb 2017 15:44:51 +0100
+Subject: interface: plug memory leaks
+
+---
+ src/arvinterface.c   | 1 +
+ src/arvuvinterface.c | 3 +++
+ 2 files changed, 4 insertions(+)
+
+diff --git a/src/arvinterface.c b/src/arvinterface.c
+index 48a5b7b..cb0cf8a 100644
+--- a/src/arvinterface.c
++++ b/src/arvinterface.c
+@@ -51,6 +51,7 @@ arv_interface_clear_device_ids (ArvInterface *interface)
+ 		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->vendor);
+ 		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->model);
+ 		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i)->serial_nbr);
++		g_free (g_array_index (interface->priv->device_ids, ArvInterfaceDeviceIds *, i));
+ 	}
+ 	g_array_set_size (interface->priv->device_ids, 0);
+ }
+diff --git a/src/arvuvinterface.c b/src/arvuvinterface.c
+index 4d290d4..69ca966 100644
+--- a/src/arvuvinterface.c
++++ b/src/arvuvinterface.c
+@@ -255,6 +255,9 @@ _discover (ArvUvInterface *uv_interface,  GArray *device_ids)
+ 			    g_free (ids->device);
+ 			    g_free (ids->physical);
+ 			    g_free (ids->address);
++			    g_free (ids->vendor);
++			    g_free (ids->model);
++			    g_free (ids->serial_nbr);
+ 			    g_free (ids);
+ 		    }
+ 		}

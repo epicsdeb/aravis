@@ -1,0 +1,51 @@
+From: Emmanuel Pacaud <emmanuel@gnome.org>
+Date: Sun, 19 Mar 2017 11:35:51 +0100
+Subject: all: inhibit 'new-buffer' signal before stream unref
+
+---
+ tests/arvcameratest.c | 2 ++
+ tests/arvexample.c    | 3 +++
+ viewer/arvviewer.c    | 3 +++
+ 3 files changed, 8 insertions(+)
+
+diff --git a/tests/arvcameratest.c b/tests/arvcameratest.c
+index b34e5f6..b0366da 100644
+--- a/tests/arvcameratest.c
++++ b/tests/arvcameratest.c
+@@ -401,6 +401,8 @@ main (int argc, char **argv)
+ 
+ 			arv_camera_stop_acquisition (camera);
+ 
++			arv_stream_set_emit_signals (stream, FALSE);
++
+ 			g_object_unref (stream);
+ 		} else
+ 			printf ("Can't create stream thread (check if the device is not already used)\n");
+diff --git a/tests/arvexample.c b/tests/arvexample.c
+index e75a7e0..a0536e4 100644
+--- a/tests/arvexample.c
++++ b/tests/arvexample.c
+@@ -119,6 +119,9 @@ main (int argc, char **argv)
+ 			/* Stop the video stream */
+ 			arv_camera_stop_acquisition (camera);
+ 
++			/* Signal must be inhibited to avoid stream thread running after the last unref */
++			arv_stream_set_emit_signals (stream, FALSE);
++
+ 			g_object_unref (stream);
+ 		} else
+ 			printf ("Can't create stream thread (check if the device is not already used)\n");
+diff --git a/viewer/arvviewer.c b/viewer/arvviewer.c
+index ff494cd..f240dc5 100644
+--- a/viewer/arvviewer.c
++++ b/viewer/arvviewer.c
+@@ -709,6 +709,9 @@ stop_video (ArvViewer *viewer)
+ 	if (GST_IS_PIPELINE (viewer->pipeline))
+ 		gst_element_set_state (viewer->pipeline, GST_STATE_NULL);
+ 
++	if (ARV_IS_STREAM (viewer->stream))
++		arv_stream_set_emit_signals (viewer->stream, FALSE);
++
+ 	g_clear_object (&viewer->stream);
+ 	g_clear_object (&viewer->pipeline);
+ 

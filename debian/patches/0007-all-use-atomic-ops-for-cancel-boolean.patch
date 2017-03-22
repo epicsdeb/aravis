@@ -1,0 +1,125 @@
+From: Michael Davidsaver <mdavidsaver@gmail.com>
+Date: Wed, 22 Mar 2017 13:48:12 -0400
+Subject: all: use atomic ops for cancel boolean
+
+Conflicts:
+	src/arvgvfakecamera.c
+---
+ src/arvfakestream.c | 4 ++--
+ src/arvgvdevice.c   | 8 ++++----
+ src/arvgvstream.c   | 6 +++---
+ src/arvuvstream.c   | 4 ++--
+ 4 files changed, 11 insertions(+), 11 deletions(-)
+
+diff --git a/src/arvfakestream.c b/src/arvfakestream.c
+index f458aba..12fae04 100644
+--- a/src/arvfakestream.c
++++ b/src/arvfakestream.c
+@@ -69,7 +69,7 @@ arv_fake_stream_thread (void *data)
+ 	if (thread_data->callback != NULL)
+ 		thread_data->callback (thread_data->user_data, ARV_STREAM_CALLBACK_TYPE_INIT, NULL);
+ 
+-	while (!thread_data->cancel) {
++	while (!g_atomic_int_get (&thread_data->cancel)) {
+ 		arv_fake_camera_wait_for_next_frame (thread_data->camera);
+ 		buffer = arv_stream_pop_input_buffer (thread_data->stream);
+ 		if (buffer != NULL) {
+@@ -173,7 +173,7 @@ arv_fake_stream_finalize (GObject *object)
+ 
+ 		thread_data = fake_stream->priv->thread_data;
+ 
+-		thread_data->cancel = TRUE;
++		g_atomic_int_set (&thread_data->cancel, TRUE);
+ 		g_thread_join (fake_stream->priv->thread);
+ 		g_free (thread_data);
+ 
+diff --git a/src/arvgvdevice.c b/src/arvgvdevice.c
+index a84d638..ef28e31 100644
+--- a/src/arvgvdevice.c
++++ b/src/arvgvdevice.c
+@@ -461,12 +461,12 @@ arv_gv_device_heartbeat_thread (void *data)
+ 
+ 			while (!_read_register (io_data, ARV_GVBS_CONTROL_CHANNEL_PRIVILEGE_OFFSET, &value, NULL) &&
+ 			       g_timer_elapsed (timer, NULL) < ARV_GV_DEVICE_HEARTBEAT_RETRY_TIMEOUT_S &&
+-			       !thread_data->cancel) {
++			       !g_atomic_int_get (&thread_data->cancel)) {
+ 				g_usleep (ARV_GV_DEVICE_HEARTBEAT_RETRY_DELAY_US);
+ 				counter++;
+ 			}
+ 
+-			if (!thread_data->cancel) {
++			if (!g_atomic_int_get (&thread_data->cancel)) {
+ 				arv_log_device ("[GvDevice::Heartbeat] Ack value = %d", value);
+ 
+ 				if (counter > 1)
+@@ -483,7 +483,7 @@ arv_gv_device_heartbeat_thread (void *data)
+ 			} else
+ 				io_data->is_controller = FALSE;
+ 		}
+-	} while (!thread_data->cancel);
++	} while (!g_atomic_int_get (&thread_data->cancel));
+ 
+ 	g_timer_destroy (timer);
+ 
+@@ -1258,7 +1258,7 @@ arv_gv_device_finalize (GObject *object)
+ 
+ 		heartbeat_data = gv_device->priv->heartbeat_data;
+ 
+-		heartbeat_data->cancel = TRUE;
++		g_atomic_int_set (&heartbeat_data->cancel, TRUE);
+ 		g_thread_join (gv_device->priv->heartbeat_thread);
+ 		g_free (heartbeat_data);
+ 
+diff --git a/src/arvgvstream.c b/src/arvgvstream.c
+index f1613a9..cd0eafd 100644
+--- a/src/arvgvstream.c
++++ b/src/arvgvstream.c
+@@ -721,7 +721,7 @@ _loop (ArvGvStreamThreadData *thread_data)
+ 			frame = NULL;
+ 
+ 		_check_frame_completion (thread_data, time_us, frame);
+-	} while (!thread_data->cancel);
++	} while (!g_atomic_int_get (&thread_data->cancel));
+ 
+ 	g_free (packet);
+ 
+@@ -905,7 +905,7 @@ _ring_buffer_loop (ArvGvStreamThreadData *thread_data)
+ 			descriptor->h1.block_status = TP_STATUS_KERNEL;
+ 			block_id = (block_id + 1) % req.tp_block_nr;
+ 		}
+-	} while (!thread_data->cancel);
++	} while (!g_atomic_int_get (&thread_data->cancel));
+ 
+ bind_error:
+ 	munmap (buffer, req.tp_block_size * req.tp_block_nr);
+@@ -1192,7 +1192,7 @@ arv_gv_stream_finalize (GObject *object)
+ 
+ 		thread_data = gv_stream->priv->thread_data;
+ 
+-		thread_data->cancel = TRUE;
++		g_atomic_int_set (&thread_data->cancel, TRUE);
+ 		g_thread_join (gv_stream->priv->thread);
+ 
+ 		statistic_string = arv_statistic_to_string (thread_data->statistic);
+diff --git a/src/arvuvstream.c b/src/arvuvstream.c
+index 11fcd6d..e743280 100644
+--- a/src/arvuvstream.c
++++ b/src/arvuvstream.c
+@@ -85,7 +85,7 @@ arv_uv_stream_thread (void *data)
+ 
+ 	offset = 0;
+ 
+-	while (!thread_data->cancel) {
++	while (!g_atomic_int_get (&thread_data->cancel)) {
+ 		size_t size;
+ 		transferred = 0;
+ 
+@@ -319,7 +319,7 @@ arv_uv_stream_finalize (GObject *object)
+ 
+ 		thread_data = uv_stream->priv->thread_data;
+ 
+-		thread_data->cancel = TRUE;
++		g_atomic_int_set (&thread_data->cancel, TRUE);
+ 		g_thread_join (uv_stream->priv->thread);
+ 
+ 		si_control = 0x0;
