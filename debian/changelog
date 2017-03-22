@@ -1,3 +1,18 @@
+aravis0.6 (0.5.7-1) UNRELEASED; urgency=medium
+
+  * New upstream version
+  * patch: Camera discovery via. unicast (on different sub-net)
+           by setting environment variable ARV_IPS with colon
+           separated list of IP addresses.
+  * backport patches:
+    interface: plug memory leaks
+    gvinterface: fix memory leak
+    stream: self-joining stream thread fix
+    all: inhibit 'new-buffer' signal before stream unref
+    all: use atomic ops for cancel boolean
+
+ -- mdavidsaver <mdavidsaver@gmail.com>  Wed, 22 Mar 2017 14:11:46 -0400
+
 aravis0.6 (0.5.6-2) unstable; urgency=medium
 
   * fake_camera patches
