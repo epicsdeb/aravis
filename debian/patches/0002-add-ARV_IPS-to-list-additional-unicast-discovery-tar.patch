@@ -1,0 +1,56 @@
+From: Michael Davidsaver <mdavidsaver@gmail.com>
+Date: Tue, 19 Jan 2016 11:08:28 -0500
+Subject: add $ARV_IPS to list additional unicast discovery targets
+
+---
+ src/arvgvinterface.c | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+diff --git a/src/arvgvinterface.c b/src/arvgvinterface.c
+index a6cb6f6..e334bd3 100644
+--- a/src/arvgvinterface.c
++++ b/src/arvgvinterface.c
+@@ -74,6 +74,7 @@ arv_gv_discover_socket_list_new (void)
+ 	ArvGvDiscoverSocketList *socket_list;
+ 	GInetAddress *broadcast_address;
+ 	GSList *iter;
++	const char *envar;
+ 	struct ifaddrs *ifap  = NULL;
+ 	struct ifaddrs *ifap_iter;
+ 	int i;
+@@ -120,6 +121,35 @@ arv_gv_discover_socket_list_new (void)
+ 	g_object_unref (broadcast_address);
+ 	freeifaddrs (ifap);
+ 
++	if ((envar=g_getenv("ARV_IPS"))!=NULL) {
++		gchar **ips_alloc, **ips, *addr;
++
++		ips_alloc = ips = g_strsplit(envar, ":", -1);
++
++		for (addr = *ips; addr; addr = *++ips) {
++			ArvGvDiscoverSocket *discover_socket;
++			GSocketAddress *target_addr = g_inet_socket_address_new_from_string(addr, ARV_GVCP_PORT);
++			if(!target_addr)
++				continue;
++
++			discover_socket = g_new0 (ArvGvDiscoverSocket, 1);
++			discover_socket->target_address = target_addr;
++			discover_socket->interface_address = g_inet_socket_address_new_from_string("0.0.0.0", ARV_GVCP_PORT); /* TODO, wrong */
++
++			discover_socket->socket = g_socket_new (G_SOCKET_FAMILY_IPV4,
++								G_SOCKET_TYPE_DATAGRAM,
++								G_SOCKET_PROTOCOL_UDP, NULL);
++			/* implict bind of wildcard w/ arbitrary port */
++
++			arv_debug_interface("[GvDiscoverSocket::new] Add unicast destination %s", addr);
++
++			socket_list->sockets = g_slist_prepend (socket_list->sockets, discover_socket);
++			socket_list->n_sockets++;
++		}
++
++		g_strfreev(ips_alloc);
++	}
++
+ 	socket_list->poll_fds = g_new (GPollFD, socket_list->n_sockets);
+ 	for (i = 0, iter = socket_list->sockets; iter != NULL; i++, iter = iter->next) {
+ 		ArvGvDiscoverSocket *discover_socket = iter->data;

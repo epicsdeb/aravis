@@ -1,0 +1,73 @@
+aravis0.6 (0.5.6-2) unstable; urgency=medium
+
+  * fake_camera patches
+
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Thu, 16 Feb 2017 16:53:38 -0500
+
+aravis0.6 (0.5.6-1) unstable; urgency=medium
+
+  * New upstream release 0.5.6
+  * SO name changes from 0.4 -> 0.6
+  * patch: Camera discovery via. unicast (on different sub-net)
+           by setting environment variable ARV_IPS with colon
+           separated list of IP addresses.
+  * patch: fix memory leak in XML handling
+
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Tue, 27 Dec 2016 16:29:52 -0500
+
+aravis0.4 (0.3.8-1) UNRELEASED; urgency=medium
+
+  * New upstream release 0.3.8
+    SO name changes from 0.2 -> 0.4
+    Split arv-viewer from aravis-tools to new aravis-viewer package
+    to avoid gtk dep. for aravis-tools.
+    Package gstreamer plugin as gstreamer1.0-plugins-aravis.
+    patch: Camera discovery via. unicast (on different sub-net)
+           by setting environment variable ARV_IPS with colon
+           separated list of IP addresses.
+
+ -- Michael Davidsaver <mdavidsaver@gmail.com>  Thu, 16 Jun 2016 14:32:15 -0400
+
+aravis0.2 (0.1.15-1) unstable; urgency=low
+
+  * New upstream release 0.1.15
+  * Use autogen.sh from upstream repo to run autotools reconfigure
+  * Enable gtk-doc build
+
+ -- Ralph Lange <Ralph.Lange@gmx.de>  Tue, 18 Mar 2014 17:23:35 +0100
+
+aravis0.2 (0.1.11-2) unstable; urgency=low
+
+  * Enable build of arv-viewer
+  * d/control: Add Ralph.Lange@gmx.de to Uploaders
+  * d/control: Fix descriptions
+  * d/control: Bump Standards-Version to 3.9.5
+    - change Section to video (Policy 2.4)
+    - do not install '.la' file (Policy 10.2)
+  * d/control: Add Vcs-Browser and Vcs-Git URLs
+  * Add watch file
+  * Install upstream changelog (NEWS)
+  * Link only --as-needed
+  * Change to Multiarch (>= wheezy, dh9)
+  * Add required version to Build-Depends: glib2.0 (>= 2.26)
+  * Refresh autotools configuration by using '--with dh-autoreconf'
+
+ -- Ralph Lange <Ralph.Lange@gmx.de>  Fri, 07 Mar 2014 19:13:13 +0100
+
+aravis0.2 (0.1.11-1~wheezy1) wheezy; urgency=low
+
+  * Fix build for wheezy
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Wed, 12 Jun 2013 15:58:37 -0400
+
+aravis0.2 (0.1.11-1~squeeze1) squeeze; urgency=low
+
+  * New upstream
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Fri, 11 May 2012 16:46:01 -0400
+
+aravis0.2 (0.1.10-1~squeeze1) squeeze; urgency=low
+
+  * Initial release.
+
+ -- Michael Davidsaver <mdavidsaver@bnl.gov>  Tue, 01 Nov 2011 13:40:51 -0400
