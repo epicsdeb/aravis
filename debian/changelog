@@ -1,4 +1,4 @@
-aravis0.6 (0.5.7-1) UNRELEASED; urgency=medium
+aravis0.6 (0.5.7-1) unstable; urgency=medium
 
   * New upstream version
   * patch: Camera discovery via. unicast (on different sub-net)
@@ -11,7 +11,7 @@ aravis0.6 (0.5.7-1) UNRELEASED; urgency=medium
     all: inhibit 'new-buffer' signal before stream unref
     all: use atomic ops for cancel boolean
 
- -- mdavidsaver <mdavidsaver@gmail.com>  Wed, 22 Mar 2017 14:11:46 -0400
+ -- mdavidsaver <mdavidsaver@gmail.com>  Wed, 22 Mar 2017 17:51:32 -0400
 
 aravis0.6 (0.5.6-2) unstable; urgency=medium
 
