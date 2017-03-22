@@ -352,7 +352,7 @@ arv_device_create_chunk_parser (<em class="parameter"><code><a class="link" href
 <a name="arv-device-read-memory"></a><h3>arv_device_read_memory ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 arv_device_read_memory (<em class="parameter"><code><a class="link" href="ArvDevice.html" title="ArvDevice"><span class="type">ArvDevice</span></a> *device</code></em>,
-                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> address</code></em>,
+                        <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint64"><span class="type">guint64</span></a> address</code></em>,
                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> size</code></em>,
                         <em class="parameter"><code><span class="type">void</span> *buffer</code></em>,
                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
@@ -407,7 +407,7 @@ arv_device_read_memory (<em class="parameter"><code><a class="link" href="ArvDev
 <a name="arv-device-write-memory"></a><h3>arv_device_write_memory ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 arv_device_write_memory (<em class="parameter"><code><a class="link" href="ArvDevice.html" title="ArvDevice"><span class="type">ArvDevice</span></a> *device</code></em>,
-                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> address</code></em>,
+                         <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint64"><span class="type">guint64</span></a> address</code></em>,
                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> size</code></em>,
                          <em class="parameter"><code><span class="type">void</span> *buffer</code></em>,
                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
@@ -462,7 +462,7 @@ arv_device_write_memory (<em class="parameter"><code><a class="link" href="ArvDe
 <a name="arv-device-read-register"></a><h3>arv_device_read_register ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 arv_device_read_register (<em class="parameter"><code><a class="link" href="ArvDevice.html" title="ArvDevice"><span class="type">ArvDevice</span></a> *device</code></em>,
-                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> address</code></em>,
+                          <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint64"><span class="type">guint64</span></a> address</code></em>,
                           <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> *value</code></em>,
                           <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Reads the value of a device register.</p>
@@ -510,7 +510,7 @@ arv_device_read_register (<em class="parameter"><code><a class="link" href="ArvD
 <a name="arv-device-write-register"></a><h3>arv_device_write_register ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 arv_device_write_register (<em class="parameter"><code><a class="link" href="ArvDevice.html" title="ArvDevice"><span class="type">ArvDevice</span></a> *device</code></em>,
-                           <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> address</code></em>,
+                           <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint64"><span class="type">guint64</span></a> address</code></em>,
                            <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint32"><span class="type">guint32</span></a> value</code></em>,
                            <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Error-Reporting.html#GError"><span class="type">GError</span></a> **error</code></em>);</pre>
 <p>Writes <em class="parameter"><code>value</code></em>

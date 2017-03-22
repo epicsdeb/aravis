@@ -2,7 +2,7 @@ AC_PREREQ(2.63.0)
 
 m4_define([aravis_version_major], [0])
 m4_define([aravis_version_minor], [5])
-m4_define([aravis_version_micro], [6])
+m4_define([aravis_version_micro], [7])
 m4_define([aravis_version], [aravis_version_major.aravis_version_minor.aravis_version_micro])
 
 AC_INIT([aravis],[aravis_version],[http://bugzilla.gnome.org/enter_bug.cgi?product=aravis],[aravis])
@@ -95,7 +95,7 @@ ARAVIS_VIEWER_REQUIREMENTS="$ARAVIS_GSTREAMER_REQUIREMENTS gstreamer-video-1.0 g
 
 if test "x$enable_zlib_pc" = "xyes"; then
 	ARAVIS_REQUIREMENTS="${ARAVIS_REQUIREMENTS} zlib"
-	ARAVIS_ADDITIONAL_LIBS="-lm" 
+	ARAVIS_ADDITIONAL_LIBS="-lm"
 else
 	ARAVIS_ADDITIONAL_LIBS="-lm -lz"
 fi

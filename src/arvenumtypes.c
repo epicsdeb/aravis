@@ -119,6 +119,9 @@ arv_acquisition_mode_get_type (void)
 			{ ARV_ACQUISITION_MODE_SINGLE_FRAME,
 			  "ARV_ACQUISITION_MODE_SINGLE_FRAME",
 			  "single-frame" },
+			{ ARV_ACQUISITION_MODE_MULTI_FRAME,
+			  "ARV_ACQUISITION_MODE_MULTI_FRAME",
+			  "multi-frame" },
 			{ 0, NULL, NULL }
 		};
 		the_type = g_enum_register_static (
@@ -971,6 +974,29 @@ arv_uvcp_command_get_type (void)
 		};
 		the_type = g_enum_register_static (
 				g_intern_static_string ("ArvUvcpCommand"),
+				values);
+	}
+	return the_type;
+}
+
+GType
+arv_uvcp_manifest_schema_type_get_type (void)
+{
+	static GType the_type = 0;
+
+	if (the_type == 0)
+	{
+		static const GEnumValue values[] = {
+			{ ARV_UVCP_SCHEMA_RAW,
+			  "ARV_UVCP_SCHEMA_RAW",
+			  "raw" },
+			{ ARV_UVCP_SCHEMA_ZIP,
+			  "ARV_UVCP_SCHEMA_ZIP",
+			  "zip" },
+			{ 0, NULL, NULL }
+		};
+		the_type = g_enum_register_static (
+				g_intern_static_string ("ArvUvcpManifestSchemaType"),
 				values);
 	}
 	return the_type;

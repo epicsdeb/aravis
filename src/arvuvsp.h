@@ -90,7 +90,7 @@ typedef struct ARAVIS_PACKED_STRUCTURE {
 
 typedef struct ARAVIS_PACKED_STRUCTURE {
 	guint32 unknown0;
-	guint64 payload_size; 
+	guint64 payload_size;
 } ArvUvspTrailerInfos;
 
 typedef struct ARAVIS_PACKED_STRUCTURE {
@@ -138,6 +138,18 @@ arv_uvsp_packet_get_region (ArvUvspPacket *packet, guint32 *width, guint32 *heig
 	*height = GUINT32_FROM_LE (leader->infos.height);
 	*x_offset = GUINT32_FROM_LE (leader->infos.x_offset);
 	*y_offset = GUINT32_FROM_LE (leader->infos.y_offset);
+}
+
+static inline ArvPixelFormat
+arv_uvsp_packet_get_pixel_format (ArvUvspPacket *packet)
+{
+	ArvUvspLeader *leader;
+
+	if (packet == NULL)
+		return 0;
+
+	leader = (ArvUvspLeader *)packet;
+	return GUINT32_FROM_LE (leader->infos.pixel_format);
 }
 
 static inline guint64

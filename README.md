@@ -1,3 +1,7 @@
+[![Build Status](https://travis-ci.org/AravisProject/aravis.svg?branch=master)](https://travis-ci.org/AravisProject/aravis)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/fa7d9c88e5594d709ab44e8bad01a569)](https://www.codacy.com/app/EmmanuelP/aravis?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=AravisProject/aravis&amp;utm_campaign=Badge_Grade)
+[![Coverity Scan Build Status](https://scan.coverity.com/projects/aravisproject-aravis/badge.svg)](https://scan.coverity.com/projects/aravisproject-aravis)
+
 # ![](viewer/icons/gnome/256x256/apps/aravis.png) Aravis
 
 ### What is Aravis ?
@@ -17,11 +21,28 @@ Aravis uses the standard GNU build system, using autoconf for package configurat
 ./configure
 make
 make install
-```   
+```
 
 Compilation options may be passed to the configure script. Please run `./configure --help` for information about the available options.
 
 On some platforms (like Ubuntu), you may have to configure the dynamic linker (ld) to let it know where the aravis libraries are installed, and run ldconfig as root in order to update ld cache.
+
+#### Building on Mac OS X
+
+Using the GNU build system on Mac OS X is not directly supported, but can be mimicked by augmenting the install procedure above with some environment settings:
+
+```
+brew install gettext intltool gtk-doc
+brew link --force gettext
+aclocal
+autoconf
+autoheader
+glibtoolize --copy
+automake --add-missing
+./configure
+make
+make install
+```
 
 ### Ethernet Device Performance
 
@@ -41,6 +62,10 @@ Aravis can use packet sockets for the video receiving thread. But this mode requ
 sudo setcap cap_net_raw+ep arv-viewer
 ```
 
+### USB Permissions
+
+By default, USB devices permissions may not be sufficient to allow any user to access the USB3 cameras. This permissions can be changed by using an udev rule file. There is a file example in Aravis sources, aravis.rules. This file must be placed in /etc/udev/rules.d directory (The exact location may depend on the distribution you are using). This file only contains declarations for a couple of vendors. If you want to add an entry with the vendor of your camera, the output of `lsusb` command will give you the vendor id, which is the first 4 digits of the ID field.
+
 ### Dependencies
 
 The Aravis library depends on libxml2 and glib2, with an optional USB support depending on libusb1, and an optional packet socket support depending on libaudit.
@@ -52,6 +77,12 @@ The simple viewer depends on GStreamer1, Gtk+3, libnotify and the Aravis library
 The required versions are specified in the [configure.ac](https://github.com/AravisProject/aravis/blob/master/configure.ac#L67) file in Aravis sources.
 
 It is perfectly possible to only build the library, reducing the dependencies to the bare minimum.
+
+### Contributions
+
+As an open source and free software project, we welcome any contributions to the aravis project: code, bug reports, testing...
+
+However, contributions to both Gigabit Ethernet and USB3 protocol code (files `src/arvuv*.[ch]` `src/arvgv*.[ch]`) must not be based on the corresponding specification documents published by the [AIA](http://http://www.visiononline.org/), as this organisation forbids the use of their documents for the development of an open source implementation of the specifications. So, if you want to contribute to this part of Aravis, don't use the AIA documents and state clearly in the pull request your work is not based on them.
 
 ### Downloads
 

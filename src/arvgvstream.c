@@ -39,6 +39,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <stdio.h>
+#include <errno.h>
 
 #ifdef ARAVIS_BUILD_PACKET_SOCKET
 #include <ifaddrs.h>
@@ -209,9 +210,16 @@ _update_socket (ArvGvStreamThreadData *thread_data, ArvBuffer *buffer)
 	}
 
 	if (buffer_size != thread_data->current_socket_buffer_size) {
-		setsockopt (fd, SOL_SOCKET, SO_RCVBUF, &buffer_size, sizeof (buffer_size));
-		thread_data->current_socket_buffer_size = buffer_size;
-		arv_debug_stream_thread ("[GvStream::update_socket] Socket buffer size set to %d", buffer_size);
+		int result;
+
+		result = setsockopt (fd, SOL_SOCKET, SO_RCVBUF, &buffer_size, sizeof (buffer_size));
+		if (result == 0) {
+			thread_data->current_socket_buffer_size = buffer_size;
+			arv_debug_stream_thread ("[GvStream::update_socket] Socket buffer size set to %d", buffer_size);
+		} else {
+			arv_warning_stream_thread ("[GvStream::update_socket] Failed to set socket buffer size to %d (%d)",
+						   buffer_size, errno);
+		}
 	}
 }
 
@@ -601,7 +609,7 @@ _flush_frames (ArvGvStreamThreadData *thread_data)
 
 static ArvGvStreamFrameData *
 _process_packet (ArvGvStreamThreadData *thread_data, const ArvGvspPacket *packet, size_t packet_size, guint64 time_us)
-	
+
 {
 	ArvGvStreamFrameData *frame;
 	guint32 packet_id;
@@ -875,7 +883,7 @@ _ring_buffer_loop (ArvGvStreamThreadData *thread_data)
 			ArvGvStreamFrameData *frame;
 			const struct tpacket3_hdr *header;
 			unsigned i;
-			
+
 			header = (void *) (((char *) descriptor) + descriptor->h1.offset_to_first_pkt);
 
 			for (i = 0; i < descriptor->h1.num_pkts; i++) {

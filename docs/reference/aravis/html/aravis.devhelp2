@@ -128,6 +128,9 @@
     <keyword type="function" name="arv_camera_acquisition ()" link="ArvCamera.html#arv-camera-acquisition" since="0.6.0"/>
     <keyword type="function" name="arv_camera_set_acquisition_mode ()" link="ArvCamera.html#arv-camera-set-acquisition-mode"/>
     <keyword type="function" name="arv_camera_get_acquisition_mode ()" link="ArvCamera.html#arv-camera-get-acquisition-mode" since="0.2.0"/>
+    <keyword type="function" name="arv_camera_set_frame_count ()" link="ArvCamera.html#arv-camera-set-frame-count" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_get_frame_count ()" link="ArvCamera.html#arv-camera-get-frame-count" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_get_frame_count_bounds ()" link="ArvCamera.html#arv-camera-get-frame-count-bounds" since="0.6.0"/>
     <keyword type="function" name="arv_camera_is_frame_rate_available ()" link="ArvCamera.html#arv-camera-is-frame-rate-available" since="0.2.0"/>
     <keyword type="function" name="arv_camera_set_frame_rate ()" link="ArvCamera.html#arv-camera-set-frame-rate" since="0.2.0"/>
     <keyword type="function" name="arv_camera_get_frame_rate ()" link="ArvCamera.html#arv-camera-get-frame-rate" since="0.2.0"/>
@@ -135,6 +138,9 @@
     <keyword type="function" name="arv_camera_set_trigger ()" link="ArvCamera.html#arv-camera-set-trigger" since="0.2.0"/>
     <keyword type="function" name="arv_camera_set_trigger_source ()" link="ArvCamera.html#arv-camera-set-trigger-source" since="0.2.0"/>
     <keyword type="function" name="arv_camera_get_trigger_source ()" link="ArvCamera.html#arv-camera-get-trigger-source" since="0.2.0"/>
+    <keyword type="function" name="arv_camera_get_available_trigger_sources ()" link="ArvCamera.html#arv-camera-get-available-trigger-sources" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_get_available_triggers ()" link="ArvCamera.html#arv-camera-get-available-triggers" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_clear_triggers ()" link="ArvCamera.html#arv-camera-clear-triggers" since="0.6.0"/>
     <keyword type="function" name="arv_camera_software_trigger ()" link="ArvCamera.html#arv-camera-software-trigger" since="0.2.0"/>
     <keyword type="function" name="arv_camera_is_exposure_time_available ()" link="ArvCamera.html#arv-camera-is-exposure-time-available" since="0.2.0"/>
     <keyword type="function" name="arv_camera_is_exposure_auto_available ()" link="ArvCamera.html#arv-camera-is-exposure-auto-available" since="0.2.0"/>
@@ -161,6 +167,11 @@
     <keyword type="function" name="arv_camera_gv_set_packet_size ()" link="ArvCamera.html#arv-camera-gv-set-packet-size" since="0.4.0"/>
     <keyword type="function" name="arv_camera_gv_auto_packet_size ()" link="ArvCamera.html#arv-camera-gv-auto-packet-size" since="0.6.0"/>
     <keyword type="function" name="arv_camera_gv_set_stream_options ()" link="ArvCamera.html#arv-camera-gv-set-stream-options" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_is_uv_device ()" link="ArvCamera.html#arv-camera-is-uv-device" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_uv_get_bandwidth ()" link="ArvCamera.html#arv-camera-uv-get-bandwidth" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_uv_get_bandwidth_bounds ()" link="ArvCamera.html#arv-camera-uv-get-bandwidth-bounds" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_uv_is_bandwidth_control_available ()" link="ArvCamera.html#arv-camera-uv-is-bandwidth-control-available" since="0.6.0"/>
+    <keyword type="function" name="arv_camera_uv_set_bandwidth ()" link="ArvCamera.html#arv-camera-uv-set-bandwidth" since="0.6.0"/>
     <keyword type="function" name="arv_camera_get_chunk_mode ()" link="ArvCamera.html#arv-camera-get-chunk-mode" since="0.4.0"/>
     <keyword type="function" name="arv_camera_get_chunk_state ()" link="ArvCamera.html#arv-camera-get-chunk-state" since="0.4.0"/>
     <keyword type="function" name="arv_camera_set_chunk_mode ()" link="ArvCamera.html#arv-camera-set-chunk-mode" since="0.4.0"/>
@@ -183,6 +194,7 @@
     <keyword type="function" name="arv_get_device_model ()" link="ArvInterface.html#arv-get-device-model"/>
     <keyword type="function" name="arv_get_device_serial_nbr ()" link="ArvInterface.html#arv-get-device-serial-nbr"/>
     <keyword type="function" name="arv_get_device_vendor ()" link="ArvInterface.html#arv-get-device-vendor"/>
+    <keyword type="function" name="arv_get_device_address ()" link="ArvInterface.html#arv-get-device-address" since="0.6.0"/>
     <keyword type="function" name="arv_disable_interface ()" link="ArvInterface.html#arv-disable-interface"/>
     <keyword type="function" name="arv_enable_interface ()" link="ArvInterface.html#arv-enable-interface"/>
     <keyword type="function" name="arv_get_n_devices ()" link="ArvInterface.html#arv-get-n-devices"/>
@@ -566,28 +578,31 @@
     <keyword type="struct" name="ArvGvspDataTrailer" link="aravis-ArvGvsp.html#ArvGvspDataTrailer"/>
     <keyword type="struct" name="ArvGvspHeader" link="aravis-ArvGvsp.html#ArvGvspHeader"/>
     <keyword type="struct" name="ArvGvspPacket" link="aravis-ArvGvsp.html#ArvGvspPacket"/>
-    <keyword type="function" name="arv_uvcp_next_packet_id ()" link="aravis-ArvUvcp.html#arv-uvcp-next-packet-id"/>
-    <keyword type="function" name="arv_uvcp_packet_debug ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-debug"/>
+    <keyword type="function" name="arv_uvcp_packet_new_read_memory_cmd ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-new-read-memory-cmd"/>
+    <keyword type="function" name="arv_uvcp_packet_new_write_memory_cmd ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-new-write-memory-cmd"/>
     <keyword type="function" name="arv_uvcp_packet_free ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-free"/>
     <keyword type="function" name="arv_uvcp_packet_get_command ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-command"/>
     <keyword type="function" name="arv_uvcp_packet_get_packet_id ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-packet-id"/>
+    <keyword type="function" name="arv_uvcp_packet_set_packet_id ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-set-packet-id"/>
     <keyword type="function" name="arv_uvcp_packet_get_packet_type ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-packet-type"/>
+    <keyword type="function" name="arv_uvcp_packet_get_pending_ack_timeout ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-pending-ack-timeout"/>
     <keyword type="function" name="arv_uvcp_packet_get_read_memory_ack_data ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-read-memory-ack-data"/>
     <keyword type="function" name="arv_uvcp_packet_get_read_memory_ack_size ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-read-memory-ack-size"/>
     <keyword type="function" name="arv_uvcp_packet_get_write_memory_ack_size ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-write-memory-ack-size"/>
     <keyword type="function" name="arv_uvcp_packet_get_write_memory_cmd_data ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-write-memory-cmd-data"/>
-    <keyword type="function" name="arv_uvcp_packet_get_pending_ack_timeout ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-get-pending-ack-timeout"/>
-    <keyword type="function" name="arv_uvcp_packet_new_read_memory_cmd ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-new-read-memory-cmd"/>
-    <keyword type="function" name="arv_uvcp_packet_new_write_memory_cmd ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-new-write-memory-cmd"/>
-    <keyword type="function" name="arv_uvcp_packet_set_packet_id ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-set-packet-id"/>
+    <keyword type="function" name="arv_uvcp_next_packet_id ()" link="aravis-ArvUvcp.html#arv-uvcp-next-packet-id"/>
+    <keyword type="function" name="arv_uvcp_packet_debug ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-debug"/>
     <keyword type="function" name="arv_uvcp_packet_to_string ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-to-string"/>
     <keyword type="function" name="arv_uvcp_command_to_string ()" link="aravis-ArvUvcp.html#arv-uvcp-command-to-string"/>
     <keyword type="function" name="arv_uvcp_packet_type_to_string ()" link="aravis-ArvUvcp.html#arv-uvcp-packet-type-to-string"/>
+    <keyword type="function" name="arv_uvcp_manifest_entry_get_schema_type ()" link="aravis-ArvUvcp.html#arv-uvcp-manifest-entry-get-schema-type"/>
     <keyword type="enum" name="enum ArvUvcpCommand" link="aravis-ArvUvcp.html#ArvUvcpCommand"/>
     <keyword type="struct" name="ArvUvcpPacket" link="aravis-ArvUvcp.html#ArvUvcpPacket"/>
     <keyword type="enum" name="enum ArvUvcpPacketType" link="aravis-ArvUvcp.html#ArvUvcpPacketType"/>
+    <keyword type="enum" name="enum ArvUvcpManifestSchemaType" link="aravis-ArvUvcp.html#ArvUvcpManifestSchemaType"/>
     <keyword type="function" name="arv_uvsp_packet_get_frame_id ()" link="aravis-ArvUvsp.html#arv-uvsp-packet-get-frame-id"/>
     <keyword type="function" name="arv_uvsp_packet_get_packet_type ()" link="aravis-ArvUvsp.html#arv-uvsp-packet-get-packet-type"/>
+    <keyword type="function" name="arv_uvsp_packet_get_pixel_format ()" link="aravis-ArvUvsp.html#arv-uvsp-packet-get-pixel-format"/>
     <keyword type="function" name="arv_uvsp_packet_get_region ()" link="aravis-ArvUvsp.html#arv-uvsp-packet-get-region"/>
     <keyword type="function" name="arv_uvsp_packet_get_timestamp ()" link="aravis-ArvUvsp.html#arv-uvsp-packet-get-timestamp"/>
     <keyword type="function" name="arv_uvsp_packet_debug ()" link="aravis-ArvUvsp.html#arv-uvsp-packet-debug"/>
@@ -734,6 +749,7 @@
     <keyword type="constant" name="ARV_AUTO_CONTINUOUS" link="ArvCamera.html#ARV-AUTO-CONTINUOUS:CAPS"/>
     <keyword type="constant" name="ARV_ACQUISITION_MODE_CONTINUOUS" link="ArvCamera.html#ARV-ACQUISITION-MODE-CONTINUOUS:CAPS"/>
     <keyword type="constant" name="ARV_ACQUISITION_MODE_SINGLE_FRAME" link="ArvCamera.html#ARV-ACQUISITION-MODE-SINGLE-FRAME:CAPS"/>
+    <keyword type="constant" name="ARV_ACQUISITION_MODE_MULTI_FRAME" link="ArvCamera.html#ARV-ACQUISITION-MODE-MULTI-FRAME:CAPS"/>
     <keyword type="constant" name="ARV_DEVICE_STATUS_UNKNOWN" link="ArvDevice.html#ARV-DEVICE-STATUS-UNKNOWN:CAPS"/>
     <keyword type="constant" name="ARV_DEVICE_STATUS_SUCCESS" link="ArvDevice.html#ARV-DEVICE-STATUS-SUCCESS:CAPS"/>
     <keyword type="constant" name="ARV_DEVICE_STATUS_TIMEOUT" link="ArvDevice.html#ARV-DEVICE-STATUS-TIMEOUT:CAPS"/>
@@ -820,6 +836,8 @@
     <keyword type="constant" name="ARV_UVCP_PACKET_TYPE_ERROR" link="aravis-ArvUvcp.html#ARV-UVCP-PACKET-TYPE-ERROR:CAPS"/>
     <keyword type="constant" name="ARV_UVCP_PACKET_TYPE_ACK" link="aravis-ArvUvcp.html#ARV-UVCP-PACKET-TYPE-ACK:CAPS"/>
     <keyword type="constant" name="ARV_UVCP_PACKET_TYPE_CMD" link="aravis-ArvUvcp.html#ARV-UVCP-PACKET-TYPE-CMD:CAPS"/>
+    <keyword type="constant" name="ARV_UVCP_SCHEMA_RAW" link="aravis-ArvUvcp.html#ARV-UVCP-SCHEMA-RAW:CAPS"/>
+    <keyword type="constant" name="ARV_UVCP_SCHEMA_ZIP" link="aravis-ArvUvcp.html#ARV-UVCP-SCHEMA-ZIP:CAPS"/>
     <keyword type="member" name="ArvGvcpHeader.packet-type" link="aravis-ArvGvcp.html#ArvGvcpHeader.packet-type"/>
     <keyword type="member" name="ArvGvcpHeader.command" link="aravis-ArvGvcp.html#ArvGvcpHeader.command"/>
     <keyword type="member" name="ArvGvcpHeader.size" link="aravis-ArvGvcp.html#ArvGvcpHeader.size"/>

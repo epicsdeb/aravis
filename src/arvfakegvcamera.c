@@ -208,6 +208,7 @@ arv_fake_gv_camera_new (const char *interface_name)
 	g_return_val_if_fail (interface_name != NULL, NULL);
 
 	gv_camera = g_new0 (ArvFakeGvCamera, 1);
+
 	gv_camera->camera = arv_fake_camera_new ("GV01");
 
 	return_value = getifaddrs (&ifap);
@@ -358,7 +359,7 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 			(time.tv_nsec - gv_camera->controller_time.tv_nsec) / 1000000;
 
 		if (elapsed_ms > arv_fake_camera_get_heartbeat_timeout (gv_camera->camera)) {
-			g_object_ref (gv_camera->controller_address);
+			g_object_unref (gv_camera->controller_address);
 			gv_camera->controller_address = NULL;
 			write_access = TRUE;
 			arv_warning_device ("[FakeGvCamera::handle_control_packet] Heartbeat timeout");
@@ -392,10 +393,13 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 						     arv_gvcp_packet_get_read_memory_ack_data (ack_packet));
 			break;
 		case ARV_GVCP_COMMAND_WRITE_MEMORY_CMD:
-			if (!write_access)
-				break;
-
 			arv_gvcp_packet_get_write_memory_cmd_infos (packet, &block_address, &block_size);
+			if (!write_access) {
+				arv_warning_device("[FakeGvCamera::handle_control_packet] Ignore Write memory command %d (%d) not controller",
+					block_address, block_size);
+				break;
+			}
+
 			arv_debug_device ("[FakeGvCamera::handle_control_packet] Write memory command %d (%d)",
 					  block_address, block_size);
 			arv_fake_camera_write_memory (gv_camera->camera, block_address, block_size,
@@ -416,10 +420,13 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 
 			break;
 		case ARV_GVCP_COMMAND_WRITE_REGISTER_CMD:
-			if (!write_access)
-				break;
-
 			arv_gvcp_packet_get_write_register_cmd_infos (packet, &register_address, &register_value);
+			if (!write_access) {
+				arv_warning_device("[FakeGvCamera::handle_control_packet] Ignore Write register command %d (%d) not controller",
+					register_address, register_value);
+				break;
+			}
+
 			arv_fake_camera_write_register (gv_camera->camera, register_address, register_value);
 			arv_debug_device ("[FakeGvCamera::handle_control_packet] Write register command %d -> %d",
 				   register_address, register_value);
@@ -439,18 +446,29 @@ handle_control_packet (ArvFakeGvCamera *gv_camera, GSocket *socket,
 	if (gv_camera->controller_address == NULL &&
 	    arv_fake_camera_get_control_channel_privilege (gv_camera->camera) != 0) {
 		g_object_ref (remote_address);
+		arv_debug_device("[FakeGvCamera::handle_control_packet] New controller");
 		gv_camera->controller_address = remote_address;
+		clock_gettime (CLOCK_MONOTONIC, &gv_camera->controller_time);
+	}
+	else if (gv_camera->controller_address != NULL &&
+	    arv_fake_camera_get_control_channel_privilege (gv_camera->camera) == 0) {
+		g_object_unref (gv_camera->controller_address);
+		gv_camera->controller_address = NULL;
+		arv_debug_device("[FakeGvCamera::handle_control_packet] Controller releases");
 		clock_gettime (CLOCK_MONOTONIC, &gv_camera->controller_time);
 	}
 }
 
 static char *arv_option_interface_name = "lo";
 static char *arv_option_debug_domains = NULL;
+static char *arv_option_genicam_file = NULL;
 
 static const GOptionEntry arv_option_entries[] =
 {
 	{ "interface",		'i', 0, G_OPTION_ARG_STRING,
 		&arv_option_interface_name,	"Listening interface name", "interface_id"},
+	{ "genicam",            'g', 0, G_OPTION_ARG_STRING,
+	        &arv_option_genicam_file, "XML Genicam file to use", "genicam_filename"},
 	{ "debug", 		'd', 0, G_OPTION_ARG_STRING,
 		&arv_option_debug_domains, 	NULL, "category[:level][,...]" },
 	{ NULL }
@@ -483,6 +501,8 @@ main (int argc, char **argv)
 	g_option_context_free (context);
 
 	arv_debug_enable (arv_option_debug_domains);
+
+	arv_set_fake_camera_genicam_filename (arv_option_genicam_file);
 
 	gv_camera = arv_fake_gv_camera_new (arv_option_interface_name);
 	if (gv_camera == NULL) {

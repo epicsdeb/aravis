@@ -34,15 +34,6 @@
 #include <libusb.h>
 #include <stdio.h>
 
-#define ARV_UV_INTERFACE_DEVICE_CLASS			0xef
-#define ARV_UV_INTERFACE_DEVICE_SUBCLASS		0x02
-#define ARV_UV_INTERFACE_DEVICE_PROTOCOL		0x01
-#define ARV_UV_INTERFACE_INTERFACE_CLASS		0xef
-#define ARV_UV_INTERFACE_INTERFACE_SUBCLASS		0x05
-#define ARV_UV_INTERFACE_CONTROL_INTERFACE_PROTOCOL	0x00
-#define ARV_UV_INTERFACE_EVENT_INTERFACE_PROTOCOL	0x01
-#define ARV_UV_INTERFACE_STREAMING_INTERFACE_PROTOCOL	0x02
-
 /* ArvUvInterface implementation */
 
 static GObjectClass *parent_class = NULL;
@@ -157,7 +148,8 @@ _usb_device_to_device_ids (ArvUvInterface *uv_interface, libusb_device *device)
 	struct libusb_config_descriptor *config;
 	const struct libusb_interface *inter;
 	const struct libusb_interface_descriptor *interdesc;
-	gboolean success = TRUE;
+	gboolean control_protocol_found;
+	gboolean data_protocol_found;
 	int r, i, j;
 
 	r = libusb_get_device_descriptor (device, &desc);
@@ -171,19 +163,25 @@ _usb_device_to_device_ids (ArvUvInterface *uv_interface, libusb_device *device)
 	    desc.bDeviceProtocol != ARV_UV_INTERFACE_DEVICE_PROTOCOL)
 		return NULL;
 
+	control_protocol_found = FALSE;
+	data_protocol_found = FALSE;
 	libusb_get_config_descriptor (device, 0, &config);
 	for (i = 0; i< (int) config->bNumInterfaces; i++) {
 		inter = &config->interface[i];
 		for (j = 0; j < inter->num_altsetting; j++) {
 			interdesc = &inter->altsetting[j];
-			if (interdesc->bInterfaceClass != ARV_UV_INTERFACE_INTERFACE_CLASS ||
-			    interdesc->bInterfaceSubClass != ARV_UV_INTERFACE_INTERFACE_SUBCLASS)
-				success = FALSE;
+			if (interdesc->bInterfaceClass == ARV_UV_INTERFACE_INTERFACE_CLASS &&
+			    interdesc->bInterfaceSubClass == ARV_UV_INTERFACE_INTERFACE_SUBCLASS) {
+				if (interdesc->bInterfaceProtocol == ARV_UV_INTERFACE_CONTROL_PROTOCOL)
+					control_protocol_found = TRUE;
+				if (interdesc->bInterfaceProtocol == ARV_UV_INTERFACE_DATA_PROTOCOL)
+					data_protocol_found = TRUE;
+			}
 		}
 	}
 	libusb_free_config_descriptor (config);
 
-	if (!success)
+	if (!control_protocol_found && !data_protocol_found)
 		return NULL;
 
 	if (libusb_open (device, &device_handle) == LIBUSB_SUCCESS) {
@@ -213,8 +211,8 @@ _usb_device_to_device_ids (ArvUvInterface *uv_interface, libusb_device *device)
 		g_hash_table_replace (uv_interface->priv->devices, device_infos->name, device_infos);
 
 		device_ids->device = g_strdup (device_infos->name);
-		device_ids->physical = g_strdup ("FIXME-Physical");
-		device_ids->address = g_strdup ("FIXME-Address");
+		device_ids->physical = g_strdup ("USB3");	/* FIXME */
+		device_ids->address = g_strdup ("USB3");	/* FIXME */
 		device_ids->vendor = g_strdup (device_infos->manufacturer);
 		device_ids->model = g_strdup (device_infos->product);
 		device_ids->serial_nbr = g_strdup (device_infos->serial_nbr);
@@ -224,7 +222,8 @@ _usb_device_to_device_ids (ArvUvInterface *uv_interface, libusb_device *device)
 		g_free (serial_nbr);
 
 		libusb_close (device_handle);
-	}
+	} else
+		arv_warning_interface ("Failed to open USB device");
 
 	return device_ids;
 }
@@ -234,12 +233,15 @@ _discover (ArvUvInterface *uv_interface,  GArray *device_ids)
 {
 	libusb_device **devices;
 	unsigned uv_count = 0;
-	unsigned count;
+	ssize_t count;
 	unsigned i;
 
 	count = libusb_get_device_list(uv_interface->priv->usb, &devices);
-	if (count < 0)
+	if (count < 0) {
+		arv_warning_interface ("[[UvInterface:_discover] Failed to get USB device list: %s",
+				       libusb_error_name (count));
 		return;
+	}
 
 	for (i = 0; i < count; i++) {
 		ArvInterfaceDeviceIds *ids;

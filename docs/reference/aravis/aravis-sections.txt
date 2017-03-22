@@ -42,6 +42,9 @@ arv_camera_abort_acquisition
 arv_camera_acquisition
 arv_camera_set_acquisition_mode
 arv_camera_get_acquisition_mode
+arv_camera_set_frame_count
+arv_camera_get_frame_count
+arv_camera_get_frame_count_bounds
 arv_camera_is_frame_rate_available
 arv_camera_set_frame_rate
 arv_camera_get_frame_rate
@@ -49,6 +52,9 @@ arv_camera_get_frame_rate_bounds
 arv_camera_set_trigger
 arv_camera_set_trigger_source
 arv_camera_get_trigger_source
+arv_camera_get_available_trigger_sources
+arv_camera_get_available_triggers
+arv_camera_clear_triggers
 arv_camera_software_trigger
 arv_camera_is_exposure_time_available
 arv_camera_is_exposure_auto_available
@@ -75,6 +81,11 @@ arv_camera_gv_get_packet_size
 arv_camera_gv_set_packet_size
 arv_camera_gv_auto_packet_size
 arv_camera_gv_set_stream_options
+arv_camera_is_uv_device
+arv_camera_uv_get_bandwidth
+arv_camera_uv_get_bandwidth_bounds
+arv_camera_uv_is_bandwidth_control_available
+arv_camera_uv_set_bandwidth
 arv_camera_get_chunk_mode
 arv_camera_get_chunk_state
 arv_camera_set_chunk_mode
@@ -198,6 +209,7 @@ arv_get_interface_id
 arv_get_device_model
 arv_get_device_serial_nbr
 arv_get_device_vendor
+arv_get_device_address
 arv_disable_interface
 arv_enable_interface
 arv_get_n_devices
@@ -1187,6 +1199,7 @@ arv_g_mutex_lock
 arv_g_mutex_unlock
 arv_g_thread_init
 arv_g_thread_new
+g_clear_pointer
 </SECTION>
 
 <SECTION>
@@ -1344,23 +1357,25 @@ ARAVIS_PACKED_STRUCTURE
 ArvUvcpCommand
 ArvUvcpPacket
 ArvUvcpPacketType
-arv_uvcp_next_packet_id
-arv_uvcp_packet_debug
+arv_uvcp_packet_new_read_memory_cmd
+arv_uvcp_packet_new_write_memory_cmd
 arv_uvcp_packet_free
 arv_uvcp_packet_get_command
 arv_uvcp_packet_get_packet_id
+arv_uvcp_packet_set_packet_id
 arv_uvcp_packet_get_packet_type
+arv_uvcp_packet_get_pending_ack_timeout
 arv_uvcp_packet_get_read_memory_ack_data
 arv_uvcp_packet_get_read_memory_ack_size
 arv_uvcp_packet_get_write_memory_ack_size
 arv_uvcp_packet_get_write_memory_cmd_data
-arv_uvcp_packet_get_pending_ack_timeout
-arv_uvcp_packet_new_read_memory_cmd
-arv_uvcp_packet_new_write_memory_cmd
-arv_uvcp_packet_set_packet_id
+arv_uvcp_next_packet_id
+arv_uvcp_packet_debug
 arv_uvcp_packet_to_string
 arv_uvcp_command_to_string
 arv_uvcp_packet_type_to_string
+ArvUvcpManifestSchemaType
+arv_uvcp_manifest_entry_get_schema_type
 <SUBSECTION Standard>
 <SUBSECTION Private>
 ARV_UVCP_MAGIC
@@ -1700,6 +1715,7 @@ ARV_GVSP_PACKET_PROTOCOL_OVERHEAD
 <TITLE>ArvUvsp</TITLE>
 arv_uvsp_packet_get_frame_id
 arv_uvsp_packet_get_packet_type
+arv_uvsp_packet_get_pixel_format
 arv_uvsp_packet_get_region
 arv_uvsp_packet_get_timestamp
 arv_uvsp_packet_debug

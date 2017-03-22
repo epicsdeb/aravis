@@ -118,6 +118,9 @@ GType arv_uvcp_packet_type_get_type	(void) G_GNUC_CONST;
 #define ARV_TYPE_UVCP_COMMAND	(arv_uvcp_command_get_type())
 GType arv_uvcp_command_get_type	(void) G_GNUC_CONST;
 
+#define ARV_TYPE_UVCP_MANIFEST_SCHEMA_TYPE	(arv_uvcp_manifest_schema_type_get_type())
+GType arv_uvcp_manifest_schema_type_get_type	(void) G_GNUC_CONST;
+
 /* Enumerations from "arvuvsp.h" */
 
 #define ARV_TYPE_UVSP_PACKET_TYPE	(arv_uvsp_packet_type_get_type())

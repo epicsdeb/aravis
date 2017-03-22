@@ -522,6 +522,11 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 			goto CLEANUP;
 		}
 
+		if (index >= ARV_EVALUATOR_STACK_SIZE - 1) {
+			status = ARV_EVALUATOR_STATUS_STACK_OVERFLOW;
+			goto CLEANUP;
+		}
+
 		arv_evaluator_token_debug (token, variables);
 
 		switch (token->token_id) {
@@ -805,11 +810,6 @@ evaluate (GSList *token_stack, GHashTable *variables, gint64 *v_int64, double *v
 		}
 
 		index = index - arv_evaluator_token_infos[token->token_id].n_args + 1;
-
-		if (index >= ARV_EVALUATOR_STACK_SIZE) {
-			status = ARV_EVALUATOR_STATUS_STACK_OVERFLOW;
-			goto CLEANUP;
-		}
 	}
 
 	if (index != 0) {
@@ -864,9 +864,9 @@ parse_to_stacks (ArvEvaluator *evaluator, char *expression, ArvEvaluatorParserSt
 		token = arv_get_next_token (&expression, state->previous_token);
 		if (token != NULL) {
 			if (arv_evaluator_token_is_variable (token)) {
-				if (g_hash_table_contains (evaluator->priv->constants, token->data.name)) {
+				if (g_hash_table_lookup_extended (evaluator->priv->constants, token->data.name, NULL, NULL)) {
 					const char *constant;
-				
+
 					constant = g_hash_table_lookup (evaluator->priv->constants, token->data.name);
 
 					if (constant != NULL) {
@@ -878,7 +878,7 @@ parse_to_stacks (ArvEvaluator *evaluator, char *expression, ArvEvaluatorParserSt
 						status = ARV_EVALUATOR_STATUS_UNKNOWN_CONSTANT;
 						goto CLEANUP;
 					}
-				} else if (g_hash_table_contains (evaluator->priv->sub_expressions, token->data.name)) {
+				} else if (g_hash_table_lookup_extended (evaluator->priv->sub_expressions, token->data.name, NULL, NULL)) {
 					const char *sub_expression;
 
 					sub_expression = g_hash_table_lookup (evaluator->priv->sub_expressions, token->data.name);
@@ -1062,7 +1062,7 @@ arv_evaluator_evaluate_as_double (ArvEvaluator *evaluator, GError **error)
 
 	g_return_val_if_fail (ARV_IS_EVALUATOR (evaluator), 0.0);
 
-	arv_log_evaluator ("[Evaluator::evaluate_as_double] Expression = '%s'", 
+	arv_log_evaluator ("[Evaluator::evaluate_as_double] Expression = '%s'",
 			   evaluator->priv->expression);
 
 	if (evaluator->priv->parsing_status == ARV_EVALUATOR_STATUS_NOT_PARSED) {
@@ -1093,7 +1093,7 @@ arv_evaluator_evaluate_as_int64 (ArvEvaluator *evaluator, GError **error)
 
 	g_return_val_if_fail (ARV_IS_EVALUATOR (evaluator), 0.0);
 
-	arv_log_evaluator ("[Evaluator::evaluate_as_int64] Expression = '%s'", 
+	arv_log_evaluator ("[Evaluator::evaluate_as_int64] Expression = '%s'",
 			   evaluator->priv->expression);
 
 	if (evaluator->priv->parsing_status == ARV_EVALUATOR_STATUS_NOT_PARSED) {
@@ -1296,7 +1296,7 @@ arv_evaluator_set_int64_variable (ArvEvaluator *evaluator, const char *name, gin
 	arv_log_evaluator ("[Evaluator::set_int64_variable] %s = %Ld", name, v_int64);
 }
 
-/** 
+/**
  * arv_evaluator_new:
  * @expression: (allow-none): an evaluator expression
  *

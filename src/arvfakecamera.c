@@ -172,6 +172,11 @@ arv_fake_camera_wait_for_next_frame (ArvFakeCamera *camera)
 								ARV_FAKE_CAMERA_REGISTER_ACQUISITION_FRAME_PERIOD_US) *
 			1000L;
 
+	if (frame_period_time_ns == 0) {
+		arv_warning_misc ("Invalid zero frame period, defaulting to 1 second");
+		frame_period_time_ns = 1000000000L;
+	}
+
 	clock_gettime (CLOCK_MONOTONIC, &time);
 	sleep_time_ns = frame_period_time_ns - (((guint64) time.tv_sec * 1000000000L +
 						 (guint64) time.tv_nsec) % frame_period_time_ns);
@@ -414,7 +419,7 @@ arv_get_fake_camera_genicam_xml (size_t *size)
 			filename = g_build_filename (ARAVIS_DATA_DIR, "arv-fake-camera.xml", NULL);
 		else
 			filename = g_strdup (arv_fake_camera_genicam_filename);
-
+		
 		genicam_file = g_mapped_file_new (filename, FALSE, NULL);
 
 		if (genicam_file != NULL) {
@@ -469,8 +474,7 @@ arv_fake_camera_new (const char *serial_number)
 	strcpy (((char *) memory) + ARV_GVBS_DEVICE_VERSION_OFFSET, PACKAGE_VERSION);
 	strcpy (((char *) memory) + ARV_GVBS_SERIAL_NUMBER_OFFSET, serial_number);
 
-	xml_url = g_strdup_printf ("Local:arv-fake-camera-%s.xml;%x;%x",
-				   PACKAGE_VERSION,
+	xml_url = g_strdup_printf ("Local:arv-fake-camera.xml;%x;%x",
 				   ARV_FAKE_CAMERA_MEMORY_SIZE,
 				   (unsigned int) fake_camera->priv->genicam_xml_size);
 	strcpy (((char *) memory) + ARV_GVBS_XML_URL_0_OFFSET, xml_url);

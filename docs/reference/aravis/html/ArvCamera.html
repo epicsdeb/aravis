@@ -306,6 +306,30 @@
 </tr>
 <tr>
 <td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-set-frame-count" title="arv_camera_set_frame_count ()">arv_camera_set_frame_count</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint64"><span class="returnvalue">gint64</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-get-frame-count" title="arv_camera_get_frame_count ()">arv_camera_get_frame_count</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-get-frame-count-bounds" title="arv_camera_get_frame_count_bounds ()">arv_camera_get_frame_count_bounds</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
 <a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 </td>
 <td class="function_name">
@@ -357,6 +381,28 @@
 </td>
 <td class="function_name">
 <a class="link" href="ArvCamera.html#arv-camera-get-trigger-source" title="arv_camera_get_trigger_source ()">arv_camera_get_trigger_source</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <span class="returnvalue">char</span> **
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-get-available-trigger-sources" title="arv_camera_get_available_trigger_sources ()">arv_camera_get_available_trigger_sources</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">const <span class="returnvalue">char</span> **
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-get-available-triggers" title="arv_camera_get_available_triggers ()">arv_camera_get_available_triggers</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-clear-triggers" title="arv_camera_clear_triggers ()">arv_camera_clear_triggers</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -565,6 +611,46 @@
 </td>
 <td class="function_name">
 <a class="link" href="ArvCamera.html#arv-camera-gv-set-stream-options" title="arv_camera_gv_set_stream_options ()">arv_camera_gv_set_stream_options</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-is-uv-device" title="arv_camera_is_uv_device ()">arv_camera_is_uv_device</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-uv-get-bandwidth" title="arv_camera_uv_get_bandwidth ()">arv_camera_uv_get_bandwidth</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-uv-get-bandwidth-bounds" title="arv_camera_uv_get_bandwidth_bounds ()">arv_camera_uv_get_bandwidth_bounds</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-uv-is-bandwidth-control-available" title="arv_camera_uv_is_bandwidth_control_available ()">arv_camera_uv_is_bandwidth_control_available</a> <span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
+<td class="function_type">
+<span class="returnvalue">void</span>
+</td>
+<td class="function_name">
+<a class="link" href="ArvCamera.html#arv-camera-uv-set-bandwidth" title="arv_camera_uv_set_bandwidth ()">arv_camera_uv_set_bandwidth</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -2034,6 +2120,100 @@ arv_camera_get_acquisition_mode (<em class="parameter"><code><a class="link" hre
 </div>
 <hr>
 <div class="refsect2">
+<a name="arv-camera-set-frame-count"></a><h3>arv_camera_set_frame_count ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+arv_camera_set_frame_count (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                            <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint64"><span class="type">gint64</span></a> frame_count</code></em>);</pre>
+<p>Sets the number of frames to capture in MultiFrame mode.</p>
+<div class="refsect3">
+<a name="arv-camera-set-frame-count.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>frame_count</p></td>
+<td class="parameter_description"><p>number of frames to capture in MultiFrame mode</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-frame-count"></a><h3>arv_camera_get_frame_count ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint64"><span class="returnvalue">gint64</span></a>
+arv_camera_get_frame_count (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="refsect3">
+<a name="arv-camera-get-frame-count.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="arv-camera-get-frame-count.returns"></a><h4>Returns</h4>
+<p> number of frames to capture in MultiFrame mode.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-frame-count-bounds"></a><h3>arv_camera_get_frame_count_bounds ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+arv_camera_get_frame_count_bounds (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                   <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint64"><span class="type">gint64</span></a> *min</code></em>,
+                                   <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gint64"><span class="type">gint64</span></a> *max</code></em>);</pre>
+<p>Retrieves allowed range for frame count.</p>
+<div class="refsect3">
+<a name="arv-camera-get-frame-count-bounds.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min</p></td>
+<td class="parameter_description"><p> minimal possible frame count. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max</p></td>
+<td class="parameter_description"><p> maximum possible frame count. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="arv-camera-is-frame-rate-available"></a><h3>arv_camera_is_frame_rate_available ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 arv_camera_is_frame_rate_available (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
@@ -2248,6 +2428,102 @@ to actually use this source as a trigger.</p>
 <p> a string containing the trigger source name, NULL on error.</p>
 </div>
 <p class="since">Since: <a class="link" href="ix02.html#api-index-0.2.0">0.2.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-available-trigger-sources"></a><h3>arv_camera_get_available_trigger_sources ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> **
+arv_camera_get_available_trigger_sources
+                               (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_sources</code></em>);</pre>
+<p>Gets the list of all available trigger sources.</p>
+<div class="refsect3">
+<a name="arv-camera-get-available-trigger-sources.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n_sources</p></td>
+<td class="parameter_description"><p> number of sources. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="arv-camera-get-available-trigger-sources.returns"></a><h4>Returns</h4>
+<p> a newly allocated array of strings, which must be freed using <a href="/usr/share/gtk-doc/html/glibglib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>. </p>
+<p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n_sources][<acronym title="Free data container after the code is done."><span class="acronym">transfer container</span></acronym>]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-get-available-triggers"></a><h3>arv_camera_get_available_triggers ()</h3>
+<pre class="programlisting">const <span class="returnvalue">char</span> **
+arv_camera_get_available_triggers (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                   <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> *n_triggers</code></em>);</pre>
+<p>Gets a list of all available triggers: FrameStart, ExposureActive, etc...</p>
+<div class="refsect3">
+<a name="arv-camera-get-available-triggers.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>n_triggers</p></td>
+<td class="parameter_description"><p> number of available triggers. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="arv-camera-get-available-triggers.returns"></a><h4>Returns</h4>
+<p> a newly allocated array of strings, which must be freed using <a href="/usr/share/gtk-doc/html/glibglib-Memory-Allocation.html#g-free"><code class="function">g_free()</code></a>. </p>
+<p><span class="annotation">[<acronym title="Parameter points to an array of items."><span class="acronym">array</span></acronym> length=n_triggers][<acronym title="Free data container after the code is done."><span class="acronym">transfer container</span></acronym>]</span></p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-clear-triggers"></a><h3>arv_camera_clear_triggers ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+arv_camera_clear_triggers (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<p>Disables all triggers.</p>
+<div class="refsect3">
+<a name="arv-camera-clear-triggers.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
 </div>
 <hr>
 <div class="refsect2">
@@ -3004,6 +3280,152 @@ set before the call to <a class="link" href="ArvCamera.html#arv-camera-create-st
 </div>
 <hr>
 <div class="refsect2">
+<a name="arv-camera-is-uv-device"></a><h3>arv_camera_is_uv_device ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+arv_camera_is_uv_device (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="refsect3">
+<a name="arv-camera-is-uv-device.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="arv-camera-is-uv-device.returns"></a><h4>Returns</h4>
+<p> <a href="/usr/share/gtk-doc/html/glibglib-Standard-Macros.html#TRUE:CAPS"><code class="literal">TRUE</code></a> if <em class="parameter"><code>camera</code></em>
+is a USB3Vision device.</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-uv-get-bandwidth"></a><h3>arv_camera_uv_get_bandwidth ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="returnvalue">guint</span></a>
+arv_camera_uv_get_bandwidth (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="refsect3">
+<a name="arv-camera-uv-get-bandwidth.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="arv-camera-uv-get-bandwidth.returns"></a><h4>Returns</h4>
+<p> the current bandwidth limit</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-uv-get-bandwidth-bounds"></a><h3>arv_camera_uv_get_bandwidth_bounds ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+arv_camera_uv_get_bandwidth_bounds (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                                    <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> *min</code></em>,
+                                    <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> *max</code></em>);</pre>
+<div class="refsect3">
+<a name="arv-camera-uv-get-bandwidth-bounds.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>min</p></td>
+<td class="parameter_description"><p> minimum bandwidth. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+<tr>
+<td class="parameter_name"><p>max</p></td>
+<td class="parameter_description"><p> maximum bandwidth. </p></td>
+<td class="parameter_annotations"><span class="annotation">[<acronym title="Parameter for returning results. Default is transfer full."><span class="acronym">out</span></acronym>]</span></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-uv-is-bandwidth-control-available"></a><h3>arv_camera_uv_is_bandwidth_control_available ()</h3>
+<pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
+arv_camera_uv_is_bandwidth_control_available
+                               (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
+<div class="refsect3">
+<a name="arv-camera-uv-is-bandwidth-control-available.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody><tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr></tbody>
+</table></div>
+</div>
+<div class="refsect3">
+<a name="arv-camera-uv-is-bandwidth-control-available.returns"></a><h4>Returns</h4>
+<p> wether bandwidth limits are available on this camera</p>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="arv-camera-uv-set-bandwidth"></a><h3>arv_camera_uv_set_bandwidth ()</h3>
+<pre class="programlisting"><span class="returnvalue">void</span>
+arv_camera_uv_set_bandwidth (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>,
+                             <em class="parameter"><code><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#guint"><span class="type">guint</span></a> bandwidth</code></em>);</pre>
+<div class="refsect3">
+<a name="arv-camera-uv-set-bandwidth.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>camera</p></td>
+<td class="parameter_description"><p>a <a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a></p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>bandwidth</p></td>
+<td class="parameter_description"><p>Desired bandwith limit in megabits/sec. Set to 0 to disable limit mode.</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+<p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
+</div>
+<hr>
+<div class="refsect2">
 <a name="arv-camera-get-chunk-mode"></a><h3>arv_camera_get_chunk_mode ()</h3>
 <pre class="programlisting"><a href="/usr/share/gtk-doc/html/glibglib-Basic-Types.html#gboolean"><span class="returnvalue">gboolean</span></a>
 arv_camera_get_chunk_mode (<em class="parameter"><code><a class="link" href="ArvCamera.html" title="ArvCamera"><span class="type">ArvCamera</span></a> *camera</code></em>);</pre>
@@ -3223,7 +3645,7 @@ arv_acquisition_mode_from_string (<em class="parameter"><code>const <span class=
 <hr>
 <div class="refsect2">
 <a name="ARAVIS-MICRO-VERSION:CAPS"></a><h3>ARAVIS_MICRO_VERSION</h3>
-<pre class="programlisting">#define ARAVIS_MICRO_VERSION 6
+<pre class="programlisting">#define ARAVIS_MICRO_VERSION 7
 </pre>
 <p>The micor version of the Aravis library.</p>
 <p class="since">Since: <a class="link" href="ix04.html#api-index-0.6.0">0.6.0</a></p>
@@ -3317,6 +3739,13 @@ arv_acquisition_mode_from_string (<em class="parameter"><code>const <span class=
 <td class="enum_member_name"><p><a name="ARV-ACQUISITION-MODE-SINGLE-FRAME:CAPS"></a>ARV_ACQUISITION_MODE_SINGLE_FRAME</p></td>
 <td class="enum_member_description">
 <p>only one frame will be acquired</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="ARV-ACQUISITION-MODE-MULTI-FRAME:CAPS"></a>ARV_ACQUISITION_MODE_MULTI_FRAME</p></td>
+<td class="enum_member_description">
+<p>multiple frames will be acquired</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
