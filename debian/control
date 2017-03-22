@@ -30,7 +30,7 @@ Description: vision library for genicam based cameras (shared library)
  This package contains libaravis-0.6.so.0
 
 Package: libaravis0.6-dbg
-Section: libs
+Section: debug
 Architecture: any
 Multi-Arch: same
 Pre-Depends: ${misc:Pre-Depends}
